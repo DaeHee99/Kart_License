@@ -59,6 +59,7 @@ export default function App() {
           </MDBCollapse>
         </MDBContainer>
       </MDBNavbar>
+      <br />
     </>
   );
 }

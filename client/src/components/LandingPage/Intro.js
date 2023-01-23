@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   MDBCard,
   MDBCardBody,
@@ -9,7 +10,12 @@ import {
 } from 'mdb-react-ui-kit';
 import introImage from '../../images/intro.png';
 
-export default function Intro() {
+export default function Intro(props) {
+  const start = () => {
+    // If No Login
+    props.setLoginCheckModal(true);
+  }
+
   return (
     <MDBContainer>
       <MDBCard alignment='center' style={{ maxWidth: '1320px' }} className='shadow-5'>
@@ -20,7 +26,7 @@ export default function Intro() {
             제보 및 피드백 항상 감사합니다!<br />
             지속해서 개선하도록 노력하겠습니다.
           </MDBCardText>
-          <MDBBtn href='#'>시작하기</MDBBtn>
+          <MDBBtn onClick={start}>시작하기</MDBBtn>
         </MDBCardBody>
       </MDBCard>
     </MDBContainer>
