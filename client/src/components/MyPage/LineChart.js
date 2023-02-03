@@ -9,6 +9,10 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import {
+  MDBCard,
+  MDBCardBody,
+} from 'mdb-react-ui-kit';
 
 ChartJS.register(
   CategoryScale,
@@ -23,20 +27,30 @@ ChartJS.register(
 export default function LineChart(props) {
   const options = {
     responsive: true,
+    scales: {
+      y: {
+        type: 'category',
+        labels: ["강주력", "주력", "1군", "2군", "3군", "4군", "일반"]
+      },
+    }
   };
 
-  const labels = ['강주력', '주력', '1군', '2군', '3군', '4군', '일반'];
-
   const data = {
-    labels,
+    labels : props.label,
     datasets: [{
-      label: '개수',
+      label: props.name,
       data: props.data,
       fill: false,
-      borderColor: 'rgba(255, 205, 86)',
+      borderColor: props.color,
       tension: 0.1
     }]
   };
 
-  return <Line options={options} data={data} />;
+  return (
+    <MDBCard className='shadow-5 w-100 border border-secondary'>
+      <MDBCardBody>
+        <Line options={options} data={data} height={200}/>
+      </MDBCardBody>
+    </MDBCard>
+  )
 }

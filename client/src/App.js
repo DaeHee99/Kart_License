@@ -4,6 +4,7 @@ import LandingPage from './pages/LandingPage';
 import LoginPage from "./pages/LoginPage";
 import TestPage from "./pages/TestPage";
 import ResultPage from "./pages/ResultPage";
+import MyPage from "./pages/MyPage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/test" element={<TestPage />} />
         <Route path="/result/:id" element={<ResultPage />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </div>
   );

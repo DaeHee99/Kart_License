@@ -10,6 +10,7 @@ import {
   MDBNavbarBrand,
   MDBCollapse
 } from 'mdb-react-ui-kit';
+import HeaderLogo from '../../images/header.png'
 
 export default function App() {
   const [showNavColor, setShowNavColor] = useState(false);
@@ -28,7 +29,7 @@ export default function App() {
           >
             <MDBIcon fas icon="angle-left" />
           </MDBNavbarToggler>
-          <MDBNavbarBrand href='#'> 카러플 군 계산기 </MDBNavbarBrand>
+          <MDBNavbarBrand href='#' width={200} className='mx-0'> <img src={HeaderLogo} alt='headerLogo' width={200} className='mx-0'/> </MDBNavbarBrand>
           <MDBNavbarToggler
             type='button'
             data-target='#navbarColor02'
