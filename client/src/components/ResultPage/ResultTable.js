@@ -7,7 +7,7 @@ export default function ResultTable(props) {
       <MDBTableHead>
         <tr>
           <th scope='col'><b>군</b></th>
-          <th scope='col'><b>선택 개수</b></th>
+          <th scope='col'><b>{props.name}</b></th>
         </tr>
       </MDBTableHead>
       <MDBTableBody>

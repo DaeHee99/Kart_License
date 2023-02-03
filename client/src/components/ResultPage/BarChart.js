@@ -34,7 +34,7 @@ export default function BarChart(props) {
   const data = {
     labels,
     datasets: [{
-      label: '개수',
+      label: props.name,
       data: props.data,
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',

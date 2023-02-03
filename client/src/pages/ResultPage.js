@@ -55,11 +55,11 @@ function ResultPage() {
 
         <div className="my-3 d-lg-flex flex-row justify-content-around">
           <div className="col-lg-6 col-12 mb-2">
-            <ResultTable data={record}/>
-            <BarChart data={record}/>
+            <ResultTable data={record} name={'선택 개수'}/>
+            <BarChart data={record} name={'개수'}/>
           </div>
           <div className="col-lg-6 col-12 d-flex align-items-center justify-content-center">
-            <PieChart data={record}/>
+            <PieChart data={record} name={'개수'}/>
           </div>
         </div>
         <div className="w-100">

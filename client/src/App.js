@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import TestPage from "./pages/TestPage";
 import ResultPage from "./pages/ResultPage";
 import MyPage from "./pages/MyPage";
+import StatisticsPage from "./pages/StatisticsPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/test" element={<TestPage />} />
         <Route path="/result/:id" element={<ResultPage />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/statistics" element={<StatisticsPage />} />
       </Routes>
     </div>
   );

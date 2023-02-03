@@ -11,7 +11,7 @@ export default function PieChart(props) {
   let data = {
     labels: ['강주력', '주력', '1군', '2군', '3군', '4군', '일반'],
     datasets: [{
-      label: '개수',
+      label: props.name,
       data: props.data,
       backgroundColor: [
         'rgb(255, 99, 132)',
