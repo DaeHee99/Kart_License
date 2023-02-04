@@ -6,6 +6,7 @@ import TestPage from "./pages/TestPage";
 import ResultPage from "./pages/ResultPage";
 import MyPage from "./pages/MyPage";
 import StatisticsPage from "./pages/StatisticsPage";
+import ManagerPage from "./pages/ManagerPage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/result/:id" element={<ResultPage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/statistics" element={<StatisticsPage />} />
+        <Route path="/manager" element={<ManagerPage />} />
       </Routes>
     </div>
   );
