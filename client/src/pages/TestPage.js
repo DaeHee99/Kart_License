@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   MDBContainer
 } from 'mdb-react-ui-kit';
@@ -8,6 +9,7 @@ import Progress from '../components/TestPage/Progress';
 import SelectButtons from '../components/TestPage/SelectButtons';
 
 function TestPage() {
+  const navigation = useNavigate();
   const [num, setNum] = useState(1);
   const [selectList, setSelectList] = useState([undefined]);
 
@@ -19,7 +21,7 @@ function TestPage() {
   const nextMap = (selected) => {
     setSelectItem(selected);
     if(num < mapAllCount) setNum(num + 1);
-    else console.log(selectList);
+    else navigation('/result/1', {replace: true});
   }
   const prevMap = (selected) => {
     setSelectItem(selected);

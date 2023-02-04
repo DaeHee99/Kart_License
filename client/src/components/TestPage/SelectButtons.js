@@ -56,25 +56,25 @@ export default function SelectButtons(props) {
     <>
       <div className="d-grid gap-3 mb-4">
         <MDBBtn outline={outlineState[0]} onClick={() => selectRecord(0)} rounded color={buttonColor}>
-          <b><MDBIcon fas icon="star" />강주력<MDBIcon fas icon="star" /> &nbsp; &nbsp; {mapData[props.num-1].record[0]}</b>
+          <b>강주력 &nbsp; <MDBIcon fas icon="crown" /> &nbsp; {mapData[props.num-1].record[0]}</b>
         </MDBBtn>
         <MDBBtn outline={outlineState[1]} onClick={() => selectRecord(1)} rounded color={buttonColor}>
-          <b><MDBIcon fas icon="star" />주력<MDBIcon fas icon="star" /> &nbsp; &nbsp; {mapData[props.num-1].record[1]}</b>
+          <b>주력 &nbsp; <MDBIcon fas icon="crown" /> &nbsp; {mapData[props.num-1].record[1]}</b>
         </MDBBtn>
         <MDBBtn outline={outlineState[2]} onClick={() => selectRecord(2)} rounded color={buttonColor}>
-          <b><MDBIcon fas icon="star" />1군<MDBIcon fas icon="star" /> &nbsp; &nbsp; {mapData[props.num-1].record[2]}</b>
+          <b>1군 &nbsp; <MDBIcon fas icon="crown" /> &nbsp; {mapData[props.num-1].record[2]}</b>
         </MDBBtn>
         <MDBBtn outline={outlineState[3]} onClick={() => selectRecord(3)} rounded color={buttonColor}>
-          <b><MDBIcon fas icon="star" />2군<MDBIcon fas icon="star" /> &nbsp; &nbsp; {mapData[props.num-1].record[3]}</b>
+          <b>2군 &nbsp; <MDBIcon fas icon="crown" /> &nbsp; {mapData[props.num-1].record[3]}</b>
         </MDBBtn>
         <MDBBtn outline={outlineState[4]} onClick={() => selectRecord(4)} rounded color={buttonColor}>
-          <b><MDBIcon fas icon="star" />3군<MDBIcon fas icon="star" /> &nbsp; &nbsp; {mapData[props.num-1].record[4]}</b>
+          <b>3군 &nbsp; <MDBIcon fas icon="crown" /> &nbsp; {mapData[props.num-1].record[4]}</b>
         </MDBBtn>
         <MDBBtn outline={outlineState[5]} onClick={() => selectRecord(5)} rounded color={buttonColor}>
-          <b><MDBIcon fas icon="star" />4군<MDBIcon fas icon="star" /> &nbsp; &nbsp; {mapData[props.num-1].record[5]}</b>
+          <b>4군 &nbsp; <MDBIcon fas icon="crown" /> &nbsp; {mapData[props.num-1].record[5]}</b>
         </MDBBtn>
         <MDBBtn outline={outlineState[6]} onClick={() => selectRecord(6)} rounded color={buttonColor}>
-          <b><MDBIcon fas icon="star" />일반<MDBIcon fas icon="star" /> &nbsp; &nbsp; {mapData[props.num-1].record[6]}</b>
+          <b>일반 &nbsp; <MDBIcon fas icon="crown" /> &nbsp; {mapData[props.num-1].record[6]}</b>
         </MDBBtn>
         <MDBBtn outline={outlineState[7]} onClick={() => selectRecord(7)} rounded color='dark'>
           <b>선택 안함</b>
