@@ -11,9 +11,10 @@ import {
   MDBContainer
 } from 'mdb-react-ui-kit';
 
-export default function MyProfile() {
+export default function MyProfile(props) {
   const userData = useSelector(state => state.user.userData);
-
+  const lastRecordDate = new Date(props.lastRecord.createdAt);
+  
   return (
     <MDBContainer>
       <MDBCard className='shadow-5 w-100'>
@@ -28,7 +29,9 @@ export default function MyProfile() {
                 {userData.license}
               </MDBCardText>
               <MDBCardText>
-                <small className='text-muted'>최근 측정 기록<br/>2023/01/01 10:00:00 (S17)</small>
+                <small className='text-muted'>최근 측정 기록<br/>
+                {lastRecordDate.getFullYear()}/{("00"+(lastRecordDate.getMonth()+1)).slice(-2)}/{("00"+(lastRecordDate.getDate())).slice(-2)} {("00"+(lastRecordDate.getHours())).slice(-2)}:{("00"+(lastRecordDate.getMinutes())).slice(-2)}:{("00"+(lastRecordDate.getSeconds())).slice(-2)} (S{props.lastRecord.season})
+                </small>
               </MDBCardText>
             </MDBCardBody>
           </MDBCol>

@@ -9,7 +9,7 @@ export default function PieChart(props) {
   };
   
   let data = {
-    labels: ['강주력', '주력', '1군', '2군', '3군', '4군', '일반'],
+    labels: ['강주력', '주력', '1군', '2군', '3군', '4군', '일반', '선택 안함'],
     datasets: [{
       label: props.name,
       data: props.data,
@@ -20,7 +20,8 @@ export default function PieChart(props) {
         'rgb(75, 192, 192)',
         'rgb(54, 162, 235)',
         'rgb(153, 102, 255)',
-        'rgb(201, 203, 207)'
+        'rgb(201, 203, 207)',
+        'rgba(0, 0, 0, 0.3)'
       ],
       hoverOffset: 4
     }]

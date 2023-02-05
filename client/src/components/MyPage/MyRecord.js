@@ -6,7 +6,7 @@ import {
 } from 'mdb-react-ui-kit';
 import RecordCard from './RecordCard';
 
-function MyRecord() {
+function MyRecord(props) {
   return (
     <MDBContainer className='text-center'>
       <MDBCard className='shadow-5 w-100 mb-3'>
@@ -16,9 +16,9 @@ function MyRecord() {
       </MDBCard>
       <hr />
       
-      <RecordCard />
-      <RecordCard />
-      <RecordCard />
+      {props.recordList.slice(0).reverse().map(item => {
+        return <RecordCard data={item} key={item._id}/>
+      })}
 
     </MDBContainer>
   );

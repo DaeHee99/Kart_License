@@ -39,6 +39,10 @@ export default function ResultTable(props) {
           <th scope='row'><b>일반</b></th>
           <td><b>{props.data[6]}</b></td>
         </tr>
+        <tr style={{backgroundColor: 'rgba(0, 0, 0, 0.3)'}}>
+          <th scope='row'><b>선택 안함</b></th>
+          <td><b>{props.data[7]}</b></td>
+        </tr>
       </MDBTableBody>
     </MDBTable>
   );

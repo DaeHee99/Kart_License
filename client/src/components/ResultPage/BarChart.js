@@ -29,7 +29,7 @@ export default function BarChart(props) {
     indexAxis: 'y',
   };
   
-  const labels = ['강주력', '주력', '1군', '2군', '3군', '4군', '일반'];
+  const labels = ['강주력', '주력', '1군', '2군', '3군', '4군', '일반', '선택 안함'];
   
   const data = {
     labels,
@@ -43,7 +43,8 @@ export default function BarChart(props) {
         'rgba(75, 192, 192, 0.2)',
         'rgba(54, 162, 235, 0.2)',
         'rgba(153, 102, 255, 0.2)',
-        'rgba(201, 203, 207, 0.2)'
+        'rgba(201, 203, 207, 0.2)',
+        'rgba(0, 0, 0, 0.3)'
       ],
       borderColor: [
         'rgb(255, 99, 132)',
@@ -52,7 +53,8 @@ export default function BarChart(props) {
         'rgb(75, 192, 192)',
         'rgb(54, 162, 235)',
         'rgb(153, 102, 255)',
-        'rgb(201, 203, 207)'
+        'rgb(201, 203, 207)',
+        'rgba(0, 0, 0)'
       ],
       borderWidth: 1
     }],

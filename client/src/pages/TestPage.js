@@ -1,27 +1,56 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   MDBContainer
 } from 'mdb-react-ui-kit';
-import { mapAllCount } from '../components/TestPage/mapData';
 import mapImages from '../../src/components/TestPage/mapImages';
 import Progress from '../components/TestPage/Progress';
 import SelectButtons from '../components/TestPage/SelectButtons';
+import mapData, { mapCount, mapAllCount, season } from '../components/TestPage/mapData';
+import axios from 'axios';
+import { API } from '../_actions/types';
 
 function TestPage() {
+  const userData = useSelector(state => state.user.userData);
   const navigation = useNavigate();
   const [num, setNum] = useState(1);
   const [selectList, setSelectList] = useState([undefined]);
 
+  const collectData = (selected) => {
+    let recordCount = [0, 0, 0, 0, 0, 0, 0, 0];
+    let record = mapData.map((map, index) => {
+      let selectRecord = selectList[index] === undefined ? selected : selectList[index]
+      recordCount[selectRecord]++;
+      return {
+        mapName: map.name,
+        select: selectRecord
+      }
+    })
+
+    let body = {
+      record : record,
+      recordCount: recordCount,
+      mapCount : mapCount,
+      season : season
+    }
+    if(userData.isAuth) body.user = userData._id;
+
+    axios.post(API+'/record/save', body, {withCredentials: true}).then(response => {
+      navigation(`/result/${response.data.id}`, {replace: true});
+    });
+  }
+
   const setSelectItem = (selected) => {
+    if(selected === undefined) selected = 7;
     let newList = [...selectList];
-    newList[num] = selected;
+    newList[num-1] = selected;
     setSelectList(newList);
   }
   const nextMap = (selected) => {
     setSelectItem(selected);
     if(num < mapAllCount) setNum(num + 1);
-    else navigation('/result/1', {replace: true});
+    else collectData(selected);
   }
   const prevMap = (selected) => {
     setSelectItem(selected);

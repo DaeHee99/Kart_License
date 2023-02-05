@@ -336,6 +336,7 @@ const mapCount = {
     "L1" : 9,
 };
 const mapAllCount = Object.values(mapCount).reduce((a, b) => a + b, 0);
+const season = 17;
 
 export default mapData;
-export { mapCount, mapAllCount };
+export { mapCount, mapAllCount, season };

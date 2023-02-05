@@ -1,12 +1,12 @@
 import MyProfile from "./MyProfile";
 import RecordSummary from "./RecordSummary";
 
-function Main() {
+function Main(props) {
   return (
     <>
-      <MyProfile />
+      <MyProfile lastRecord={props.recordList[props.recordList.length-1]}/>
       <hr />
-      <RecordSummary />
+      <RecordSummary recordList={props.recordList}/>
     </>
   )
 }

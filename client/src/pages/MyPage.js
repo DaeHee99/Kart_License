@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   MDBTabs,
   MDBTabsItem,
@@ -10,11 +11,24 @@ import {
 import Main from '../components/MyPage/Main';
 import MyRecord from '../components/MyPage/MyRecord';
 import InformationChange from '../components/MyPage/InformationChange';
+import axios from 'axios';
+import { API } from '../_actions/types';
 
 function MyPage() {
+  const userData = useSelector(state => state.user.userData);
   const [tab, setTab] = useState('MyInformation');
+  const [loading, setLoading] = useState(true);
+  const [recordList, setRecordList] = useState([]);
+
+  useEffect(() => {
+    axios.get(API+`/record/userRecord/${userData._id}`, {withCredentials: true}).then(response => {
+      setRecordList(response.data.recordList);
+      setLoading(false);
+    });
+  }, [])
 
   return (
+    loading ? <>로딩중</> :
     <MDBContainer>
       <MDBTabs justify className='mb-3'>
         <MDBTabsItem>
@@ -36,10 +50,10 @@ function MyPage() {
 
       <MDBTabsContent>
         <MDBTabsPane show={tab === 'MyInformation'}>
-          <Main />
+          <Main recordList={recordList}/>
         </MDBTabsPane>
         <MDBTabsPane show={tab === 'MyRecord'}>
-          <MyRecord />
+          <MyRecord recordList={recordList}/>
         </MDBTabsPane>
         <MDBTabsPane show={tab === 'ChangeInformation'}>
           <InformationChange />
