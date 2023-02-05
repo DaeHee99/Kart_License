@@ -17,11 +17,33 @@ mongoose.connect(key.mongoURI)
 
 /* 회원가입 */
 router.post('/register', (req, res) => {
-  const user = new User(req.body);
-
-  user.save((err, userInfo) => {
+  User.findOne({name: req.body.name}, (err, userInfo) => {
     if(err) return res.status(400).json({success: false, err});
-    return res.status(200).json({success: true});
+
+    if(userInfo) {
+      return res.status(200).json({
+        success: false,
+        message: "이미 존재하는 닉네임입니다."
+      })
+    }
+
+    User.findOne({id: req.body.id}, (err, userInfo) => {
+      if(err) return res.status(400).json({success: false, err});
+  
+      if(userInfo) {
+        return res.status(200).json({
+          success: false,
+          message: "이미 존재하는 아이디입니다."
+        })
+      }
+
+      const user = new User(req.body);
+
+      user.save((err, userInfo) => {
+        if(err) return res.status(400).json({success: false, err});
+        return res.status(200).json({success: true});
+      })
+    })
   })
 })
 
@@ -49,7 +71,7 @@ router.post('/login', (req, res) => {
         if(err) return res.status(400).send(err);
 
         // Cookie Expires => 2 hour
-        res.cookie("token", user.token, {maxAge : 60*60*1000*2}).status(200).json({success: true, userId: user._id});
+        res.cookie("token", user.token, {maxAge : 60*60*1000*2}).status(200).json({success: true, userId: user._id, name: user.name});
       })
     })
   })
@@ -73,7 +95,6 @@ router.get('/auth', auth, (req, res) => {
 router.get('/logout', auth, (req, res) => {
   User.findOneAndUpdate({_id: req.user._id}, {token: ""}, (err, user) => {
     if(err) return res.status(400).json({success: false, err});
-    // return res.clearCookie("token").redirect("/").status(200).json({success: true});
     return res.clearCookie("token").status(200).json({success: true});
   })
 })

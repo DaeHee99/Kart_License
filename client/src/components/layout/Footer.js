@@ -1,9 +1,7 @@
 import React from 'react';
 import {
   MDBFooter,
-  MDBContainer,
-  MDBBtn,
-  MDBIcon
+  MDBContainer
 } from 'mdb-react-ui-kit';
 import FooterLogo from '../../images/footerLogo.png'
 

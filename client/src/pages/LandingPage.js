@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector } from "react-redux";
 import { MDBContainer, MDBCol, MDBRow } from "mdb-react-ui-kit";
 import Intro from "../components/LandingPage/Intro";
 import Profile from "../components/LandingPage/Profile";
@@ -7,6 +8,7 @@ import LoginCard from "../components/LandingPage/LoginCard";
 import StartModal from '../components/LandingPage/StartModal';
 
 function LandingPage() {
+  const user = useSelector(state => state.user);
   const [loginCheckModal, setLoginCheckModal] = useState(false);
 
   return (
@@ -17,8 +19,7 @@ function LandingPage() {
             <Intro setLoginCheckModal={setLoginCheckModal}/>
           </MDBCol>
           <MDBCol lg='3'>
-            {/* <Profile /> */}
-            <LoginCard />
+            {user.userData.isAuth ? <Profile /> : <LoginCard />}
           </MDBCol>
         </MDBRow>
       </MDBContainer>

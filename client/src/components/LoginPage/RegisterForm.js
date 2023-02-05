@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { registerUser } from '../../_actions/user_action';
 import {
   MDBInput,
   MDBCheckbox,
@@ -13,6 +16,9 @@ import dizini from '../../images/ProfileImage/dizini.png';
 import marid from '../../images/ProfileImage/marid.png';
 
 function RegisterForm() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [registerName, setRegisterName] = useState('');
   const [registerId, setRegisterId] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
@@ -24,11 +30,30 @@ function RegisterForm() {
   const registerPasswordConfirmHandler = (event) => setRegisterPasswordConfirm(event.target.value);
   const registerSubmitHandler = (event) => {
     event.preventDefault();
-    console.log(registerName, registerId, registerPassword, registerPasswordConfirm);
-    console.log(document.getElementById('Register_Agree').checked);
+
+    if(registerName.length > 16) return alert('닉네임은 최대 16글자 입니다.');
+    if(registerId.length < 6) return alert('아이디는 최소 6자리로 입력해주세요');
+    if(registerPassword.length < 6) return alert('비밀번호는 최소 6자리로 입력해주세요');
+    if(registerPassword !== registerPasswordConfirm) return alert('비밀번호를 다시 확인해주세요.');
+    if(!document.getElementById('Register_Agree').checked) return alert('회원가입에 동의해주세요.');
 
     let selected = document.querySelector('input[type=radio][name=profileImage]:checked');
-    console.log(selected.value);
+
+    let body = {
+      name : registerName,
+      id: registerId,
+      password: registerPassword,
+      plainPassword: registerPassword,
+      image: selected.value
+    }
+
+    dispatch(registerUser(body)).then(response => {
+      if(response.payload.success) {
+        alert('회원가입이 완료되었습니다.');
+        navigate('/login', {replace: true});
+      }
+      else alert(response.payload.message || '회원가입 실패');
+    })
   }
 
   return(
@@ -61,7 +86,7 @@ function RegisterForm() {
       <MDBInput className='mb-4' type='password' id='Register_Confirm' label='비밀번호 확인' value={registerPasswordConfirm} onChange={registerPasswordConfirmHandler}/>
 
       <div className="badge bg-primary text-wrap" style={{width: "6rem", fontSize: "0.9rem", marginRight: "10px"}}>프로필 사진</div>원하는 프로필을 하나 선택하세요.<br /><br />
-      <MDBRadio name='profileImage' id='profileImage1' value='profileImage1' inline label={<MDBCardImage src='https://lwi.nexon.com/m_kartrush/event/2022/0816_vote_1750B8ADA92D72F3/vote2.png' alt='ProfileImage' width='70px' />}/>
+      <MDBRadio name='profileImage' id='profileImage1' value='https://lwi.nexon.com/m_kartrush/event/2022/0816_vote_1750B8ADA92D72F3/vote2.png' defaultChecked inline label={<MDBCardImage src='https://lwi.nexon.com/m_kartrush/event/2022/0816_vote_1750B8ADA92D72F3/vote2.png' alt='ProfileImage' width='70px' />}/>
       <MDBRadio name='profileImage' id='profileImage2' value='profileImage2' inline label={<MDBCardImage src={dao} alt='ProfileImage' width='70px' />}/>
       <MDBRadio name='profileImage' id='profileImage3' value='profileImage3' inline label={<MDBCardImage src={bazzi} alt='ProfileImage' width='70px' />}/>
       <MDBRadio name='profileImage' id='profileImage4' value='profileImage4' inline label={<MDBCardImage src={dizini} alt='ProfileImage' width='70px' />}/>

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser } from '../../_actions/user_action';
 import {
   MDBNavbar,
   MDBContainer,
@@ -13,9 +15,21 @@ import {
 } from 'mdb-react-ui-kit';
 import HeaderLogo from '../../images/header.png'
 
-export default function App() {
+export default function Header() {
   const navigation = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
   const [showNavColor, setShowNavColor] = useState(false);
+
+  const logoutHandler = () => {
+    dispatch(logoutUser()).then(response => {
+      if(response.payload.success) {
+        alert('로그아웃 완료');
+        navigation('/', {replace: true});
+      }
+      else alert('로그아웃 실패');
+    })
+  }
 
   return (
     <>
@@ -64,7 +78,9 @@ export default function App() {
                 <MDBNavbarLink  onClick={()=>{navigation('/mypage'); setShowNavColor(false)}}>마이페이지</MDBNavbarLink>
               </MDBNavbarItem>
               <MDBNavbarItem>
-                <MDBNavbarLink  onClick={()=>{navigation('/login'); setShowNavColor(false)}}>로그인</MDBNavbarLink>
+                {user.userData.isAuth ? 
+                <MDBNavbarLink  onClick={logoutHandler}>로그아웃</MDBNavbarLink> :
+                <MDBNavbarLink  onClick={()=>{navigation('/login'); setShowNavColor(false)}}>로그인</MDBNavbarLink>}
               </MDBNavbarItem>
             </MDBNavbarNav>
           </MDBCollapse>

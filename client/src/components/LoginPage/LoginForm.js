@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../_actions/user_action";
 import {
   MDBRow,
   MDBCol,
@@ -8,6 +11,9 @@ import {
 } from 'mdb-react-ui-kit';
 
 function LoginForm(props) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
   const [loginId, setLoginId] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
 
@@ -15,7 +21,19 @@ function LoginForm(props) {
   const loginPasswordHandler = (event) => setLoginPassword(event.target.value);
   const loginSubmitHandler = (event) => {
     event.preventDefault();
-    console.log(loginId, loginPassword);
+
+    let body = {
+      id: loginId,
+      password: loginPassword
+    }
+
+    dispatch(loginUser(body)).then(response => {
+      if(response.payload.success) {
+        alert(response.payload.name + '님 환영합니다!');
+        navigate('/', {replace: true});
+      }
+      else alert(response.payload.message || '로그인 실패');
+    })
   }
 
   return(
