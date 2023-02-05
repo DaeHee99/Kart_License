@@ -78,7 +78,7 @@ function LoginForm(props) {
 
       <MDBRow className='mb-4'>
         <MDBCol className='d-flex justify-content-center'>
-          <a href='#!'>비밀번호 찾기</a>  
+          <a className='text-primary' style={{cursor: 'pointer'}} onClick={()=>alert('현재는 지원하지 않는 기능입니다.')}>비밀번호 찾기</a>  
         </MDBCol>
         <MDBCol className='d-flex justify-content-center'>
           <p className='text-primary' style={{cursor: 'pointer'}} onClick={()=>props.handleLoginRegisterClick('register')}>회원가입</p>

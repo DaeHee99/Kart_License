@@ -16,10 +16,10 @@ function LandingPage() {
       <MDBContainer fluid>
         <MDBRow className='g-3'>
           <MDBCol lg='9'>
-            <Intro setLoginCheckModal={setLoginCheckModal}/>
+            <Intro setLoginCheckModal={setLoginCheckModal} isAuth={user.userData.isAuth}/>
           </MDBCol>
           <MDBCol lg='3'>
-            {user.userData.isAuth ? <Profile /> : <LoginCard />}
+            {user.userData.isAuth ? <Profile userData={user.userData}/> : <LoginCard />}
           </MDBCol>
         </MDBRow>
       </MDBContainer>

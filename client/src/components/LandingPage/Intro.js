@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   MDBCard,
   MDBCardBody,
@@ -11,9 +12,11 @@ import {
 import introImage from '../../images/intro.png';
 
 export default function Intro(props) {
+  const navigation = useNavigate();
+  
   const start = () => {
-    // If No Login
-    props.setLoginCheckModal(true);
+    if(!props.isAuth) props.setLoginCheckModal(true);
+    else navigation('/test');
   }
 
   return (

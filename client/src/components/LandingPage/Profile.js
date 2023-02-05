@@ -14,7 +14,7 @@ import {
   MDBBtn
 } from 'mdb-react-ui-kit';
 
-export default function Profile() {
+export default function Profile(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -30,13 +30,13 @@ export default function Profile() {
       <MDBCard style={{ maxWidth: '900px' }} className='shadow-5'>
         <MDBRow className='g-0'>
           <MDBCol col='8' className='col-lg-12 d-flex align-items-center justify-content-center'>
-            <MDBCardImage src='https://lwi.nexon.com/m_kartrush/event/2022/0816_vote_1750B8ADA92D72F3/vote2.png' alt='ProfileImage' fluid />
+            <MDBCardImage src={props.userData.image} alt='ProfileImage' fluid />
           </MDBCol>
           <MDBCol col='4'>
             <MDBCardBody>
-              <MDBCardTitle><b>앵두새</b></MDBCardTitle>
+              <MDBCardTitle><b>{props.userData.name}</b></MDBCardTitle>
               <MDBCardText>
-                <small className='text-muted'>1군</small>
+                <small className='text-muted'>{props.userData.license}</small>
               </MDBCardText>
               <MDBRow className='g-2'>
               <MDBBtn rounded className='col-12' color='secondary' onClick={()=>navigate('/mypage')}>
