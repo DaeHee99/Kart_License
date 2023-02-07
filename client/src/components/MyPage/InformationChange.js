@@ -11,10 +11,7 @@ import {
   MDBAccordion,
   MDBAccordionItem
 } from 'mdb-react-ui-kit';
-import dao from '../../images/ProfileImage/dao.png';
-import bazzi from '../../images/ProfileImage/bazzi.png';
-import dizini from '../../images/ProfileImage/dizini.png';
-import marid from '../../images/ProfileImage/marid.png';
+import ProfileImages from '../layout/ProfileImages';
 
 function InformationChange() {
   const dispatch = useDispatch();
@@ -76,11 +73,11 @@ function InformationChange() {
       </MDBAccordionItem>
       <MDBAccordionItem collapseId={3} headerTitle='프로필 사진 변경'>
         <div className="badge bg-primary text-wrap" style={{width: "100%", fontSize: "0.9rem", marginRight: "10px"}}>원하는 프로필 사진을 하나 선택하세요.</div><br /><br />
-        <MDBRadio name='newProfileImage' id='newProfileImage1' value='https://lwi.nexon.com/m_kartrush/event/2022/0816_vote_1750B8ADA92D72F3/vote2.png' defaultChecked={userData.image === 'https://lwi.nexon.com/m_kartrush/event/2022/0816_vote_1750B8ADA92D72F3/vote2.png'} inline label={<MDBCardImage src='https://lwi.nexon.com/m_kartrush/event/2022/0816_vote_1750B8ADA92D72F3/vote2.png' alt='ProfileImage' width='63px' />}/>
-        <MDBRadio name='newProfileImage' id='newProfileImage2' value='profileImage2' defaultChecked={false} inline label={<MDBCardImage src={dao} alt='ProfileImage' width='63px' />}/>
-        <MDBRadio name='newProfileImage' id='newProfileImage3' value='profileImage3' defaultChecked={false} inline label={<MDBCardImage src={bazzi} alt='ProfileImage' width='63px' />}/>
-        <MDBRadio name='newProfileImage' id='newProfileImage4' value='profileImage4' defaultChecked={false} inline label={<MDBCardImage src={dizini} alt='ProfileImage' width='63px' />}/>
-        <MDBRadio name='newProfileImage' id='newProfileImage5' value='profileImage5' defaultChecked={false} inline label={<MDBCardImage src={marid} alt='ProfileImage' width='63px' />}/>
+        <MDBRadio name='newProfileImage' id='newProfileImage1' value={ProfileImages.manager} defaultChecked={userData.image === ProfileImages.manager} inline label={<MDBCardImage src={ProfileImages.manager} alt='ProfileImage' width='63px' />}/>
+        <MDBRadio name='newProfileImage' id='newProfileImage2' value={ProfileImages.dao} defaultChecked={userData.image === ProfileImages.dao} inline label={<MDBCardImage src={ProfileImages.dao} alt='ProfileImage' width='63px' />}/>
+        <MDBRadio name='newProfileImage' id='newProfileImage3' value={ProfileImages.bazzi} defaultChecked={userData.image === ProfileImages.bazzi} inline label={<MDBCardImage src={ProfileImages.bazzi} alt='ProfileImage' width='63px' />}/>
+        <MDBRadio name='newProfileImage' id='newProfileImage4' value={ProfileImages.dizini} defaultChecked={userData.image === ProfileImages.dizini} inline label={<MDBCardImage src={ProfileImages.dizini} alt='ProfileImage' width='63px' />}/>
+        <MDBRadio name='newProfileImage' id='newProfileImage5' value={ProfileImages.marid} defaultChecked={userData.image === ProfileImages.marid} inline label={<MDBCardImage src={ProfileImages.marid} alt='ProfileImage' width='63px' />}/>
         <MDBBtn block className='mt-4' onClick={changeImage}><b>변경하기</b></MDBBtn>
       </MDBAccordionItem>
     </MDBAccordion>

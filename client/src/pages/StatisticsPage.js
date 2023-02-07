@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { API } from '../_actions/types';
 import {
   MDBContainer,
   MDBBadge,
@@ -15,6 +17,9 @@ function StatisticsPage() {
   const [today] = useState(new Date());
   const [open, setOpen] = useState('angle-up');
   const [showShow, setShowShow] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+  const [sum, setSum] = useState(0);
 
   const clickHandler = () => {
     if(open === 'angle-down') setOpen('angle-up')
@@ -22,14 +27,44 @@ function StatisticsPage() {
     setShowShow(!showShow);
   }
 
-  const data = [50, 40, 55, 76, 53, 63, 52];
-  const sum = data.reduce((a, b) => a + b, 0);
+  useEffect(() => {
+    axios.get(API+'/record/all', {withCredentials: true}).then(response => {
+      if(!response.data.success) return alert('데이터를 불러오는데 실패했습니다.');
+      else {
+        let tempData = [0, 0, 0, 0, 0, 0, 0];
+        response.data.recordList.map(item => {
+          switch(item.license) {
+            case '강주력':
+              return ++tempData[0];
+            case '주력':
+              return ++tempData[1];
+            case '1군':
+              return ++tempData[2];
+            case '2군':
+              return ++tempData[3];
+            case '3군':
+              return ++tempData[4];
+            case '4군':
+              return ++tempData[5];
+            case '일반':
+              return ++tempData[6];
+            default:
+              return 0;
+          }
+        })
+        setData(tempData);
+        setSum(response.data.recordList.length);
+        setLoading(false);
+      }
+    });
+  }, [])
 
   return (
+    loading ? <>로딩중</> :
     <>
       <MDBContainer className='mb-7'>
         <h1><MDBBadge color='primary' light className='w-100'>
-        모든 유저의 기록 결과<MDBIcon fas icon={open} onClick={clickHandler} style={{float: 'right', cursor: 'pointer'}}/>
+        전체 유저 기록 통계<MDBIcon fas icon={open} onClick={clickHandler} style={{float: 'right', cursor: 'pointer'}}/>
         </MDBBadge></h1>
 
         <MDBCollapse show={showShow}>
@@ -38,7 +73,7 @@ function StatisticsPage() {
               {today.getFullYear()}/{("00"+(today.getMonth()+1)).slice(-2)}/{("00"+(today.getDate())).slice(-2)} {("00"+(today.getHours())).slice(-2)}:{("00"+(today.getMinutes())).slice(-2)}:{("00"+(today.getSeconds())).slice(-2)} 기준<br />
               총 <span className='text-success'>{sum}</span>개의 기록을 성공적으로 불러왔습니다.<br />
             </div>
-            모든 유저의 기록을 통해 분석된 결과입니다.
+            전체 유저의 기록을 통해 분석된 결과입니다.
           </div>
         </MDBCollapse>
 

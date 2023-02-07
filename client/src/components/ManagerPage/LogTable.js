@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
 import LogRow from './LogRow';
+import axios from 'axios';
+import { API } from '../../_actions/types';
 
 export default function LogTable() {
+  const [logData, setLogData] = useState([]);
+
+  useEffect(() => {
+    axios.get(API+'/log/manager/all', {withCredentials: true}).then(response => {
+      if(!response.data.success) return alert('서버 오류');
+      setLogData(response.data.logList);
+    });
+  }, [])
+
   return (
     <MDBTable align='middle' responsive className='text-center'>
       <MDBTableHead>
@@ -13,12 +24,9 @@ export default function LogTable() {
         </tr>
       </MDBTableHead>
       <MDBTableBody>
-
-      <LogRow />
-      <LogRow />
-      <LogRow />
-      <LogRow />
-
+      {
+        logData.map(item => <LogRow key={item._id} data={item}/>)
+      }
       </MDBTableBody>
     </MDBTable>
   );

@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
 import RecordRow from './RecordRow';
+import axios from 'axios';
+import { API } from '../../_actions/types';
 
 export default function RecordTable() {
+  const [recordData, setRecordData] = useState([]);
+
+  useEffect(() => {
+    axios.get(API+'/record/manager/all', {withCredentials: true}).then(response => {
+      if(!response.data.success) return alert('서버 오류');
+      setRecordData(response.data.recordList);
+    });
+  }, [])
+
   return (
     <MDBTable align='middle' responsive className='text-center'>
       <MDBTableHead>
@@ -14,12 +25,9 @@ export default function RecordTable() {
         </tr>
       </MDBTableHead>
       <MDBTableBody>
-
-      <RecordRow />
-      <RecordRow />
-      <RecordRow />
-      <RecordRow />
-
+      {
+        recordData.map(item => <RecordRow key={item._id} data={item}/>)
+      }
       </MDBTableBody>
     </MDBTable>
   );

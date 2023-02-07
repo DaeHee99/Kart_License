@@ -16,7 +16,8 @@ function App() {
   const AuthResultPage = Auth(ResultPage, null);
   const AuthMyPage = Auth(MyPage, true);
   const AuthStatisticsPage = Auth(StatisticsPage, null);
-  const AuthManagerPage = Auth(ManagerPage, true, true);
+  // const AuthManagerPage = Auth(ManagerPage, true, true);
+  const AuthManagerPage = Auth(ManagerPage, true);
 
   return (
     <div>

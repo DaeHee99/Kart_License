@@ -45,7 +45,7 @@ export default function Header() {
           >
             <MDBIcon fas icon="angle-left" />
           </MDBNavbarToggler>
-          <MDBNavbarBrand onClick={()=>{navigation('/'); setShowNavColor(false)}} width={200} className='mx-0' style={{cursor: 'pointer'}}>
+          <MDBNavbarBrand onClick={()=>{navigation('/', {replace: true}); setShowNavColor(false)}} width={200} className='mx-0' style={{cursor: 'pointer'}}>
             <img src={HeaderLogo} alt='headerLogo' width={200} className='mx-0'/>
           </MDBNavbarBrand>
           <MDBNavbarToggler
@@ -61,7 +61,7 @@ export default function Header() {
           <MDBCollapse show={showNavColor} navbar>
             <MDBNavbarNav className='me-auto mb-2 mb-lg-0'>
               <MDBNavbarItem className='active'>
-                <MDBNavbarLink aria-current='page' onClick={()=>{navigation('/'); setShowNavColor(false)}}>
+                <MDBNavbarLink aria-current='page' onClick={()=>{navigation('/', {replace: true}); setShowNavColor(false)}}>
                   홈
                 </MDBNavbarLink>
               </MDBNavbarItem>
@@ -69,7 +69,7 @@ export default function Header() {
                 <MDBNavbarLink  onClick={()=>{navigation('/statistics'); setShowNavColor(false)}}>통계</MDBNavbarLink>
               </MDBNavbarItem>
               <MDBNavbarItem>
-                <MDBNavbarLink  onClick={()=>{alert('업데이트 준비 중'); navigation('/'); setShowNavColor(false)}}>커뮤니티</MDBNavbarLink>
+                <MDBNavbarLink  onClick={()=>{alert('[커뮤니티] 업데이트 준비 중');}}>커뮤니티</MDBNavbarLink>
               </MDBNavbarItem>
               <MDBNavbarItem>
                 <MDBNavbarLink  onClick={()=>{navigation('/manager'); setShowNavColor(false)}}>관리자</MDBNavbarLink>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from "react-redux";
 import { useParams } from 'react-router-dom';
 import { API } from '../_actions/types';
 import axios from 'axios';
@@ -20,12 +19,11 @@ import ResultMapTable from '../components/ResultPage/ResultMapTable';
 import KakaoModal from '../components/ResultPage/KakaoModal';
 import StarModal from '../components/ResultPage/StarModal';
 import Footer from '../components/layout/Footer';
-import FooterLogo from '../images/footerLogo.png'
+import FooterLogo from '../images/footerLogo.png';
 
 function ResultPage() {
   const { id } = useParams();
   const navigation = useNavigate();
-  const user = useSelector(state => state.user);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({});
   const [open, setOpen] = useState('angle-up');
@@ -58,7 +56,7 @@ function ResultPage() {
         setLoading(false);
       }
     });
-  }, [])
+  }, [id])
 
   return (
     loading ? <>로딩중</> :
@@ -115,7 +113,7 @@ function ResultPage() {
         </MDBBtn>
 
         <KakaoModal shareOpen={shareOpen} setShareOpen={setShareOpen}/>
-        <StarModal starOpen={starOpen} setStarOpen={setStarOpen}/>
+        <StarModal starOpen={starOpen} setStarOpen={setStarOpen} recordId={id}/>
       </MDBContainer>
       <Footer />
     </>

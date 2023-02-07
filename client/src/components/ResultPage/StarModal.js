@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { API } from '../../_actions/types';
 import {
   MDBBtn,
   MDBModal,
@@ -13,11 +16,27 @@ import {
 } from 'mdb-react-ui-kit';
 
 export default function StarModal(props) {
+  const userData = useSelector(state => state.user.userData);
   const [star, setStar] = useState(1);
   const [text, setText] = useState('');
 
   const textHandler = (event) => setText(event.target.value);
   
+  const submitHandler = () => {
+    let body = {
+      recordId : props.recordId,
+      star : star,
+      text : text
+    }
+    if(userData.isAuth) body.user = userData._id;
+
+    axios.post(API+'/star/save', body, {withCredentials: true}).then(response => {
+      if(!response.data.success) return alert('작성 실패, 서버 오류');
+      alert('작성 완료!\n소중한 의견 감사합니다❤️');
+      props.setStarOpen(false);
+      setText('');
+    });
+  }
 
   return (
     <MDBModal staticBackdrop tabIndex='-1' show={props.starOpen} setShow={props.setStarOpen}>
@@ -48,7 +67,7 @@ export default function StarModal(props) {
             <MDBBtn color='secondary' onClick={()=>props.setStarOpen(false)}>
               <b>취소</b>
             </MDBBtn>
-            <MDBBtn>
+            <MDBBtn onClick={submitHandler}>
               <b>완료</b>
             </MDBBtn>
           </MDBModalFooter>

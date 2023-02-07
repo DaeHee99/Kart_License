@@ -1,21 +1,27 @@
-export default function LogRow() {
+import { useState } from "react";
+
+export default function LogRow(props) {
+  const [date] = useState(new Date(props.data.updatedAt));
+
   return (
     <tr>
       <td>
         <div className='d-flex align-items-center'>
           <img
-            src='https://lwi.nexon.com/m_kartrush/event/2022/0816_vote_1750B8ADA92D72F3/vote2.png'
+            src={props.data.user.image}
             alt='profileImage'
             style={{ width: '45px', height: '45px' }}
           />
           <div className='ms-3' style={{whiteSpace: 'nowrap'}}>
-            <p className='fw-bold mb-1'>앵두새</p>
+            <p className='fw-bold mb-1'>{props.data.user.name}</p>
           </div>
         </div>
       </td>
-      <td>2023/01/01 10:00:00</td>
+      <td>
+        {date.getFullYear()}/{("00"+(date.getMonth()+1)).slice(-2)}/{("00"+(date.getDate())).slice(-2)} {("00"+(date.getHours())).slice(-2)}:{("00"+(date.getMinutes())).slice(-2)}:{("00"+(date.getSeconds())).slice(-2)}
+      </td>
       <td style={{whiteSpace: 'nowrap'}}>
-        {'닉네임 변경 (앵두새 -> 앵두새2)'}
+        {props.data.content}
       </td>
     </tr>
     );

@@ -3,6 +3,7 @@ const router = express.Router();
 const cookieParser = require('cookie-parser');
 
 const User = require('../models/User');
+const Log = require('../models/Log');
 const key = require('../config/key');
 const auth = require('../middleware/auth');
 
@@ -41,6 +42,10 @@ router.post('/register', (req, res) => {
 
       user.save((err, userInfo) => {
         if(err) return res.status(400).json({success: false, err});
+
+        let log = new Log({user: userInfo._id, content: '회원가입 완료'});
+        log.save();
+
         return res.status(200).json({success: true});
       })
     })
@@ -111,8 +116,13 @@ router.post('/changeName', auth, (req, res) => {
       })
     }
     else {
+      let oldName = req.user.name;
       User.findOneAndUpdate({_id: req.user._id}, {name: req.body.newName}, (err, user) => {
         if(err) return res.status(400).json({success: false, err});
+
+        let log = new Log({user: req.user._id, content: `닉네임 변경 (${oldName} -> ${req.body.newName})`});
+        log.save();
+
         return res.status(200).json({success: true});
       })
     }
@@ -127,6 +137,9 @@ router.post('/changePassword', auth, (req, res) => {
     userInfo.changePassword(req.body.newPassword, (err, result) => {
       if(err || !result) return res.status(400).json({success: false, err});
 
+      let log = new Log({user: req.user._id, content: `비밀번호 변경`});
+      log.save();
+
       return res.status(200).json({success: true});
     })
   })
@@ -136,7 +149,19 @@ router.post('/changePassword', auth, (req, res) => {
 router.post('/changeImage', auth, (req, res) => {
   User.findOneAndUpdate({_id: req.user._id}, {image: req.body.newImage}, err => {
     if(err) return res.status(400).json({success: false, err});
+
+    let log = new Log({user: req.user._id, content: `프로필 사진 변경`});
+    log.save();
+
     return res.status(200).json({success: true});
+  })
+})
+
+/* 모든 유저 조회 - 관리자 페이지 */
+router.get('/manager/all', auth, (req, res) => {
+  User.find().sort({updatedAt: -1}).select('name image license updatedAt').exec((err, userList) => {
+    if(err) return res.status(400).json({success: false, err});
+    return res.status(200).json({success: true, userList: userList});
   })
 })
 

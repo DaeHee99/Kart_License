@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -16,6 +16,8 @@ function TestPage() {
   const navigation = useNavigate();
   const [num, setNum] = useState(1);
   const [selectList, setSelectList] = useState([undefined]);
+  const [latestRecord, setLatestRecord] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const collectData = (selected) => {
     let recordCount = [0, 0, 0, 0, 0, 0, 0, 0];
@@ -56,13 +58,21 @@ function TestPage() {
     setSelectItem(selected);
     if(num > 1) setNum(num - 1);
   }
+
+  useEffect(() => {
+    axios.post(API+'/record/latestRecord', {userId: userData.isAuth ? userData._id : ''}, {withCredentials: true}).then(response => {
+      if(response.data.success && response.data.record !== null) setLatestRecord(response.data.record.record);
+      setLoading(false);
+    })
+  }, [userData.isAuth, userData._id])
   
   return (
+    loading ? <>로딩중</> :
     <MDBContainer>
       <Progress num={num}/>
       <img src={mapImages[num-1]} alt='mapImage' width={'100%'}/>
       <br /><br />
-      <SelectButtons nextMap={nextMap} prevMap={prevMap} num={num} nowSelect={selectList[num]}/>
+      <SelectButtons nextMap={nextMap} prevMap={prevMap} num={num} nowSelect={selectList[num]} latestRecord={latestRecord}/>
     </MDBContainer>
   )
 }

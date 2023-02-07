@@ -7,7 +7,7 @@ import {
   MDBCol,
   MDBInput,
   MDBBtn,
-  MDBIcon,
+  // MDBIcon,
 } from 'mdb-react-ui-kit';
 
 function LoginForm(props) {
@@ -38,7 +38,7 @@ function LoginForm(props) {
 
   return(
     <form onSubmit={loginSubmitHandler}>
-      <div className='text-center mb-3'>
+      {/* <div className='text-center mb-3'>
         <p>소셜 로그인</p>
 
         <MDBBtn floating color="secondary" className='mx-1'>
@@ -58,7 +58,7 @@ function LoginForm(props) {
         </MDBBtn>
       </div>
 
-      <p className='text-center'>OR</p>
+      <p className='text-center'>OR</p> */} <br />
 
       <MDBInput className='mb-4' id='Login_id' label='아이디' value={loginId} onChange={loginIdHandler}/>
       <MDBInput className='mb-4' type='password' id='Login_password' label='비밀번호' value={loginPassword} onChange={loginPasswordHandler}/>

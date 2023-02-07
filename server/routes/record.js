@@ -4,8 +4,9 @@ const cookieParser = require('cookie-parser');
 
 const User = require('../models/User');
 const Record = require('../models/Record');
+const Log = require('../models/Log');
 const key = require('../config/key');
-// const auth = require('../middleware/auth');
+const auth = require('../middleware/auth');
 
 router.use(cookieParser());
 
@@ -26,10 +27,30 @@ router.post('/save', (req, res) => {
     if(req.body.user) {
       User.findOneAndUpdate({_id: req.body.user}, {license: recordInfo.license}, err => {
         if(err) return res.status(400).json({success: false, err});
+
+        let log = new Log({user: req.body.user, content: `기록 측정 완료`});
+        log.save();
+
         return res.status(200).json({success: true, id: recordInfo._id});
       })
     }
     else return res.status(200).json({success: true, id: recordInfo._id});
+  })
+})
+
+/* 모든 기록 조회 - 통계 */
+router.get('/all', (req, res) => {
+  Record.find().select('license').exec((err, recordList) => {
+    if(err) return res.status(400).json({success: false, err});
+    return res.status(200).json({success: true, recordList: recordList});
+  })
+})
+
+/* 실시간 모든 기록 조회 - 관리자 페이지 */
+router.get('/manager/all', auth, (req, res) => {
+  Record.find().sort({createdAt: -1}).select('license recordCount').populate('user', {name:1, image:1}).exec((err, recordList) => {
+    if(err) return res.status(400).json({success: false, err});
+    return res.status(200).json({success: true, recordList: recordList});
   })
 })
 
@@ -46,6 +67,16 @@ router.get('/userRecord/:userId', (req, res) => {
   Record.find({user: req.params.userId}).select('season recordCount license createdAt').exec((err, recordList) => {
     if(err) return res.status(400).json({success: false, err});
     return res.status(200).json({success: true, recordList: recordList});
+  })
+})
+
+/* 유저 최근 기록 조회 */
+router.post('/latestRecord', (req, res) => {
+  if(req.body.userId === '') return res.status(200).json({success: false, message: 'no Login'});
+
+  Record.findOne({user: req.body.userId}).sort({createdAt: -1}).limit(1).select('record').exec((err, record) => {
+    if(err) return res.status(400).json({success: false, err});
+    return res.status(200).json({success: true, record});
   })
 })
 

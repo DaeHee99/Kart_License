@@ -1,28 +1,47 @@
 import { MDBBadge, MDBBtn } from 'mdb-react-ui-kit';
+import { useEffect, useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
 
-export default function UserRow() {
+export default function UserRow(props) {
+  // const navigation = useNavigate();
+  const [licenseColor, setLicenseColor] = useState('dark');
+  const [date] = useState(new Date(props.data.updatedAt));
+
+  useEffect(() => {
+    if(props.data.license === "강주력") setLicenseColor('danger');
+    else if(props.data.license === "주력") setLicenseColor('warning');
+    else if(props.data.license === "1군") setLicenseColor('warning');
+    else if(props.data.license === "2군") setLicenseColor('success');
+    else if(props.data.license === "3군") setLicenseColor('info');
+    else if(props.data.license === "4군") setLicenseColor('primary');
+    else if(props.data.license === "일반") setLicenseColor('secondary');
+  }, [props.data.license])
+
   return (
     <tr>
       <td>
         <div className='d-flex align-items-center'>
           <img
-            src='https://lwi.nexon.com/m_kartrush/event/2022/0816_vote_1750B8ADA92D72F3/vote2.png'
+            src={props.data.image}
             alt='profileImage'
             style={{ width: '45px', height: '45px' }}
           />
           <div className='ms-3' style={{whiteSpace: 'nowrap'}}>
-            <p className='fw-bold mb-1'>앵두새</p>
+            <p className='fw-bold mb-1'>{props.data.name}</p>
           </div>
         </div>
       </td>
       <td>
-        <MDBBadge color='success' pill className='fs-6'>
-          1군
+        <MDBBadge color={licenseColor} pill className='fs-6'>
+          {props.data.license !== '' ? props.data.license : '기록 없음'}
         </MDBBadge>
       </td>
-      <td>2023/01/01 10:00:00</td>
       <td>
-        <MDBBtn color='link' rounded size='lg' style={{whiteSpace: 'nowrap'}}>
+        {date.getFullYear()}/{("00"+(date.getMonth()+1)).slice(-2)}/{("00"+(date.getDate())).slice(-2)} {("00"+(date.getHours())).slice(-2)}:{("00"+(date.getMinutes())).slice(-2)}:{("00"+(date.getSeconds())).slice(-2)}
+      </td>
+      <td>
+        {/* <MDBBtn color='link' rounded size='lg' style={{whiteSpace: 'nowrap'}} onClick={()=>navigation(`/mypage/${props.data._id}`)}> */}
+        <MDBBtn color='link' rounded size='lg' style={{whiteSpace: 'nowrap'}} onClick={()=>alert('[유저 페이지] 개발 중 입니다.')}>
           <b>정보</b>
         </MDBBtn>
       </td>

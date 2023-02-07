@@ -50,6 +50,13 @@ export default function SelectButtons(props) {
     buttonColorHandler();
     setOutlineState(newOutline);
     setSelected(props.nowSelect);
+
+    for(let i = 0; i < props.latestRecord.length; i++) {
+      if(props.latestRecord[i].mapName === mapData[props.num-1].name) {
+        selectRecord(props.latestRecord[i].select);
+        break;
+      }
+    }
   }, [props.num])
 
   return (
