@@ -5,7 +5,7 @@ import FooterLogo from '../../images/footerLogo.png';
 
 export default function RecordRow(props) {
   const navigation = useNavigate();
-  const [licenseColor, setLicenseColor] = useState('success')
+  const [licenseColor, setLicenseColor] = useState('success');
 
   useEffect(() => {
     if(props.data.license === "강주력") setLicenseColor('danger');
