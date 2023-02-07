@@ -34,7 +34,7 @@ function RecordSummary(props) {
       dateTemp[index] = `${date.getFullYear()}/${("00"+(date.getMonth()+1)).slice(-2)}/${("00"+(date.getDate())).slice(-2)}`;
       licenseTemp[index] = item.license;
 
-      highSeasonTemp[item.season] = item.season;
+      highSeasonTemp[item.season] = 'S'+item.season;
       if(licenseToValue(highRecordTemp[item.season]) < licenseToValue(item.license)) 
         highRecordTemp[item.season] = item.license;
       

@@ -99,4 +99,45 @@ router.get('/logout', auth, (req, res) => {
   })
 })
 
+/* 닉네임 변경 */
+router.post('/changeName', auth, (req, res) => {
+  User.findOne({name: req.body.newName}, (err, userInfo) => {
+    if(err) return res.status(400).json({success: false, err});
+
+    if(userInfo) {
+      return res.status(200).json({
+        success: false,
+        message: "이미 존재하는 닉네임입니다."
+      })
+    }
+    else {
+      User.findOneAndUpdate({_id: req.user._id}, {name: req.body.newName}, (err, user) => {
+        if(err) return res.status(400).json({success: false, err});
+        return res.status(200).json({success: true});
+      })
+    }
+  })
+})
+
+/* 비밀번호 변경 */
+router.post('/changePassword', auth, (req, res) => {
+  User.findOne({_id: req.user._id}, (err, userInfo) => {
+    if(err || !userInfo) return res.status(400).json({success: false, err});
+
+    userInfo.changePassword(req.body.newPassword, (err, result) => {
+      if(err || !result) return res.status(400).json({success: false, err});
+
+      return res.status(200).json({success: true});
+    })
+  })
+})
+
+/* 프로필 사진 변경 */
+router.post('/changeImage', auth, (req, res) => {
+  User.findOneAndUpdate({_id: req.user._id}, {image: req.body.newImage}, err => {
+    if(err) return res.status(400).json({success: false, err});
+    return res.status(200).json({success: true});
+  })
+})
+
 module.exports = router;

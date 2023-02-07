@@ -89,6 +89,17 @@ userSchema.statics.findByToken = function(token, cb) {
   })
 }
 
+userSchema.methods.changePassword = function(newPassword, cb) {
+  let user = this;
+
+  user.password = newPassword;
+  user.plainPassword = newPassword;
+  user.save(function(err, user) {
+    if(err) return cb(err);
+    cb(null, user);
+  })
+}
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
