@@ -11,6 +11,7 @@ import {
 import Main from '../components/MyPage/Main';
 import MyRecord from '../components/MyPage/MyRecord';
 import InformationChange from '../components/MyPage/InformationChange';
+import Loading from '../components/layout/Loading';
 import axios from 'axios';
 import { API } from '../_actions/types';
 
@@ -25,10 +26,10 @@ function MyPage() {
       setRecordList(response.data.recordList);
       setLoading(false);
     });
-  }, [])
+  }, [userData._id])
 
   return (
-    loading ? <>로딩중</> :
+    loading ? <Loading /> :
     <MDBContainer>
       <MDBTabs justify className='mb-3'>
         <MDBTabsItem>

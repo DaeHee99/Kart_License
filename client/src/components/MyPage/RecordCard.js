@@ -7,6 +7,7 @@ import {
   MDBCardText,
   MDBCardHeader
 } from 'mdb-react-ui-kit';
+import Loading from '../layout/Loading';
 
 function RecordCard(props) {
   const [date, setDate] = useState();
@@ -20,10 +21,10 @@ function RecordCard(props) {
   useEffect(() => {
     setDate(new Date(props.data.createdAt));
     setLoading(false);
-  }, [])
+  }, [props.data.createdAt])
   
   return (
-    loading ? <>로딩중</> :
+    loading ? <Loading /> :
     <MDBCard background='primary' className='shadow-5 w-100 text-white mb-3' style={{cursor: 'pointer'}} onClick={goResultPage}>
       <MDBCardHeader><b>S{props.data.season}</b></MDBCardHeader>
       <MDBCardBody>

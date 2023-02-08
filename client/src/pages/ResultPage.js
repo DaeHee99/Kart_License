@@ -12,6 +12,7 @@ import {
   MDBBtn,
   MDBBtnGroup
 } from 'mdb-react-ui-kit';
+import Loading from '../components/layout/Loading';
 import ResultTable from '../components/ResultPage/ResultTable';
 import PieChart from '../components/ResultPage/PieChart';
 import BarChart from '../components/ResultPage/BarChart';
@@ -59,7 +60,7 @@ function ResultPage() {
   }, [id])
 
   return (
-    loading ? <>로딩중</> :
+    loading ? <Loading /> :
     <>
       <MDBContainer className='mb-7'>
         <h1><MDBBadge color={titleColor} light className='w-100'>

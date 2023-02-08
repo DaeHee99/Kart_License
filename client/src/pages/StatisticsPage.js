@@ -12,6 +12,7 @@ import ResultTable from '../components/ResultPage/ResultTable';
 import PieChart from '../components/ResultPage/PieChart';
 import BarChart from '../components/ResultPage/BarChart';
 import Footer from '../components/layout/Footer';
+import Loading from '../components/layout/Loading';
 
 function StatisticsPage() {
   const [today] = useState(new Date());
@@ -60,7 +61,7 @@ function StatisticsPage() {
   }, [])
 
   return (
-    loading ? <>로딩중</> :
+    loading ? <Loading /> :
     <>
       <MDBContainer className='mb-7'>
         <h1><MDBBadge color='primary' light className='w-100'>

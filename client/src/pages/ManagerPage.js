@@ -12,6 +12,7 @@ import {
 import UserTable from '../components/ManagerPage/UserTable';
 import LogTable from '../components/ManagerPage/LogTable';
 import RecordTable from '../components/ManagerPage/RecordTable';
+import StarTable from '../components/ManagerPage/StarTable';
 
 export default function ManagerPage() {
   const [tab, setTab] = useState('record');
@@ -21,7 +22,7 @@ export default function ManagerPage() {
       <MDBTabs pills justify className='mb-3'>
         <MDBTabsItem>
           <MDBTabsLink
-            className='p-3'
+            className='py-3 px-0'
             onClick={() => setTab('record')}
             active={tab === 'record'}
           >
@@ -30,7 +31,7 @@ export default function ManagerPage() {
         </MDBTabsItem>
         <MDBTabsItem>
           <MDBTabsLink
-            className='p-3'
+            className='py-3 px-0'
             onClick={() => setTab('user')}
             active={tab === 'user'}
           >
@@ -39,7 +40,16 @@ export default function ManagerPage() {
         </MDBTabsItem>
         <MDBTabsItem>
           <MDBTabsLink
-            className='p-3'
+            className='py-3 px-0'
+            onClick={() => setTab('star')}
+            active={tab === 'star'}
+          >
+            <b>후기</b>
+          </MDBTabsLink>
+        </MDBTabsItem>
+        <MDBTabsItem>
+          <MDBTabsLink
+            className='py-3 px-0'
             onClick={() => setTab('log')}
             active={tab === 'log'}
           >
@@ -55,6 +65,10 @@ export default function ManagerPage() {
 
         <MDBTabsPane show={tab === 'user'}>
           <UserTable />
+        </MDBTabsPane>
+
+        <MDBTabsPane show={tab === 'star'}>
+          <StarTable />
         </MDBTabsPane>
 
         <MDBTabsPane show={tab === 'log'}>

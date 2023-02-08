@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { auth } from '../_actions/user_action';
+import Loading from "../components/layout/Loading";
 
 export default function Auth(SpecificComponent, option, adminRoute = false) {
   /* option 
@@ -38,7 +39,7 @@ export default function Auth(SpecificComponent, option, adminRoute = false) {
       else checkRender(user.userData.isAuth, user.userData.isAdmin);
     });
 
-    if(loading) return <>로딩중</>;
+    if(loading) return <Loading />;
     else return <SpecificComponent />;
   }
   

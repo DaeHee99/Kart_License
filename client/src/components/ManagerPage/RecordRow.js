@@ -68,5 +68,5 @@ export default function RecordRow(props) {
         </MDBBtn>
       </td>
     </tr>
-    );
-  }
+  );
+}

@@ -10,6 +10,7 @@ import SelectButtons from '../components/TestPage/SelectButtons';
 import mapData, { mapCount, mapAllCount, season } from '../components/TestPage/mapData';
 import axios from 'axios';
 import { API } from '../_actions/types';
+import Loading from '../components/layout/Loading';
 
 function TestPage() {
   const userData = useSelector(state => state.user.userData);
@@ -67,7 +68,7 @@ function TestPage() {
   }, [userData.isAuth, userData._id])
   
   return (
-    loading ? <>로딩중</> :
+    loading ? <Loading /> :
     <MDBContainer>
       <Progress num={num}/>
       <img src={mapImages[num-1]} alt='mapImage' width={'100%'}/>

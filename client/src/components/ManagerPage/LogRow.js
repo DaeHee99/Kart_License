@@ -24,5 +24,5 @@ export default function LogRow(props) {
         {props.data.content}
       </td>
     </tr>
-    );
-  }
+  );
+}

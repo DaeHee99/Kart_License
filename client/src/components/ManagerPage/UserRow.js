@@ -46,5 +46,5 @@ export default function UserRow(props) {
         </MDBBtn>
       </td>
     </tr>
-    );
-  }
+  );
+}

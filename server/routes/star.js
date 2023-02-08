@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const Star = require('../models/Star');
 const Log = require('../models/Log');
 const key = require('../config/key');
+const auth = require('../middleware/auth');
 
 router.use(cookieParser());
 
@@ -28,6 +29,14 @@ router.post('/save', (req, res) => {
     }
 
     res.status(200).json({success: true});
+  })
+})
+
+/* 모든 후기 조회 - 관리자 페이지 */
+router.get('/manager/all', auth, (req, res) => {
+  Star.find().sort({createdAt: -1}).populate('user', {name:1, image:1}).exec((err, starList) => {
+    if(err) return res.status(400).json({success: false, err});
+    return res.status(200).json({success: true, starList: starList});
   })
 })
 
