@@ -165,4 +165,20 @@ router.get('/manager/all', auth, (req, res) => {
   })
 })
 
+/* 유저 페이지, 유저 데이터 - 관리자만 가능 */
+router.get('/userData/:id', auth, (req, res) => {
+  // if(!req.user.role) return res.status(200).json({success: false, isAdmin: false});
+  User.findOne({_id: req.params.id}, (err, userInfo) => {
+    if(err || !userInfo) return res.status(400).json({success: false, err});
+
+    res.status(200).json({
+      success: true,
+      _id: userInfo._id,
+      name: userInfo.name,
+      image: userInfo.image,
+      license: userInfo.license
+    })
+  })
+})
+
 module.exports = router;

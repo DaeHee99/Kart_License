@@ -1,9 +1,9 @@
 import { MDBBadge, MDBBtn } from 'mdb-react-ui-kit';
 import { useEffect, useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserRow(props) {
-  // const navigation = useNavigate();
+  const navigation = useNavigate();
   const [licenseColor, setLicenseColor] = useState('dark');
   const [date] = useState(new Date(props.data.updatedAt));
 
@@ -40,8 +40,7 @@ export default function UserRow(props) {
         {date.getFullYear()}/{("00"+(date.getMonth()+1)).slice(-2)}/{("00"+(date.getDate())).slice(-2)} {("00"+(date.getHours())).slice(-2)}:{("00"+(date.getMinutes())).slice(-2)}:{("00"+(date.getSeconds())).slice(-2)}
       </td>
       <td>
-        {/* <MDBBtn color='link' rounded size='lg' style={{whiteSpace: 'nowrap'}} onClick={()=>navigation(`/mypage/${props.data._id}`)}> */}
-        <MDBBtn color='link' rounded size='lg' style={{whiteSpace: 'nowrap'}} onClick={()=>alert('[유저 페이지] 개발 중 입니다.')}>
+        <MDBBtn color='link' rounded size='lg' style={{whiteSpace: 'nowrap'}} onClick={()=>navigation(`/userpage/${props.data._id}`)}>
           <b>정보</b>
         </MDBBtn>
       </td>

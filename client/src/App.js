@@ -8,6 +8,7 @@ import ResultPage from "./pages/ResultPage";
 import MyPage from "./pages/MyPage";
 import StatisticsPage from "./pages/StatisticsPage";
 import ManagerPage from "./pages/ManagerPage";
+import UserPage from "./pages/UserPage";
 
 function App() {
   const AuthLandingPage = Auth(LandingPage, null);
@@ -18,6 +19,7 @@ function App() {
   const AuthStatisticsPage = Auth(StatisticsPage, null);
   // const AuthManagerPage = Auth(ManagerPage, true, true);
   const AuthManagerPage = Auth(ManagerPage, true);
+  const AuthUserPage = Auth(UserPage, true);
 
   return (
     <div>
@@ -30,6 +32,7 @@ function App() {
         <Route path="/mypage" element={<AuthMyPage />} />
         <Route path="/statistics" element={<AuthStatisticsPage />} />
         <Route path="/manager" element={<AuthManagerPage />} />
+        <Route path="/userpage/:id" element={<AuthUserPage />} />
       </Routes>
     </div>
   );
