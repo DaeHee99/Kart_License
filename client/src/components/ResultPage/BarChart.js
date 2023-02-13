@@ -66,5 +66,5 @@ export default function BarChart(props) {
     }],
   };
 
-  return <Bar options={options} data={data} className='border border-dark'/>;
+  return <Bar options={options} data={data} className='border border-dark' height={190}/>;
 }
