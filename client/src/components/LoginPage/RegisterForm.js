@@ -29,9 +29,9 @@ function RegisterForm() {
     event.preventDefault();
 
     if(registerName.length > 16) return alert('닉네임은 최대 16글자 입니다.');
-    if(registerId.length < 6) return alert('아이디는 최소 6자리로 입력해주세요');
+    if(registerId.length < 2) return alert('아이디는 최소 2자리로 입력해주세요');
     if(registerPassword !== registerPasswordConfirm) return alert('비밀번호를 다시 확인해주세요.');
-    if(registerPassword.length < 6) return alert('비밀번호는 최소 6자리로 입력해주세요');
+    if(registerPassword.length < 4) return alert('비밀번호는 최소 4자리로 입력해주세요');
     if(!document.getElementById('Register_Agree').checked) return alert('회원가입에 동의해주세요.');
 
     let selected = document.querySelector('input[type=radio][name=profileImage]:checked');

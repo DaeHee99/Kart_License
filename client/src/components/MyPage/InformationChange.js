@@ -36,7 +36,7 @@ function InformationChange() {
   }
   const changePassword = () => {
     if(newPassword !== newPasswordConfirm) return alert('비밀번호를 다시 확인해주세요.');
-    if(newPassword.length < 6) return alert('비밀번호는 최소 6자리로 입력해주세요');
+    if(newPassword.length < 4) return alert('비밀번호는 최소 4자리로 입력해주세요');
 
     axios.post(API+'/user/changePassword', {newPassword: newPassword}, {withCredentials: true}).then(response => {
       if(!response.data.success) return alert('비밀번호 변경에 실패했습니다.');

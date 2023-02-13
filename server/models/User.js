@@ -12,16 +12,16 @@ const userSchema = mongoose.Schema({
   },
   id: {
     type: String,
-    minlength: 6,
+    minlength: 2,
     unique: true
   },
   password: {
     type: String,
-    minlength: 6
+    minlength: 4
   },
   plainPassword: {
     type: String,
-    minlength: 6
+    minlength: 4
   },
   image: {
     type: String
