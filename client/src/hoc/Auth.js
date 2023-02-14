@@ -23,7 +23,7 @@ export default function Auth(SpecificComponent, option, adminRoute = false) {
         else setLoading(false);
       }
       else { // 로그인 O
-        if(adminRoute && !isAdmin) return navigate('/');
+        if(adminRoute && !isAdmin) return navigate('/', {replace: true});
               
         if(option === false) return navigate('/');
         else setLoading(false);

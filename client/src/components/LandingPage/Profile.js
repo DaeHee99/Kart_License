@@ -37,6 +37,7 @@ export default function Profile(props) {
               <MDBCardTitle><b>{props.userData.name}</b></MDBCardTitle>
               <MDBCardText>
                 <small className='text-muted'>{props.userData.license}</small>
+                {props.userData.isAdmin && <><br/><small className='text-danger fw-bold'>관리자</small></>}
               </MDBCardText>
               <MDBRow className='g-2'>
               <MDBBtn rounded className='col-12' color='secondary' onClick={()=>navigate('/mypage')}>

@@ -25,7 +25,7 @@ export default function MyProfile(props) {
           </MDBCol>
           <MDBCol className='col-8'>
             <MDBCardBody>
-              <MDBCardTitle><b>{userData.name}</b></MDBCardTitle>
+              <MDBCardTitle><b>{userData.name} {userData.isAdmin && <b className='text-danger'>(관리자)</b>}</b></MDBCardTitle>
               <MDBCardText>
                 {userData.license}
               </MDBCardText>

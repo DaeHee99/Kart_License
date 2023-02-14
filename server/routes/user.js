@@ -176,7 +176,8 @@ router.get('/userData/:id', auth, (req, res) => {
       _id: userInfo._id,
       name: userInfo.name,
       image: userInfo.image,
-      license: userInfo.license
+      license: userInfo.license,
+      isAdmin: userInfo.role === 0 ? false : true
     })
   })
 })

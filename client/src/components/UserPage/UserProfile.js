@@ -13,7 +13,7 @@ import {
 export default function UserProfile(props) {
   let lastRecordDate;
   if(props.lastRecord) lastRecordDate = new Date(props.lastRecord.createdAt);
-  
+
   return (
     <MDBContainer>
       <MDBCard className='shadow-5 w-100'>
@@ -23,7 +23,7 @@ export default function UserProfile(props) {
           </MDBCol>
           <MDBCol className='col-8'>
             <MDBCardBody>
-              <MDBCardTitle><b>{props.userData.name}</b></MDBCardTitle>
+              <MDBCardTitle><b>{props.userData.name} {props.userData.isAdmin && <b className='text-danger'>(관리자)</b>}</b></MDBCardTitle>
               <MDBCardText>
                 {props.userData.license}
               </MDBCardText>

@@ -71,9 +71,11 @@ export default function Header() {
               <MDBNavbarItem>
                 <MDBNavbarLink  onClick={()=>{alert('[커뮤니티] 업데이트 준비 중');}}>커뮤니티</MDBNavbarLink>
               </MDBNavbarItem>
+              {user.userData.isAdmin &&
               <MDBNavbarItem>
                 <MDBNavbarLink  onClick={()=>{navigation('/manager'); setShowNavColor(false)}}>관리자</MDBNavbarLink>
               </MDBNavbarItem>
+              }
               <MDBNavbarItem>
                 <MDBNavbarLink  onClick={()=>{navigation('/mypage'); setShowNavColor(false)}}>마이페이지</MDBNavbarLink>
               </MDBNavbarItem>
