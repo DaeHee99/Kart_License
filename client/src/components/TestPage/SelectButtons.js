@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { MDBBtn, MDBIcon, MDBBadge } from 'mdb-react-ui-kit';
 import mapData, { mapCount, mapAllCount } from './mapData';
+import SearchModal from './SearchModal';
 
 export default function SelectButtons(props) {
   const [selected, setSelected] = useState(undefined);
   const [outlineState, setOutlineState] = useState([
     true, true, true, true, true, true, true
   ]);
-  const [buttonColor , setButtonColor] = useState("warning")
+  const [buttonColor , setButtonColor] = useState("warning");
+  const [searchModal, setSearchModal] = useState(false);
 
   const selectRecord = (i) => {
     let newOutline = [true, true, true, true, true, true, true, true];
@@ -20,27 +22,21 @@ export default function SelectButtons(props) {
   const nextHandler = () => props.nextMap(selected);
 
   const buttonColorHandler = () => {
-    switch(props.num) {
-      case mapCount.Rookie:
-        setButtonColor("warning");
-        break;
-      case mapCount.Rookie + 1:
-        setButtonColor("success");
-        break;
-      case mapCount.Rookie + mapCount.L3:
-        setButtonColor("success");
-        break;
-      case mapCount.Rookie + mapCount.L3 + 1:
-        setButtonColor("info");
-        break;
-      case mapCount.Rookie + mapCount.L3 + mapCount.L2:
-        setButtonColor("info");
-        break;
-      case mapCount.Rookie + mapCount.L3 + mapCount.L2 + 1:
-        setButtonColor("danger");
-        break;
-      default:
-        break;
+    if(props.num < mapCount.Rookie + 1) {
+      setButtonColor("warning");
+      return;
+    }
+    if(props.num < mapCount.Rookie + mapCount.L3 + 1) {
+      setButtonColor("success");
+      return;
+    }
+    if(props.num < mapCount.Rookie + mapCount.L3 + mapCount.L2 + 1) {
+      setButtonColor("info");
+      return;
+    }
+    else {
+      setButtonColor("danger");
+      return;
     }
   }
 
@@ -87,14 +83,18 @@ export default function SelectButtons(props) {
           <b>선택 안함</b>
         </MDBBtn>
       </div>
-      <div className="gap-5 d-flex justify-content-between">
+      <div className="gap-2 d-flex justify-content-between">
         <MDBBtn className='px-2' color='secondary' onClick={prevHandler} disabled={props.num <= 1}>
           <MDBBadge><MDBIcon fas icon="arrow-left" /></MDBBadge><b style={{marginLeft:10}}>이전으로</b>
+        </MDBBtn>
+        <MDBBtn className='px-2' color='primary' outline onClick={()=>setSearchModal(true)}>
+          <MDBIcon fas icon="search"/><b style={{marginLeft:10}}>트랙 검색</b>
         </MDBBtn>
         <MDBBtn className='px-2' color='secondary' onClick={nextHandler}>
           <b style={{marginRight:10}}>{mapAllCount===props.num ? "최종 결과" : "다음으로"}</b><MDBBadge><MDBIcon fas icon="arrow-right" /></MDBBadge>
         </MDBBtn>
       </div>
+      <SearchModal searchModal={searchModal} setSearchModal={setSearchModal} mapSearch={props.mapSearch}/>
     </>
   );
 }

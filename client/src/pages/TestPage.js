@@ -23,7 +23,7 @@ function TestPage() {
   const collectData = (selected) => {
     let recordCount = [0, 0, 0, 0, 0, 0, 0, 0];
     let record = mapData.map((map, index) => {
-      let selectRecord = selectList[index] === undefined ? selected : selectList[index]
+      let selectRecord = index+1 === mapData.length ? selected : selectList[index]
       recordCount[selectRecord]++;
       return {
         mapName: map.name,
@@ -40,7 +40,7 @@ function TestPage() {
     if(userData.isAuth) body.user = userData._id;
 
     axios.post(API+'/record/save', body, {withCredentials: true}).then(response => {
-      navigation(`/result/${response.data.id}`, {replace: true});
+      setTimeout(()=>navigation(`/result/${response.data.id}`, {replace: true}), 1500);
     });
   }
 
@@ -53,11 +53,41 @@ function TestPage() {
   const nextMap = (selected) => {
     setSelectItem(selected);
     if(num < mapAllCount) setNum(num + 1);
-    else collectData(selected);
+    else {
+      collectData(selected);
+      setLoading(true);
+    }
   }
   const prevMap = (selected) => {
     setSelectItem(selected);
     if(num > 1) setNum(num - 1);
+  }
+
+  const mapSearch = async (index) => {
+    if(index+1 <= num) setNum(index+1);
+    else {
+      setLoading(true);
+      let newList = [...selectList];
+
+      for(let i = num; i < index+1; i++) {
+        setNum(i);
+        let select = selectList[i-1] !== undefined ? selectList[i-1] : 7;
+        if(latestRecord.length > 0) {
+          await Promise.all(
+            latestRecord.map(async params => {
+              if(params.mapName === mapData[i].name) {
+                select = params.select;
+              }
+            })
+          );
+        }
+        newList[i-1] = select;
+      }
+
+      setSelectList(newList);
+      setNum(index+1);
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -73,7 +103,7 @@ function TestPage() {
       <Progress num={num}/>
       <img src={mapImages[num-1]} alt='mapImage' width={'100%'}/>
       <br /><br />
-      <SelectButtons nextMap={nextMap} prevMap={prevMap} num={num} nowSelect={selectList[num]} latestRecord={latestRecord}/>
+      <SelectButtons nextMap={nextMap} prevMap={prevMap} num={num} mapSearch={mapSearch} nowSelect={selectList[num-1]} latestRecord={latestRecord}/>
     </MDBContainer>
   )
 }
