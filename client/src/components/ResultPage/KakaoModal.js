@@ -23,7 +23,7 @@ export default function KakaoModal(props) {
     Kakao.Share.sendCustom({
       templateId: 90173,
       templateArgs: {
-        RecordId: '63ee8062017f657fdc4ba34f',
+        RecordId: props.recordId,
         Name: userData.isAuth ? userData.name : '비로그인 유저',
         Description: userData.isAuth ? `${userData.name}님이 카러플 군 계산기 결과를 공유했습니다!` : '츄르 클럽에서 제작한 카러플 군 계산기 결과를 공유했습니다!',
         ProfileImage: userData.isAuth ? userData.image : "https://firebasestorage.googleapis.com/v0/b/kart-chu-club.appspot.com/o/licenseImages%2Fdao.png?alt=media&token=507c8b83-7c6f-4715-807d-3da2b01e25e0",
