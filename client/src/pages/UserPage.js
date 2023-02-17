@@ -12,7 +12,7 @@ import MyRecord from '../components/MyPage/MyRecord';
 import Loading from '../components/layout/Loading';
 import axios from 'axios';
 import { API } from '../_actions/types';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function UserPage() {
   const { id } = useParams();
@@ -20,20 +20,24 @@ function UserPage() {
   const [loading, setLoading] = useState(true);
   const [recordList, setRecordList] = useState([]);
   const [userData, setUserData] = useState([]);
+  const navigation = useNavigate();
 
   useEffect(() => {
-    axios.get(API+`/user/userData/${id}`, {withCredentials: true}).then(response => {
-      if(!response.data.success) return alert('유저 정보를 불러오는데 실패했습니다.');
-      setUserData(response.data);
-
-      axios.get(API+`/record/userRecord/${id}`, {withCredentials: true}).then(response => {
+    if(id === '0') return navigation('/', {replace: true});
+    else {
+      axios.get(API+`/user/userData/${id}`, {withCredentials: true}).then(response => {
         if(!response.data.success) return alert('유저 정보를 불러오는데 실패했습니다.');
+        setUserData(response.data);
 
-        setRecordList(response.data.recordList);
-        setLoading(false);
+        axios.get(API+`/record/userRecord/${id}`, {withCredentials: true}).then(response => {
+          if(!response.data.success) return alert('유저 정보를 불러오는데 실패했습니다.');
+
+          setRecordList(response.data.recordList);
+          setLoading(false);
+        });
       });
-    });
-  }, [id])
+    }
+  }, [id, navigation])
 
   return (
     loading ? <Loading /> :

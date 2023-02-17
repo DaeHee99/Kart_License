@@ -9,6 +9,8 @@ import MyPage from "./pages/MyPage";
 import StatisticsPage from "./pages/StatisticsPage";
 import ManagerPage from "./pages/ManagerPage";
 import UserPage from "./pages/UserPage";
+import OpenKakao from "./pages/OpenKakao";
+import ChuHomePage from "./pages/ChuHomePage";
 
 function App() {
   const AuthLandingPage = Auth(LandingPage, null);
@@ -32,6 +34,8 @@ function App() {
         <Route path="/statistics" element={<AuthStatisticsPage />} />
         <Route path="/manager" element={<AuthManagerPage />} />
         <Route path="/userpage/:id" element={<AuthUserPage />} />
+        <Route path="/openkakao" element={<OpenKakao />} />
+        <Route path="/chuhomepage" element={<ChuHomePage />} />
       </Routes>
     </div>
   );

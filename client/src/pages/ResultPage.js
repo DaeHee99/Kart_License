@@ -113,7 +113,7 @@ function ResultPage() {
           <b>츄르 공식 홈페이지</b>
         </MDBBtn>
 
-        <KakaoModal shareOpen={shareOpen} setShareOpen={setShareOpen}/>
+        <KakaoModal shareOpen={shareOpen} setShareOpen={setShareOpen} recordId={id}/>
         <StarModal starOpen={starOpen} setStarOpen={setStarOpen} recordId={id}/>
       </MDBContainer>
       <Footer />
