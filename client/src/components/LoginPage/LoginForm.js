@@ -29,7 +29,7 @@ function LoginForm(props) {
 
     dispatch(loginUser(body)).then(response => {
       if(response.payload.success) {
-        alert(response.payload.name + '님 환영합니다!');
+        // alert(response.payload.name + '님 환영합니다!');
         navigate('/', {replace: true});
       }
       else alert(response.payload.message || '로그인 실패');

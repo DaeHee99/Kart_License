@@ -14,7 +14,7 @@ const mongoose = require('mongoose');
 const app = require('../app');
 mongoose.set('strictQuery', false);
 mongoose.connect(key.mongoURI)
-  .then(()=> console.log('MongoDB Connected!'))
+  .then(()=> console.log('Record : MongoDB Connected!'))
   .catch(err => console.log(err));
 
 

@@ -83,11 +83,10 @@ function RegisterForm() {
       <MDBInput className='mb-4' type='password' id='Register_Confirm' label='비밀번호 확인' value={registerPasswordConfirm} onChange={registerPasswordConfirmHandler}/>
 
       <div className="badge bg-primary text-wrap" style={{width: "6rem", fontSize: "0.9rem", marginRight: "10px"}}>프로필 사진</div>원하는 프로필을 하나 선택하세요.<br /><br />
-      <MDBRadio name='profileImage' id='profileImage1' value={ProfileImages.manager} defaultChecked inline label={<MDBCardImage src={ProfileImages.manager} alt='ProfileImage' width='70px' />}/>
-      <MDBRadio name='profileImage' id='profileImage2' value={ProfileImages.dao} inline label={<MDBCardImage src={ProfileImages.dao} alt='ProfileImage' width='70px' />}/>
-      <MDBRadio name='profileImage' id='profileImage3' value={ProfileImages.bazzi} inline label={<MDBCardImage src={ProfileImages.bazzi} alt='ProfileImage' width='70px' />}/>
-      <MDBRadio name='profileImage' id='profileImage4' value={ProfileImages.dizini} inline label={<MDBCardImage src={ProfileImages.dizini} alt='ProfileImage' width='70px' />}/>
-      <MDBRadio name='profileImage' id='profileImage5' value={ProfileImages.marid} inline label={<MDBCardImage src={ProfileImages.marid} alt='ProfileImage' width='70px' />}/>
+      <MDBRadio name='profileImage' id='profileImage1' value={ProfileImages.dao} defaultChecked inline label={<MDBCardImage src={ProfileImages.dao} alt='ProfileImage' width='70px' />}/>
+      <MDBRadio name='profileImage' id='profileImage2' value={ProfileImages.bazzi} inline label={<MDBCardImage src={ProfileImages.bazzi} alt='ProfileImage' width='70px' />}/>
+      <MDBRadio name='profileImage' id='profileImage3' value={ProfileImages.dizini} inline label={<MDBCardImage src={ProfileImages.dizini} alt='ProfileImage' width='70px' />}/>
+      <MDBRadio name='profileImage' id='profileImage4' value={ProfileImages.marid} inline label={<MDBCardImage src={ProfileImages.marid} alt='ProfileImage' width='70px' />}/>
 
       <br />
       <br />

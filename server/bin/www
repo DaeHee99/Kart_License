@@ -4,28 +4,43 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('server:server');
-var http = require('http');
+let app = require('../app');
+let debug = require('debug')('server:server');
+let http = require('http');
+
+let https = require('https');
+let fs = require('fs');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '5500');
+let port = normalizePort(process.env.PORT || '5000');
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * Create HTTP or HTTPS server.
  */
+let server;
+let options;
 
-var server = http.createServer(app);
+if(process.env.NODE_ENV === 'production') {
+  options = {
+    ca: fs.readFileSync('/etc/ssl/ca_bundle.crt'),
+    key: fs.readFileSync('/etc/ssl/private/private.key'),
+    cert: fs.readFileSync('/etc/ssl/certificate.crt'),
+    requestCert: false,
+    rejectUnauthorized: false
+  };
+  server = https.createServer( options, app );
+}
+else server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(port, ()=>{console.log('Express server listening on port ' + server.address().port);});
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -34,7 +49,7 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val) {
-  var port = parseInt(val, 10);
+  let port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -58,7 +73,7 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof port === 'string'
+  let bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
 
@@ -82,8 +97,8 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
+  let addr = server.address();
+  let bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
