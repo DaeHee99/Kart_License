@@ -1,6 +1,5 @@
 import React from 'react';
 import { MDBTable, MDBTableHead, MDBTableBody, MDBIcon } from 'mdb-react-ui-kit';
-import mapData, { mapCount } from '../TestPage/mapData';
 
 export default function ResultMapTable(props) {
   const mapColor = (n) => {

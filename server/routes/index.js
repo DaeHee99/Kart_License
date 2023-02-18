@@ -10,7 +10,7 @@ router.get('/.well-known/pki-validation/B19EF3B9AEDC57E6DE88D7A48BA01F5D.txt', f
 })
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
   // res.render('index', { title: 'Express' });
   res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
 });
