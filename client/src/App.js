@@ -20,7 +20,7 @@ function App() {
   const AuthMyPage = Auth(MyPage, true);
   const AuthStatisticsPage = Auth(StatisticsPage, null);
   const AuthManagerPage = Auth(ManagerPage, true, true);
-  const AuthUserPage = Auth(UserPage, true, true);
+  const AuthUserPage = Auth(UserPage, null);
 
   return (
     <div>

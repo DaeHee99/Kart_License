@@ -166,9 +166,8 @@ router.get('/manager/all', auth, (req, res) => {
   })
 })
 
-/* 유저 페이지, 유저 데이터 - 관리자만 가능 */
-router.get('/userData/:id', auth, (req, res) => {
-  // if(!req.user.role) return res.status(200).json({success: false, isAdmin: false});
+/* 유저 페이지 */
+router.get('/userData/:id', (req, res) => {
   User.findOne({_id: req.params.id}, (err, userInfo) => {
     if(err || !userInfo) return res.status(400).json({success: false, err});
 
