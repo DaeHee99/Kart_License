@@ -41,11 +41,12 @@ export default function SelectButtons(props) {
   }
 
   useEffect(() => {
-    let newOutline = [true, true, true, true, true, true, true, true];
-    if(Number.isInteger(props.nowSelect)) newOutline[props.nowSelect] = false;
     buttonColorHandler();
-    setOutlineState(newOutline);
-    setSelected(props.nowSelect);
+
+    if(Number.isInteger(props.nowSelect)) {
+      selectRecord(props.nowSelect);
+      return;
+    }
 
     for(let i = 0; i < props.latestRecord.length; i++) {
       if(props.latestRecord[i].mapName === mapData[props.num-1].name) {
