@@ -1,5 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { API } from '../../_actions/types';
+import axios from 'axios';
 import {
   MDBBtn,
   MDBModal,
@@ -30,6 +32,12 @@ export default function KakaoModal(props) {
         UserId: userData.isAuth ? userData._id : '0'
       },
     });
+
+    let body = {content: `카카오톡 공유 완료`};
+    if(userData.isAuth) body.user = userData._id;
+
+    axios.post(API+'/log/save', body, {withCredentials: true});
+
     props.setShareOpen(false);
   }        
 

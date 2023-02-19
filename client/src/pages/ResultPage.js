@@ -28,7 +28,7 @@ function ResultPage() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({});
   const [open, setOpen] = useState('angle-up');
-  const [showShow, setShowShow] = useState(true);
+  const [showShow, setShowShow] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [starOpen, setStarOpen] = useState(false);
   const [titleColor, setTitleColor] = useState('primary');
@@ -55,6 +55,7 @@ function ResultPage() {
         else if(response.data.record.license === "일반") setTitleColor('secondary');
 
         setLoading(false);
+        setTimeout(() => {clickHandler()}, 1000);
       }
     });
   }, [id])
@@ -93,10 +94,10 @@ function ResultPage() {
           <ResultMapTable record={data.record} mapCount={data.mapCount}/>
         </div>
 
-        <MDBBtn size='lg' floating style={{ backgroundColor: '#FEE500', position: 'fixed', top: '83%', right: '50%', marginRight: '-45%', zIndex: '99' }} onClick={()=>setShareOpen(true)}>
-          <MDBIcon fas icon="comment" style={{color: '#000000'}} size='lg'/>
+        <MDBBtn size='lg' color='secondary' style={{ backgroundColor: '#FEE500', color: '#000000', position: 'fixed', top: '90%', right: '50%', marginRight: '-45%', zIndex: '99' }} onClick={()=>setShareOpen(true)}>
+          <MDBIcon fas icon="comment" size='lg'/> 카카오톡 공유
         </MDBBtn>
-        <MDBBtn size='lg' floating style={{ position: 'fixed', top: '90%', right: '50%', marginRight: '-45%', zIndex: '99' }} onClick={()=>window.scrollTo({top: 0, behavior: 'smooth'})}>
+        <MDBBtn size='lg' floating style={{ position: 'fixed', top: '83%', right: '50%', marginRight: '-45%', zIndex: '99' }} onClick={()=>window.scrollTo({top: 0, behavior: 'smooth'})}>
           <MDBIcon fas icon="angle-up" size='lg'/>
         </MDBBtn>
 

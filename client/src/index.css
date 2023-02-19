@@ -3,6 +3,11 @@
   src: url("../public/GmarketSansTTFMedium.ttf") format("truetype");
   font-weight: normal;
 }
+@font-face {
+  font-family: "GmarketSansMedium";
+  src: url("../public/GmarketSansMedium.otf") format("truetype");
+  font-weight: normal;
+}
 
 body {
   margin: 0;
@@ -17,5 +22,5 @@ code {
 }
 
 * {
-  font-family: 'GmarketSansTTFMedium', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'GmarketSansTTFMedium', 'GmarketSansMedium', Roboto, Helvetica, Arial, sans-serif;
 }

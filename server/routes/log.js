@@ -24,4 +24,11 @@ router.get('/manager/all', auth, (req, res) => {
   })
 })
 
+router.post('/save', (req, res) => {
+  let log = new Log(req.body);
+  log.save();
+
+  return res.status(200).json({success: true});
+})
+
 module.exports = router;
