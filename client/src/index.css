@@ -1,12 +1,20 @@
-@font-face {
+/* @font-face {
   font-family: "GmarketSansTTFMedium";
   src: url("../public/GmarketSansTTFMedium.ttf") format("truetype");
-  font-weight: normal;
+  font-weight: 500;
+  font-style: normal;
 }
 @font-face {
   font-family: "GmarketSansMedium";
   src: url("../public/GmarketSansMedium.otf") format("truetype");
-  font-weight: normal;
+  font-weight: 500;
+  font-style: normal;
+} */
+@font-face {
+  font-family: "GmarketSansMediumWOFF";
+  src: url("../public/GmarketSansTTFMedium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
 }
 
 body {
@@ -16,11 +24,6 @@ body {
   background-color: #fbfbfb;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
 * {
-  font-family: 'GmarketSansTTFMedium', 'GmarketSansMedium', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'GmarketSansMediumWOFF', sans-serif;
 }
