@@ -6,7 +6,7 @@ import SearchModal from './SearchModal';
 export default function SelectButtons(props) {
   const [selected, setSelected] = useState(undefined);
   const [outlineState, setOutlineState] = useState([
-    true, true, true, true, true, true, true
+    true, true, true, true, true, true, true, true
   ]);
   const [buttonColor , setButtonColor] = useState("warning");
   const [searchModal, setSearchModal] = useState(false);
@@ -41,6 +41,8 @@ export default function SelectButtons(props) {
   }
 
   useEffect(() => {
+    setOutlineState([true, true, true, true, true, true, true, true]);
+    setSelected(undefined);
     buttonColorHandler();
 
     if(Number.isInteger(props.nowSelect)) {
