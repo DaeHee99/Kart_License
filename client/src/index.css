@@ -1,7 +1,8 @@
 @font-face {
   font-family: "GmarketSansMedium";
   src: url("../public/GmarketSansTTFMedium.woff") format("woff"),
-      url("../public/GmarketSansTTFMedium.ttf") format("truetype");
+      url("../public/GmarketSansTTFMedium.ttf") format("truetype"),
+      url("../public/GmarketSansMedium.otf") format("opentype");
   font-weight: 500;
   font-style: normal;
 }
