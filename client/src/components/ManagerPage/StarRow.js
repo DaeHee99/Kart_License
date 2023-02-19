@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MDBIcon, MDBBtn } from "mdb-react-ui-kit";
 import { useNavigate } from "react-router-dom";
+import FooterLogo from '../../images/footerLogo.png';
 
 export default function StarRow(props) {
   const navigation = useNavigate();
@@ -11,12 +12,12 @@ export default function StarRow(props) {
       <td>
         <div className='d-flex align-items-center'>
           <img
-            src={props.data.user.image}
+            src={props.data.user ? props.data.user.image : FooterLogo}
             alt='profileImage'
             style={{ width: '45px', height: '45px' }}
           />
           <div className='ms-3' style={{whiteSpace: 'nowrap'}}>
-            <p className='fw-bold mb-1'>{props.data.user.name}</p>
+            <p className='fw-bold mb-1'>{props.data.user? props.data.user.name : '비로그인 유저'}</p>
           </div>
         </div>
       </td>
