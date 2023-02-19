@@ -20,7 +20,7 @@ import ResultMapTable from '../components/ResultPage/ResultMapTable';
 import KakaoModal from '../components/ResultPage/KakaoModal';
 import StarModal from '../components/ResultPage/StarModal';
 import Footer from '../components/layout/Footer';
-import FooterLogo from '../images/footerLogo.png';
+import ProfileImages from '../components/layout/ProfileImages';
 
 function ResultPage() {
   const { id } = useParams();
@@ -71,7 +71,7 @@ function ResultPage() {
         <MDBCollapse show={showShow}>
           <div className="text-center fw-bold d-flex flex-row align-items-center justify-content-center">
             <div className='d-inline col-md-2 col-4 mb-0'>
-              <MDBCardImage src={data.user ? data.user.image : FooterLogo} alt='ProfileImage' fluid className='col-md-8 col-6'/>
+              <MDBCardImage src={data.user ? data.user.image : ProfileImages.dao} alt='ProfileImage' fluid className='col-md-8 col-6'/>
               <p className='mb-0 text-nowrap'>{data.user ? data.user.name : '비로그인 유저'}</p>
             </div>
             <p className='mb-0 ps-3 text-secondary'>

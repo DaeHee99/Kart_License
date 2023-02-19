@@ -1,7 +1,7 @@
 import { MDBTableHead, MDBTableBody, MDBBadge, MDBBtn } from 'mdb-react-ui-kit';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import FooterLogo from '../../images/footerLogo.png';
+import ProfileImages from '../layout/ProfileImages';
 
 export default function RecordRow(props) {
   const navigation = useNavigate();
@@ -22,7 +22,7 @@ export default function RecordRow(props) {
       <td>
         <div className='d-flex align-items-center'>
           <img
-            src={props.data.user ? props.data.user.image : FooterLogo}
+            src={props.data.user ? props.data.user.image : ProfileImages.dao}
             alt='profileImage'
             style={{ width: '45px', height: '45px' }}
           />

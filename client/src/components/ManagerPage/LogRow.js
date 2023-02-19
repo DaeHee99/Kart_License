@@ -1,5 +1,5 @@
 import { useState } from "react";
-import FooterLogo from '../../images/footerLogo.png';
+import ProfileImages from "../layout/ProfileImages";
 
 export default function LogRow(props) {
   const [date] = useState(new Date(props.data.updatedAt));
@@ -9,7 +9,7 @@ export default function LogRow(props) {
       <td>
         <div className='d-flex align-items-center'>
           <img
-            src={props.data.user ? props.data.user.image : FooterLogo}
+            src={props.data.user ? props.data.user.image : ProfileImages.dao}
             alt='profileImage'
             style={{ width: '45px', height: '45px' }}
           />
