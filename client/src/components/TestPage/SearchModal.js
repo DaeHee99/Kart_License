@@ -54,8 +54,11 @@ export default function SearchModal(props) {
             })
           }
           </MDBModalBody>
-          <MDBModalFooter>
-            <MDBBtn color='secondary' className='w-100 fw-bold' onClick={() => props.setSearchModal(!props.setSearchModal)}>
+          <MDBModalFooter className='flex-row justify-content-between'>
+            <MDBBtn color='primary' className='fw-bold' style={{width: '60%'}} onClick={() => searchClick(mapData.length-1)}>
+              마지막 트랙으로 바로가기
+            </MDBBtn>
+            <MDBBtn color='secondary' className='fw-bold' style={{width: '35%'}} onClick={() => props.setSearchModal(!props.setSearchModal)}>
               닫기
             </MDBBtn>
           </MDBModalFooter>
