@@ -75,7 +75,7 @@ function TestPage() {
         if(latestRecord.length > 0) {
           await Promise.all(
             latestRecord.map(async params => {
-              if(params.mapName === mapData[i].name) {
+              if(params.mapName === mapData[i-1].name) {
                 select = params.select;
               }
             })
