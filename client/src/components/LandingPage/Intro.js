@@ -29,7 +29,8 @@ export default function Intro(props) {
             제보 및 피드백 항상 감사합니다!<br />
             지속해서 개선하도록 노력하겠습니다.
           </MDBCardText>
-          <MDBBtn onClick={start}>시작하기</MDBBtn>
+          <MDBBtn color='secondary' onClick={()=>window.location.assign('https://open.kakao.com/o/gK80B2tc')}>친선 매칭방</MDBBtn>
+          <MDBBtn onClick={start} className='ms-5'>시작하기</MDBBtn>
         </MDBCardBody>
       </MDBCard>
     </MDBContainer>
