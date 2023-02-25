@@ -13,7 +13,7 @@ function LandingPage() {
 
   return (
     <div>
-      <MDBContainer fluid>
+      <MDBContainer fluid className='mb-7'>
         <MDBRow className='g-3'>
           <MDBCol lg='9'>
             <Intro setLoginCheckModal={setLoginCheckModal} isAuth={user.userData.isAuth}/>
@@ -24,8 +24,6 @@ function LandingPage() {
         </MDBRow>
       </MDBContainer>
       <StartModal showModal={loginCheckModal} setModal={setLoginCheckModal}/>
-      <br />
-      <br />
       <Footer />
     </div>
   );

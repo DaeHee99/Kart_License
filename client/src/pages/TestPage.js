@@ -11,6 +11,7 @@ import mapData, { mapCount, mapAllCount, season } from '../components/TestPage/m
 import axios from 'axios';
 import { API } from '../_actions/types';
 import Loading from '../components/layout/Loading';
+import Footer from '../components/layout/Footer';
 
 function TestPage() {
   const userData = useSelector(state => state.user.userData);
@@ -63,13 +64,17 @@ function TestPage() {
     if(num > 1) setNum(num - 1);
   }
 
-  const mapSearch = async (index) => {
-    if(index+1 <= num) setNum(index+1);
+  const mapSearch = async (index, selected) => {
+    if(index+1 <= num) {
+      setSelectItem(selected);
+      setNum(index+1);
+    }
     else {
       setLoading(true);
       let newList = [...selectList];
+      newList[num-1] = selected !== undefined ? selected : 7;
 
-      for(let i = num; i < index+1; i++) {
+      for(let i = num+1; i < index+1; i++) {
         setNum(i);
         let select = selectList[i-1] !== undefined ? selectList[i-1] : 7;
         if(latestRecord.length > 0) {
@@ -99,12 +104,14 @@ function TestPage() {
   
   return (
     loading ? <Loading /> :
-    <MDBContainer>
-      <Progress num={num}/>
-      <img src={mapImages[num-1]} alt='mapImage' width={'100%'}/>
-      <br /><br />
-      <SelectButtons nextMap={nextMap} prevMap={prevMap} num={num} mapSearch={mapSearch} nowSelect={selectList[num-1]} latestRecord={latestRecord}/>
-    </MDBContainer>
+    <>
+      <MDBContainer className='mb-5'>
+        <Progress num={num}/>
+        <div className="text-center mb-3"><img src={mapImages[num-1]} alt='mapImage' className='col-12 col-lg-10'/></div>
+        <SelectButtons nextMap={nextMap} prevMap={prevMap} num={num} mapSearch={mapSearch} nowSelect={selectList[num-1]} latestRecord={latestRecord}/>
+      </MDBContainer>
+      <Footer />
+    </>
   )
 }
 

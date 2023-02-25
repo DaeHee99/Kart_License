@@ -20,6 +20,7 @@ export default function SelectButtons(props) {
 
   const prevHandler = () => props.prevMap(selected);
   const nextHandler = () => props.nextMap(selected);
+  const mapSearch = (index) => props.mapSearch(index, selected);
 
   const buttonColorHandler = () => {
     if(props.num < mapCount.Rookie + 1) {
@@ -59,7 +60,7 @@ export default function SelectButtons(props) {
   }, [props.num])
 
   return (
-    <>
+    <div className='col-12 col-lg-10 mx-auto'>
       <div className="d-grid gap-3 mb-4">
         <MDBBtn outline={outlineState[0]} onClick={() => selectRecord(0)} rounded color={buttonColor}>
           <b>강주력 &nbsp; <MDBIcon fas icon="crown" /> &nbsp; {mapData[props.num-1].record[0]}</b>
@@ -97,7 +98,7 @@ export default function SelectButtons(props) {
           <b style={{marginRight:10}}>{mapAllCount===props.num ? "최종 결과" : "다음으로"}</b><MDBBadge><MDBIcon fas icon="arrow-right" /></MDBBadge>
         </MDBBtn>
       </div>
-      <SearchModal searchModal={searchModal} setSearchModal={setSearchModal} mapSearch={props.mapSearch}/>
-    </>
+      <SearchModal searchModal={searchModal} setSearchModal={setSearchModal} mapSearch={mapSearch}/>
+    </div>
   );
 }
