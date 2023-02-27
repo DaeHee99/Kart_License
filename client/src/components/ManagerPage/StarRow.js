@@ -27,8 +27,8 @@ export default function StarRow(props) {
           <b>결과 페이지</b>
         </MDBBtn>
       </td>
-      <td style={{whiteSpace: 'nowrap'}}>
-        <div className='text-center mb-3 text-warning'>
+      <td style={{wordBreak: 'break-all'}}>
+        <div className='text-center mb-3 text-warning' style={{whiteSpace: 'nowrap'}}>
           <MDBIcon far={props.data.star<1} fas={props.data.star>=1} icon="star" size='lg'/>
           <MDBIcon far={props.data.star<2} fas={props.data.star>=2} icon="star" size='lg'/>
           <MDBIcon far={props.data.star<3} fas={props.data.star>=3} icon="star" size='lg'/>
