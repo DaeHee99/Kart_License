@@ -55,7 +55,12 @@ function ResultPage() {
         else if(response.data.record.license === "일반") setTitleColor('secondary');
 
         setLoading(false);
-        setTimeout(() => {clickHandler()}, 1000);
+        setTimeout(() => {
+          clickHandler();
+          if(response.data.record.recordCount[7] >= 20) {
+            setTimeout(() => alert('기록 선택을 하지 않은 트랙이 많아서 결과가 정확하지 않을 수도 있습니다.'), 500);
+          }
+        }, 1000);
       }
     });
   }, [id])
