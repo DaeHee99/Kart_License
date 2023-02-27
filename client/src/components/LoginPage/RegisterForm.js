@@ -83,12 +83,15 @@ function RegisterForm() {
       <MDBInput className='mb-4' type='password' id='Register_Confirm' label='비밀번호 확인' value={registerPasswordConfirm} onChange={registerPasswordConfirmHandler}/>
 
       <div className="badge bg-primary text-wrap" style={{width: "6rem", fontSize: "0.9rem", marginRight: "10px"}}>프로필 사진</div>원하는 프로필을 하나 선택하세요.<br /><br />
-      <MDBRadio name='profileImage' id='profileImage1' value={ProfileImages.dao} defaultChecked inline label={<MDBCardImage src={ProfileImages.dao} alt='ProfileImage' width='70px' />}/>
-      <MDBRadio name='profileImage' id='profileImage2' value={ProfileImages.bazzi} inline label={<MDBCardImage src={ProfileImages.bazzi} alt='ProfileImage' width='70px' />}/>
-      <MDBRadio name='profileImage' id='profileImage3' value={ProfileImages.dizini} inline label={<MDBCardImage src={ProfileImages.dizini} alt='ProfileImage' width='70px' />}/>
-      <MDBRadio name='profileImage' id='profileImage4' value={ProfileImages.marid} inline label={<MDBCardImage src={ProfileImages.marid} alt='ProfileImage' width='70px' />}/>
-
-      <br />
+      <div className='d-flex flex-row justify-content-between flex-wrap'>
+        <MDBRadio name='profileImage' id='profileImage1' value={ProfileImages.dao} defaultChecked inline label={<MDBCardImage src={ProfileImages.dao} alt='ProfileImage' width='70px' />}/>
+        <MDBRadio name='profileImage' id='profileImage2' value={ProfileImages.bazzi} inline label={<MDBCardImage src={ProfileImages.bazzi} alt='ProfileImage' width='70px' />}/>
+        <MDBRadio name='profileImage' id='profileImage3' value={ProfileImages.dizini} inline label={<MDBCardImage src={ProfileImages.dizini} alt='ProfileImage' width='70px' />}/>
+        <MDBRadio name='profileImage' id='profileImage4' value={ProfileImages.marid} inline label={<MDBCardImage src={ProfileImages.marid} alt='ProfileImage' width='70px' />}/>
+        <MDBRadio name='profileImage' id='profileImage5' value={ProfileImages.eddi} inline label={<MDBCardImage src={ProfileImages.eddi} alt='ProfileImage' width='70px' />}/>
+        <MDBRadio name='profileImage' id='profileImage6' value={ProfileImages.kepi} inline label={<MDBCardImage src={ProfileImages.kepi} alt='ProfileImage' width='70px' />}/>
+        <MDBRadio name='profileImage' id='profileImage7' value={ProfileImages.rodumani} inline label={<MDBCardImage src={ProfileImages.rodumani} alt='ProfileImage' width='70px' />}/>
+      </div>
       <br />
       <MDBCheckbox
         wrapperClass='d-flex justify-content-center mb-4'
