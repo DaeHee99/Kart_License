@@ -8,6 +8,7 @@ const userRouter = require('./routes/user');
 const recordRouter = require('./routes/record');
 const starRouter = require('./routes/star');
 const logRouter = require('./routes/log');
+const noticeRouter = require('./routes/notice');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/api/user', userRouter);
 app.use('/api/record', recordRouter);
 app.use('/api/star', starRouter);
 app.use('/api/log', logRouter);
+app.use('/api/notice', noticeRouter);
 app.use('*', indexRouter);
 
 module.exports = app;

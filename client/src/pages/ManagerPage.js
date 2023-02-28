@@ -18,6 +18,7 @@ import LogTable from '../components/ManagerPage/LogTable';
 import RecordTable from '../components/ManagerPage/RecordTable';
 import StarTable from '../components/ManagerPage/StarTable';
 import Pagination from '../components/ManagerPage/Pagination';
+import NoticeModal from '../components/ManagerPage/NoticeModal';
 
 export default function ManagerPage() {
   const navigation = useNavigate();
@@ -26,6 +27,7 @@ export default function ManagerPage() {
   const [page] = useState(Number(searchParams.get("page")) || 1);
   const [dataAllCount, setDataAllCount] = useState(0);
   const [viewPageNavigation, setViewPageNavigation] = useState(false);
+  const [noticeOpen, setNoticeOpen] = useState(false);
 
   const [userSearchName, setUserSearchName] = useState('');
   const [userSearchResetButton, setUserSearchResetButton] = useState(false);
@@ -120,9 +122,14 @@ export default function ManagerPage() {
         
         {viewPageNavigation && <Pagination tab={tab} page={page} lastPage={Math.ceil(dataAllCount / 20)}/>}
 
+        <MDBBtn size='lg' floating color='danger' style={{ position: 'fixed', top: '83%', right: '50%', marginRight: '-45%', zIndex: '99' }} onClick={()=>setNoticeOpen(true)}>
+          <MDBIcon fas icon="bell" size='lg'/>
+        </MDBBtn>
         <MDBBtn size='lg' floating style={{ position: 'fixed', top: '90%', right: '50%', marginRight: '-45%', zIndex: '99' }} onClick={()=>window.scrollTo({top: 0, behavior: 'smooth'})}>
           <MDBIcon fas icon="angle-up" size='lg'/>
         </MDBBtn>
+
+        <NoticeModal noticeOpen={noticeOpen} setNoticeOpen={setNoticeOpen}/>
       </MDBContainer>
       <Footer />
     </>
