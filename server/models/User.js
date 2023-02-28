@@ -35,7 +35,11 @@ const userSchema = mongoose.Schema({
     default: 0
   },
   token: String,
-  tokenExp: Number
+  tokenExp: Number,
+  authCount: {
+    type: Number,
+    default: 0
+  }
 }, { timestamps: true });
 
 userSchema.pre('save', function (next) {
