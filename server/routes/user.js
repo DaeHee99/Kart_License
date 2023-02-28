@@ -166,6 +166,25 @@ router.get('/manager/all', auth, (req, res) => {
   })
 })
 
+/* 실시간 유저 조회 - 관리자 페이지 (pagination) */
+router.get('/manager/:page', auth, (req, res) => {
+  User.find().sort({updatedAt: -1}).select('name image license updatedAt').limit(20).skip(20 * (req.params.page - 1)).exec((err, userList) => {
+    if(err) return res.status(400).json({success: false, err});
+    User.find().count().exec((err, result) => {
+      if(err) return res.status(400).json({success: false, err});
+      return res.status(200).json({success: true, count: result, userList: userList});
+    })
+  })
+})
+
+/* 실시간 유저 조회 - 관리자 페이지 (검색) */
+router.get('/manager/find/:name', auth, (req, res) => {
+  User.find({"name": {"$regex": req.params.name}}).sort({updatedAt: -1}).select('name image license updatedAt').exec((err, userList) => {
+    if(err) return res.status(400).json({success: false, err});
+    return res.status(200).json({success: true, count: userList.length, userList: userList});
+  })
+})
+
 /* 유저 페이지 */
 router.get('/userData/:id', (req, res) => {
   User.findOne({_id: req.params.id}, (err, userInfo) => {

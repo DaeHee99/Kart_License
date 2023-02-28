@@ -41,4 +41,15 @@ router.get('/manager/all', auth, (req, res) => {
   })
 })
 
+/* 실시간 후기 조회 - 관리자 페이지 (pagination) */
+router.get('/manager/:page', auth, (req, res) => {
+  Star.find().sort({createdAt: -1}).populate('user', {name:1, image:1}).limit(20).skip(20 * (req.params.page - 1)).exec((err, starList) => {
+    if(err) return res.status(400).json({success: false, err});
+    Star.find().count().exec((err, result) => {
+      if(err) return res.status(400).json({success: false, err});
+      return res.status(200).json({success: true, count: result, starList: starList});
+    })
+  })
+})
+
 module.exports = router;

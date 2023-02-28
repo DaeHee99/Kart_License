@@ -1,20 +1,44 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, forwardRef, useImperativeHandle, useState } from 'react';
 import { MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
 import UserRow from './UserRow';
 import axios from 'axios';
 import { API } from '../../_actions/types';
+import Loading from '../layout/Loading';
 
-export default function UserTable() {
+const UserTable = forwardRef((props, ref) => {
   const [userData, setUserData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const userSearch = (userSearchName) => {
+    if(userSearchName === '') return alert('검색어를 입력해주세요.');
+    else {
+      setLoading(true);
+      axios.get(API+'/user/manager/find/'+userSearchName, {withCredentials: true}).then(response => {
+        if(!response.data.success) return alert('서버 오류');
+        setUserData(response.data.userList);
+        props.setDataAllCount(response.data.count);
+        props.setViewPageNavigation(false);
+        setLoading(false);
+      });
+    }
+  }
+
+  useImperativeHandle(ref, () => ({userSearch}));
 
   useEffect(() => {
-    axios.get(API+'/user/manager/all', {withCredentials: true}).then(response => {
-      if(!response.data.success) return alert('서버 오류');
-      setUserData(response.data.userList);
-    });
-  }, [])
+    if(props.tab === 'user') {
+      axios.get(API+'/user/manager/'+props.page, {withCredentials: true}).then(response => {
+        if(!response.data.success) return alert('서버 오류');
+        setUserData(response.data.userList);
+        props.setDataAllCount(response.data.count);
+        props.setViewPageNavigation(true);
+        setLoading(false);
+      });
+    }
+  }, [props.tab, props.page])
   
   return (
+    loading ? <Loading /> :
     <MDBTable align='middle' responsive className='text-center'>
       <MDBTableHead>
         <tr>
@@ -31,4 +55,6 @@ export default function UserTable() {
       </MDBTableBody>
     </MDBTable>
   );
-}
+});
+
+export default UserTable;
