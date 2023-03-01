@@ -34,8 +34,6 @@ function App() {
         <Route path="/statistics" element={<AuthStatisticsPage />} />
         <Route path="/manager" element={<AuthManagerPage />} />
         <Route path="/userpage/:id" element={<AuthUserPage />} />
-        <Route path="/openkakao" element={<OpenKakao />} />
-        <Route path="/chuhomepage" element={<ChuHomePage />} />
       </Routes>
     </div>
   );
