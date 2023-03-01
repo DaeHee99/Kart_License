@@ -16,18 +16,14 @@ function LandingPage() {
   const [showNotice, setShowNotice] = useState(false);
   const [content, setContent] = useState('');
 
-  // const getNotice = () => {
-  //   axios.get(API+'/notice', {withCredentials: true}).then(response => {
-  //     if(response.data.data.length > 0) {
-  //       setContent(response.data.data[0].content);
-  //       setShowNotice(true);
-  //     }
-  //   })
-  // }
-
-  // useEffect(() => {
-  //   getNotice();
-  // }, [])
+  useEffect(() => {
+    axios.get(API+'/notice', {withCredentials: true}).then(response => {
+      if(response.data.data.length > 0) {
+        setContent(response.data.data[0].content);
+        setTimeout(()=>setShowNotice(true), 500);
+      }
+    })
+  }, [])
 
   return (
     <div>

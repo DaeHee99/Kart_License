@@ -27,7 +27,8 @@ export default function NoticeModal(props) {
 
       axios.delete(API+'/notice', {withCredentials: true}).then(response => {
         if(!response.data.success) return alert('서버 오류');
-        return alert('이전 공지 삭제 완료!');
+        alert('이전 공지 삭제 완료!');
+        props.setNoticeOpen(false);
       })
     })
   }
