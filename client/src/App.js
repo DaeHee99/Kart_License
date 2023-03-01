@@ -9,8 +9,6 @@ import MyPage from "./pages/MyPage";
 import StatisticsPage from "./pages/StatisticsPage";
 import ManagerPage from "./pages/ManagerPage";
 import UserPage from "./pages/UserPage";
-import OpenKakao from "./pages/OpenKakao";
-import ChuHomePage from "./pages/ChuHomePage";
 
 function App() {
   const AuthLandingPage = Auth(LandingPage, null);

@@ -25,6 +25,7 @@ export default function Header() {
     dispatch(logoutUser()).then(response => {
       if(response.payload.success) {
         alert('로그아웃 완료');
+        setShowNavColor(false);
         navigation('/', {replace: true});
       }
       else alert('로그아웃 실패');
