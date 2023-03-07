@@ -25,10 +25,13 @@ export default function Intro(props) {
         <MDBCardImage src={introImage} position='top' alt='Intro' />
         <MDBCardBody>
           <MDBCardTitle><b>카러플 군 계산기</b></MDBCardTitle>
-          <MDBCardText>
-            제보 및 피드백 항상 감사합니다!<br />
-            지속해서 개선하도록 노력하겠습니다.
-          </MDBCardText>
+            {
+              props.content !== '' ? <MDBCardText>{props.content}</MDBCardText> :
+              <MDBCardText>
+              제보 및 피드백 항상 감사합니다!<br />
+              지속해서 개선하도록 노력하겠습니다.
+              </MDBCardText>
+            }
           <MDBBtn color='secondary' onClick={()=>window.location.assign('https://open.kakao.com/o/gK80B2tc')}>친선 매칭방</MDBBtn>
           <MDBBtn onClick={start} className='ms-5'>시작하기</MDBBtn>
         </MDBCardBody>
