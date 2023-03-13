@@ -67,6 +67,7 @@ import L1_006 from "../../images/map/006 공마초.png";
 import L1_007 from "../../images/map/007 설산.png";
 import L1_008 from "../../images/map/008 리버스 직잭.png";
 import L1_009 from "../../images/map/009 문힐시티 숨겨진 지하터널.png";
+import L1_010 from "../../images/map/010 광산 위험한 제련소.png";
 
 const mapImages = [
     Rookie_001,
@@ -138,6 +139,7 @@ const mapImages = [
     L1_007,
     L1_008,
     L1_009,
+    L1_010,
 ]
 
 export default mapImages;

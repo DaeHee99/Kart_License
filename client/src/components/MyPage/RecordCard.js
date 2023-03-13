@@ -18,6 +18,11 @@ function RecordCard(props) {
     navigation(`/result/${props.data._id}`);
   }
 
+  const cardColor = () => {
+    if(props.data.season === 17) return 'primary';
+    if(props.data.season === 18) return 'success';
+  }
+
   useEffect(() => {
     setDate(new Date(props.data.createdAt));
     setLoading(false);
@@ -25,7 +30,7 @@ function RecordCard(props) {
   
   return (
     loading ? <Loading /> :
-    <MDBCard background='primary' className='shadow-5 w-100 text-white mb-3' style={{cursor: 'pointer'}} onClick={goResultPage}>
+    <MDBCard background={cardColor()} className='shadow-5 w-100 text-white mb-3' style={{cursor: 'pointer'}} onClick={goResultPage}>
       <MDBCardHeader><b>S{props.data.season}</b></MDBCardHeader>
       <MDBCardBody>
         <MDBCardTitle><b>{props.data.license}</b></MDBCardTitle>

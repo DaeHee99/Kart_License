@@ -25,7 +25,7 @@ export default function Notice(props) {
             ></MDBBtn>
           </MDBModalHeader>
           <MDBModalBody>
-            <p className='text-center'>
+            <p className='text-center' style={{whiteSpace: 'pre-wrap'}}>
               {props.content}
             </p>
             <img src={Logo} alt='Logo' className='w-100 rounded-4'/>

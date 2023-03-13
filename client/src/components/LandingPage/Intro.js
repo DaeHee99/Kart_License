@@ -26,7 +26,7 @@ export default function Intro(props) {
         <MDBCardBody>
           <MDBCardTitle><b>카러플 군 계산기</b></MDBCardTitle>
             {
-              props.content !== '' ? <MDBCardText>{props.content}</MDBCardText> :
+              props.content !== '' ? <MDBCardText style={{whiteSpace: 'pre-wrap'}}>{props.content}</MDBCardText> :
               <MDBCardText>
               제보 및 피드백 항상 감사합니다!<br />
               지속해서 개선하도록 노력하겠습니다.
