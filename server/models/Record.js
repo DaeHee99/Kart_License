@@ -17,9 +17,8 @@ recordSchema.pre('save', function (next) {
 
   for(let i = 0; i < 6; i++) {
     let nowCount = record.recordCount.slice(0, i+1).reduce((a, b) => a + b, 0);
-    let nextCount = record.recordCount.slice(0, i+2).reduce((a, b) => a + b, 0);
 
-    if((nowCount >= 20) || (nowCount >= 15 && nextCount >= 30)) {
+    if(nowCount >= 20) {
       if(i === 0) record.license = '강주력';
       else if(i === 1) record.license = '주력';
       else if(i === 2) record.license = '1군';
