@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../_actions/user_action";
@@ -8,14 +8,14 @@ import {
   MDBInput,
   MDBBtn,
   // MDBIcon,
-} from 'mdb-react-ui-kit';
+} from "mdb-react-ui-kit";
 
 function LoginForm(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
-  const [loginId, setLoginId] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+
+  const [loginId, setLoginId] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
 
   const loginIdHandler = (event) => setLoginId(event.target.value);
   const loginPasswordHandler = (event) => setLoginPassword(event.target.value);
@@ -24,19 +24,17 @@ function LoginForm(props) {
 
     let body = {
       id: loginId,
-      password: loginPassword
-    }
+      password: loginPassword,
+    };
 
-    dispatch(loginUser(body)).then(response => {
-      if(response.payload.success) {
-        // alert(response.payload.name + '님 환영합니다!');
-        navigate('/', {replace: true});
-      }
-      else alert(response.payload.message || '로그인 실패');
-    })
-  }
+    dispatch(loginUser(body)).then((response) => {
+      if (response.payload.success) {
+        navigate("/", { replace: true });
+      } else alert(response.payload.message || "로그인 실패");
+    });
+  };
 
-  return(
+  return (
     <form onSubmit={loginSubmitHandler}>
       {/* <div className='text-center mb-3'>
         <p>소셜 로그인</p>
@@ -58,11 +56,23 @@ function LoginForm(props) {
         </MDBBtn>
       </div>
 
-      <p className='text-center'>OR</p> */} <br />
-
-      <MDBInput className='mb-4' id='Login_id' label='아이디' value={loginId} onChange={loginIdHandler}/>
-      <MDBInput className='mb-4' type='password' id='Login_password' label='비밀번호' value={loginPassword} onChange={loginPasswordHandler}/>
-
+      <p className='text-center'>OR</p> */}{" "}
+      <br />
+      <MDBInput
+        className="mb-4"
+        id="Login_id"
+        label="아이디"
+        value={loginId}
+        onChange={loginIdHandler}
+      />
+      <MDBInput
+        className="mb-4"
+        type="password"
+        id="Login_password"
+        label="비밀번호"
+        value={loginPassword}
+        onChange={loginPasswordHandler}
+      />
       {/* <MDBRow className='mb-4'>
         <MDBCol className='d-flex justify-content-center'>
           <MDBCheckbox id='form7Example3' label='로그인 상태 유지' defaultChecked />
@@ -71,17 +81,27 @@ function LoginForm(props) {
           <a href='#!'>비밀번호 찾기</a>
         </MDBCol>
       </MDBRow> */}
-
-      <MDBBtn type='submit' className='mb-4' block>
+      <MDBBtn type="submit" className="mb-4" block>
         <b>로그인</b>
       </MDBBtn>
-
-      <MDBRow className='mb-4'>
-        <MDBCol className='d-flex justify-content-center'>
-          <a className='text-primary' style={{cursor: 'pointer'}} onClick={()=>alert('현재는 지원하지 않는 기능입니다.')}>비밀번호 찾기</a>  
+      <MDBRow className="mb-4">
+        <MDBCol className="d-flex justify-content-center">
+          <a
+            className="text-primary"
+            style={{ cursor: "pointer" }}
+            onClick={() => alert("현재는 지원하지 않는 기능입니다.")}
+          >
+            비밀번호 찾기
+          </a>
         </MDBCol>
-        <MDBCol className='d-flex justify-content-center'>
-          <p className='text-primary' style={{cursor: 'pointer'}} onClick={()=>props.handleLoginRegisterClick('register')}>회원가입</p>
+        <MDBCol className="d-flex justify-content-center">
+          <p
+            className="text-primary"
+            style={{ cursor: "pointer" }}
+            onClick={() => props.handleLoginRegisterClick("register")}
+          >
+            회원가입
+          </p>
         </MDBCol>
       </MDBRow>
     </form>
