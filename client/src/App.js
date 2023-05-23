@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Auth from "./hoc/Auth";
-import Header from './components/layout/Header';
-import LandingPage from './pages/LandingPage';
+import Header from "./components/layout/Header";
+import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import TestPage from "./pages/TestPage";
 import ResultPage from "./pages/ResultPage";

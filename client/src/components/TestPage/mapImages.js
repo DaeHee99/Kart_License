@@ -23,7 +23,7 @@ import L3_013 from "../../images/map/013 고가리버스.png";
 import L3_014 from "../../images/map/014 익스트림.png";
 import L3_015 from "../../images/map/015 월드파리.png";
 import L3_016 from "../../images/map/016 뉴욕.png";
-import L3_017 from "../../images/map/017 이탈리아.png";
+// import L3_017 from "../../images/map/017 이탈리아.png";
 import L3_018 from "../../images/map/018 차이나 서호.png";
 import L3_019 from "../../images/map/019 신세계.png";
 import L3_020 from "../../images/map/020 팩부공.png";
@@ -96,7 +96,7 @@ const mapImages = [
   L3_014,
   L3_015,
   L3_016,
-  L3_017,
+  // L3_017,
   L3_018,
   L3_019,
   L3_020,
