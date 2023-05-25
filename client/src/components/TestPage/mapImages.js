@@ -33,6 +33,7 @@ import L3_023 from "../../images/map/023 지피의 시청광장.png";
 import L3_024 from "../../images/map/024 광산 아슬아슬 궤도전차.png";
 import L3_025 from "../../images/map/025 사막 놀라운 공룡 유적지.png";
 import L3_026 from "../../images/map/026 네모 강철바위 용광로.png";
+import L3_027 from "../../images/map/027 동화 잠자는 숲속의 거인.png";
 
 import L2_001 from "../../images/map/001 병마용.png";
 import L2_002 from "../../images/map/002 만리장성.png";
@@ -106,6 +107,7 @@ const mapImages = [
   L3_024,
   L3_025,
   L3_026,
+  L3_027,
 
   L2_001,
   L2_002,
