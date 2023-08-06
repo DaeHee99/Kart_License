@@ -781,6 +781,19 @@ const mapData = [
     ],
     image: "024 쥐라기 공룡섬 대모험.png",
   },
+  {
+    name: "WKC 투어링 랠리",
+    record: [
+      "01:20:49",
+      "01:21:49",
+      "01:22:49",
+      "01:23:49",
+      "01:24:49",
+      "01:25:99",
+      "01:25:99 +",
+    ],
+    image: "025 WKC 투어링 랠리.png",
+  },
 
   {
     name: "동화나라 이상한 나라의 문",
@@ -917,7 +930,7 @@ const mapData = [
 const mapCount = {
   Rookie: 8,
   L3: 27,
-  L2: 24,
+  L2: 25,
   L1: 10,
 };
 const mapAllCount = Object.values(mapCount).reduce((a, b) => a + b, 0);
