@@ -23,6 +23,7 @@ function RecordCard(props) {
     if (props.data.season === 18) return "success";
     if (props.data.season === 19) return "warning";
     if (props.data.season === 20) return "info";
+    if (props.data.season === 21) return "secondary";
   };
 
   useEffect(() => {
