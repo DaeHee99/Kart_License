@@ -794,6 +794,19 @@ const mapData = [
     ],
     image: "025 WKC 투어링 랠리.png",
   },
+  {
+    name: "아이스 아찔한 헬기 점프",
+    record: [
+      "02:00:49",
+      "02:01:99",
+      "02:03:99",
+      "02:05:99",
+      "02:07:99",
+      "02:09:99",
+      "02:09:99 +",
+    ],
+    image: "026 아찔한 헬기 점프.png",
+  },
 
   {
     name: "동화나라 이상한 나라의 문",
@@ -930,7 +943,7 @@ const mapData = [
 const mapCount = {
   Rookie: 8,
   L3: 27,
-  L2: 25,
+  L2: 26,
   L1: 10,
 };
 const mapAllCount = Object.values(mapCount).reduce((a, b) => a + b, 0);

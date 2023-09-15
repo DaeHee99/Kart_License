@@ -61,6 +61,7 @@ import L2_022 from "../../images/map/022 포레스트 대관령.png";
 import L2_023 from "../../images/map/023 광산 3개의 지름길.png";
 import L2_024 from "../../images/map/024 쥐라기 공룡섬 대모험.png";
 import L2_025 from "../../images/map/025 WKC 투어링 랠리.jpg";
+import L2_026 from "../../images/map/026 아찔한 헬기 점프.png";
 
 import L1_001 from "../../images/map/001 동이문.png";
 import L1_002 from "../../images/map/002 노익.png";
@@ -137,6 +138,7 @@ const mapImages = [
   L2_023,
   L2_024,
   L2_025,
+  L2_026,
 
   L1_001,
   L1_002,
