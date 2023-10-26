@@ -20,10 +20,11 @@ function RecordCard(props) {
 
   const cardColor = () => {
     if (props.data.season === 17) return "primary";
-    if (props.data.season === 18) return "success";
-    if (props.data.season === 19) return "warning";
-    if (props.data.season === 20) return "info";
-    if (props.data.season === 21) return "secondary";
+    if (props.data.season === 18) return "secondary";
+    if (props.data.season === 19) return "success";
+    if (props.data.season === 20) return "danger";
+    if (props.data.season === 21) return "warning";
+    if (props.data.season === 22) return "info";
   };
 
   useEffect(() => {
