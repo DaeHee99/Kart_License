@@ -2,15 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../_actions/user_action";
-import {
-  MDBRow,
-  MDBCol,
-  MDBInput,
-  MDBBtn,
-  // MDBIcon,
-} from "mdb-react-ui-kit";
+import { MDBInput, MDBBtn } from "mdb-react-ui-kit";
 
-function LoginForm(props) {
+function LoginForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -36,30 +30,8 @@ function LoginForm(props) {
 
   return (
     <form onSubmit={loginSubmitHandler}>
-      {/* <div className='text-center mb-3'>
-        <p>소셜 로그인</p>
-
-        <MDBBtn floating color="secondary" className='mx-1'>
-          <MDBIcon fab icon='facebook-f' />
-        </MDBBtn>
-
-        <MDBBtn floating color="secondary" className='mx-1'>
-          <MDBIcon fab icon='google' />
-        </MDBBtn>
-
-        <MDBBtn floating color="secondary" className='mx-1'>
-          <MDBIcon fab icon='twitter' />
-        </MDBBtn>
-
-        <MDBBtn floating color="secondary" className='mx-1'>
-          <MDBIcon fab icon='github' />
-        </MDBBtn>
-      </div>
-
-      <p className='text-center'>OR</p> */}{" "}
-      <br />
       <MDBInput
-        className="mb-4"
+        className="mt-5 mb-4"
         id="Login_id"
         label="아이디"
         value={loginId}
@@ -73,37 +45,9 @@ function LoginForm(props) {
         value={loginPassword}
         onChange={loginPasswordHandler}
       />
-      {/* <MDBRow className='mb-4'>
-        <MDBCol className='d-flex justify-content-center'>
-          <MDBCheckbox id='form7Example3' label='로그인 상태 유지' defaultChecked />
-        </MDBCol>
-        <MDBCol>
-          <a href='#!'>비밀번호 찾기</a>
-        </MDBCol>
-      </MDBRow> */}
       <MDBBtn type="submit" className="mb-4" block>
         <b>로그인</b>
       </MDBBtn>
-      <MDBRow className="mb-4">
-        <MDBCol className="d-flex justify-content-center">
-          <a
-            className="text-primary"
-            style={{ cursor: "pointer" }}
-            onClick={() => alert("현재는 지원하지 않는 기능입니다.")}
-          >
-            비밀번호 찾기
-          </a>
-        </MDBCol>
-        <MDBCol className="d-flex justify-content-center">
-          <p
-            className="text-primary"
-            style={{ cursor: "pointer" }}
-            onClick={() => props.handleLoginRegisterClick("register")}
-          >
-            회원가입
-          </p>
-        </MDBCol>
-      </MDBRow>
     </form>
   );
 }

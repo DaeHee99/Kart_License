@@ -123,7 +123,7 @@ function RegisterForm() {
       원하는 프로필을 하나 선택하세요.
       <br />
       <br />
-      <div className="d-flex flex-row justify-content-between flex-wrap">
+      <div className="d-flex flex-row flex-wrap gap-1">
         <MDBRadio
           name="profileImage"
           id="profileImage1"
