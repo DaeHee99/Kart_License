@@ -129,119 +129,26 @@ function InformationChange() {
         </div>
         <br />
         <br />
-        <div className="d-flex flex-row justify-content-between flex-wrap">
-          <MDBRadio
-            name="newProfileImage"
-            id="newProfileImage1"
-            value={ProfileImages.dao}
-            defaultChecked={userData.image === ProfileImages.dao}
-            inline
-            label={
-              <MDBCardImage
-                src={ProfileImages.dao}
-                alt="ProfileImage"
-                width="63px"
-              />
-            }
-          />
-          <MDBRadio
-            name="newProfileImage"
-            id="newProfileImage2"
-            value={ProfileImages.bazzi}
-            defaultChecked={userData.image === ProfileImages.bazzi}
-            inline
-            label={
-              <MDBCardImage
-                src={ProfileImages.bazzi}
-                alt="ProfileImage"
-                width="63px"
-              />
-            }
-          />
-          <MDBRadio
-            name="newProfileImage"
-            id="newProfileImage3"
-            value={ProfileImages.dizini}
-            defaultChecked={userData.image === ProfileImages.dizini}
-            inline
-            label={
-              <MDBCardImage
-                src={ProfileImages.dizini}
-                alt="ProfileImage"
-                width="63px"
-              />
-            }
-          />
-          <MDBRadio
-            name="newProfileImage"
-            id="newProfileImage4"
-            value={ProfileImages.marid}
-            defaultChecked={userData.image === ProfileImages.marid}
-            inline
-            label={
-              <MDBCardImage
-                src={ProfileImages.marid}
-                alt="ProfileImage"
-                width="63px"
-              />
-            }
-          />
-          <MDBRadio
-            name="newProfileImage"
-            id="newProfileImage5"
-            value={ProfileImages.eddi}
-            defaultChecked={userData.image === ProfileImages.eddi}
-            inline
-            label={
-              <MDBCardImage
-                src={ProfileImages.eddi}
-                alt="ProfileImage"
-                width="63px"
-              />
-            }
-          />
-          <MDBRadio
-            name="newProfileImage"
-            id="newProfileImage6"
-            value={ProfileImages.kepi}
-            defaultChecked={userData.image === ProfileImages.kepi}
-            inline
-            label={
-              <MDBCardImage
-                src={ProfileImages.kepi}
-                alt="ProfileImage"
-                width="63px"
-              />
-            }
-          />
-          <MDBRadio
-            name="newProfileImage"
-            id="newProfileImage7"
-            value={ProfileImages.rodumani}
-            defaultChecked={userData.image === ProfileImages.rodumani}
-            inline
-            label={
-              <MDBCardImage
-                src={ProfileImages.rodumani}
-                alt="ProfileImage"
-                width="63px"
-              />
-            }
-          />
-          <MDBRadio
-            name="newProfileImage"
-            id="newProfileImage8"
-            value={ProfileImages.uni}
-            defaultChecked={userData.image === ProfileImages.uni}
-            inline
-            label={
-              <MDBCardImage
-                src={ProfileImages.uni}
-                alt="ProfileImage"
-                width="63px"
-              />
-            }
-          />
+        <div className="d-flex flex-row flex-wrap">
+          {ProfileImages.map((image, index) => (
+            <MDBRadio
+              key={image.name}
+              name="newProfileImage"
+              id={`newProfileImage${index}`}
+              value={image.src}
+              defaultChecked={userData.image === image.src}
+              inline
+              className="mt-2"
+              label={
+                <MDBCardImage
+                  src={image.src}
+                  alt={image.name}
+                  width="63px"
+                  className="mt-2"
+                />
+              }
+            />
+          ))}
         </div>
         <MDBBtn block className="mt-4" onClick={changeImage}>
           <b>변경하기</b>
