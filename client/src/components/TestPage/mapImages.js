@@ -6,6 +6,7 @@ import Rookie_005 from "../../images/map/005 1920.png";
 import Rookie_006 from "../../images/map/006 차이나라사.png";
 import Rookie_007 from "../../images/map/007 용의운하.png";
 import Rookie_008 from "../../images/map/008 쥐공무.png";
+import Rookie_009 from "../../images/map/009 차이나 바다의 운율.png";
 
 import L3_001 from "../../images/map/001 코리아서킷.png";
 import L3_002 from "../../images/map/002 두바이.png";
@@ -84,6 +85,7 @@ const mapImages = [
   Rookie_006,
   Rookie_007,
   Rookie_008,
+  Rookie_009,
 
   L3_001,
   L3_002,
