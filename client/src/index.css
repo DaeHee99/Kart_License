@@ -1,16 +1,16 @@
-/* @font-face {
-  font-family: "GmarketSansMedium";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff")
-    format("woff");
-  font-weight: normal;
-  font-style: normal;
-} */
-
 @font-face {
-  font-family: "NanumSquareNeo-Variable";
+  font-family: "NanumSquareNeo-normal";
   src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2")
     format("woff2");
   font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "NanumSquareNeo-bold";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2")
+    format("woff2");
+  font-weight: bold;
   font-style: normal;
 }
 
@@ -22,5 +22,10 @@ body {
 }
 
 * {
-  font-family: "NanumSquareNeo-Variable", sans-serif;
+  font-family: "NanumSquareNeo-normal", sans-serif;
+}
+
+.fw-bold,
+b {
+  font-family: "NanumSquareNeo-bold";
 }
