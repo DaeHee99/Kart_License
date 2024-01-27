@@ -16,7 +16,7 @@ app.set("port", port);
 let server;
 
 if (process.env.NODE_ENV === "production") {
-  let options = {
+  const options = {
     ca: fs.readFileSync("/etc/ssl/ca_bundle.crt"),
     key: fs.readFileSync("/etc/ssl/private/private.key"),
     cert: fs.readFileSync("/etc/ssl/certificate.crt"),
@@ -62,7 +62,7 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 function onListening() {
-  let addr = server.address();
-  let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+  const addr = server.address();
+  const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   debug("Listening on " + bind);
 }
