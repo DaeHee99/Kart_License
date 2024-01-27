@@ -1,17 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const cookieParser = require("cookie-parser");
-
 const User = require("../models/User");
 const Record = require("../models/Record");
 const Log = require("../models/Log");
 const key = require("../config/key");
 const auth = require("../middleware/auth");
+const mongoose = require("mongoose");
+const app = require("../app");
 
 router.use(cookieParser());
 
-const mongoose = require("mongoose");
-const app = require("../app");
 mongoose.set("strictQuery", false);
 mongoose
   .connect(key.mongoURI)
@@ -32,7 +31,10 @@ router.post("/save", (req, res) => {
         (err) => {
           if (err) return res.status(400).json({ success: false, err });
 
-          let log = new Log({ user: req.body.user, content: `기록 측정 완료` });
+          const log = new Log({
+            user: req.body.user,
+            content: `기록 측정 완료`,
+          });
           log.save();
 
           return res.status(200).json({ success: true, id: recordInfo._id });
