@@ -820,6 +820,19 @@ const mapData = [
     ],
     image: "026 아찔한 헬기 점프.png",
   },
+  {
+    name: "어비스 숨겨진 바닷길",
+    record: [
+      "01:49:49",
+      "01:50:99",
+      "01:52:99",
+      "01:54:99",
+      "01:56:99",
+      "01:58:99",
+      "01:58:99 +",
+    ],
+    image: "027 어비스 숨겨진 바닷길.png",
+  },
 
   {
     name: "동화나라 이상한 나라의 문",
@@ -969,7 +982,7 @@ const mapData = [
 const mapCount = {
   Rookie: 9,
   L3: 27,
-  L2: 26,
+  L2: 27,
   L1: 11,
 };
 const mapAllCount = Object.values(mapCount).reduce((a, b) => a + b, 0);
