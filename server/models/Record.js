@@ -15,7 +15,7 @@ const recordSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-recordSchema.pre("save", (next) => {
+recordSchema.pre("save", function (next) {
   const record = this;
 
   for (let i = 0; i < 6; i++) {

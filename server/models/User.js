@@ -45,7 +45,7 @@ const userSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.pre("save", (next) => {
+userSchema.pre("save", function (next) {
   const user = this;
 
   if (user.isModified("password")) {
@@ -63,14 +63,14 @@ userSchema.pre("save", (next) => {
   } else next();
 });
 
-userSchema.methods.comparePassword = (plainPassword, cb) => {
+userSchema.methods.comparePassword = function (plainPassword, cb) {
   bcrypt.compare(plainPassword, this.password, (err, result) => {
     if (err) return cb(err);
     cb(null, result);
   });
 };
 
-userSchema.methods.generateToken = (cb) => {
+userSchema.methods.generateToken = function (cb) {
   const user = this;
 
   const token = jwt.sign(user._id.toHexString(), "kartChuClub");
@@ -82,7 +82,7 @@ userSchema.methods.generateToken = (cb) => {
   });
 };
 
-userSchema.statics.findByToken = (token, cb) => {
+userSchema.statics.findByToken = function (token, cb) {
   const user = this;
 
   jwt.verify(token, "kartChuClub", (err, decoded) => {
@@ -95,7 +95,7 @@ userSchema.statics.findByToken = (token, cb) => {
   });
 };
 
-userSchema.methods.changePassword = (newPassword, cb) => {
+userSchema.methods.changePassword = function (newPassword, cb) {
   const user = this;
 
   user.password = newPassword;
