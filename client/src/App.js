@@ -9,6 +9,7 @@ import MyPage from "./pages/MyPage";
 import StatisticsPage from "./pages/StatisticsPage";
 import ManagerPage from "./pages/ManagerPage";
 import UserPage from "./pages/UserPage";
+import ServerPage from "./pages/ServerPage";
 
 function App() {
   const AuthLandingPage = Auth(LandingPage, null);
@@ -24,14 +25,15 @@ function App() {
     <div>
       <Header />
       <Routes>
-        <Route path="/" element={<AuthLandingPage />} />
+        <Route path="*" element={<ServerPage />} />
+        {/* <Route path="/" element={<AuthLandingPage />} />
         <Route path="/login" element={<AuthLoginPage />} />
         <Route path="/test" element={<AuthTestPage />} />
         <Route path="/result/:id" element={<AuthResultPage />} />
         <Route path="/mypage" element={<AuthMyPage />} />
         <Route path="/statistics" element={<AuthStatisticsPage />} />
         <Route path="/manager" element={<AuthManagerPage />} />
-        <Route path="/userpage/:id" element={<AuthUserPage />} />
+        <Route path="/userpage/:id" element={<AuthUserPage />} /> */}
       </Routes>
     </div>
   );
