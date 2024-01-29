@@ -63,9 +63,8 @@ function StatisticsPage() {
       });
   }, []);
 
-  return loading ? (
-    <Loading />
-  ) : (
+  if (loading) return <Loading />;
+  return (
     <>
       <MDBContainer className="mb-7">
         <h1>

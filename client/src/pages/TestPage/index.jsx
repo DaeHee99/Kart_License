@@ -112,9 +112,8 @@ function TestPage() {
       });
   }, [userData.isAuth, userData._id]);
 
-  return loading ? (
-    <Loading />
-  ) : (
+  if (loading) return <Loading />;
+  return (
     <>
       <MDBContainer className="mb-5">
         <Progress num={num} />

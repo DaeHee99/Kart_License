@@ -45,9 +45,8 @@ function UserPage() {
     }
   }, [id, navigation]);
 
-  return loading ? (
-    <Loading />
-  ) : (
+  if (loading) return <Loading />;
+  return (
     <MDBContainer>
       <MDBTabs justify className="mb-3">
         <MDBTabsItem>

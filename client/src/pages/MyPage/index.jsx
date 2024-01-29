@@ -11,6 +11,7 @@ import {
 import { API } from "../../_actions/types";
 import axios from "axios";
 import Loading from "../../components/Loading";
+import Footer from "../../components/Footer";
 import Main from "./Main";
 import MyRecord from "./MyRecord";
 import InformationChange from "./InformationChange";
@@ -32,52 +33,54 @@ function MyPage() {
       });
   }, [userData._id]);
 
-  return loading ? (
-    <Loading />
-  ) : (
-    <MDBContainer>
-      <MDBTabs justify className="mb-3">
-        <MDBTabsItem>
-          <MDBTabsLink
-            onClick={() => setTab("MyInformation")}
-            active={tab === "MyInformation"}
-            className="fw-bold"
-          >
-            내 정보
-          </MDBTabsLink>
-        </MDBTabsItem>
-        <MDBTabsItem>
-          <MDBTabsLink
-            onClick={() => setTab("MyRecord")}
-            active={tab === "MyRecord"}
-            className="fw-bold"
-          >
-            기록
-          </MDBTabsLink>
-        </MDBTabsItem>
-        <MDBTabsItem>
-          <MDBTabsLink
-            onClick={() => setTab("ChangeInformation")}
-            active={tab === "ChangeInformation"}
-            className="fw-bold"
-          >
-            정보 수정
-          </MDBTabsLink>
-        </MDBTabsItem>
-      </MDBTabs>
+  if (loading) return <Loading />;
+  return (
+    <>
+      <MDBContainer className="mb-7">
+        <MDBTabs justify className="mb-3">
+          <MDBTabsItem>
+            <MDBTabsLink
+              onClick={() => setTab("MyInformation")}
+              active={tab === "MyInformation"}
+              className="fw-bold"
+            >
+              내 정보
+            </MDBTabsLink>
+          </MDBTabsItem>
+          <MDBTabsItem>
+            <MDBTabsLink
+              onClick={() => setTab("MyRecord")}
+              active={tab === "MyRecord"}
+              className="fw-bold"
+            >
+              기록
+            </MDBTabsLink>
+          </MDBTabsItem>
+          <MDBTabsItem>
+            <MDBTabsLink
+              onClick={() => setTab("ChangeInformation")}
+              active={tab === "ChangeInformation"}
+              className="fw-bold"
+            >
+              정보 수정
+            </MDBTabsLink>
+          </MDBTabsItem>
+        </MDBTabs>
 
-      <MDBTabsContent>
-        <MDBTabsPane show={tab === "MyInformation"}>
-          <Main recordList={recordList} />
-        </MDBTabsPane>
-        <MDBTabsPane show={tab === "MyRecord"}>
-          <MyRecord recordList={recordList} />
-        </MDBTabsPane>
-        <MDBTabsPane show={tab === "ChangeInformation"}>
-          <InformationChange />
-        </MDBTabsPane>
-      </MDBTabsContent>
-    </MDBContainer>
+        <MDBTabsContent>
+          <MDBTabsPane show={tab === "MyInformation"}>
+            <Main recordList={recordList} />
+          </MDBTabsPane>
+          <MDBTabsPane show={tab === "MyRecord"}>
+            <MyRecord recordList={recordList} />
+          </MDBTabsPane>
+          <MDBTabsPane show={tab === "ChangeInformation"}>
+            <InformationChange />
+          </MDBTabsPane>
+        </MDBTabsContent>
+      </MDBContainer>
+      {tab !== "ChangeInformation" && <Footer />}
+    </>
   );
 }
 

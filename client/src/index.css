@@ -25,7 +25,6 @@ body {
   font-family: "NanumSquareNeo-normal", sans-serif;
 }
 
-.fw-bold,
-b {
+.fw-bold {
   font-family: "NanumSquareNeo-bold";
 }
