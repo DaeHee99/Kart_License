@@ -11,6 +11,7 @@ import {
 import { API } from "../../_actions/types";
 import axios from "axios";
 import Loading from "../../components/Loading";
+import Footer from "../../components/Footer";
 import MyRecord from "../MyPage/MyRecord";
 import Main from "./Main";
 
@@ -47,37 +48,40 @@ function UserPage() {
 
   if (loading) return <Loading />;
   return (
-    <MDBContainer>
-      <MDBTabs justify className="mb-3">
-        <MDBTabsItem>
-          <MDBTabsLink
-            onClick={() => setTab("UserInformation")}
-            active={tab === "UserInformation"}
-            className="fw-bold"
-          >
-            유저 정보
-          </MDBTabsLink>
-        </MDBTabsItem>
-        <MDBTabsItem>
-          <MDBTabsLink
-            onClick={() => setTab("UserRecord")}
-            active={tab === "UserRecord"}
-            className="fw-bold"
-          >
-            기록
-          </MDBTabsLink>
-        </MDBTabsItem>
-      </MDBTabs>
+    <>
+      <MDBContainer className="mb-7">
+        <MDBTabs justify className="mb-3">
+          <MDBTabsItem>
+            <MDBTabsLink
+              onClick={() => setTab("UserInformation")}
+              active={tab === "UserInformation"}
+              className="fw-bold"
+            >
+              유저 정보
+            </MDBTabsLink>
+          </MDBTabsItem>
+          <MDBTabsItem>
+            <MDBTabsLink
+              onClick={() => setTab("UserRecord")}
+              active={tab === "UserRecord"}
+              className="fw-bold"
+            >
+              기록
+            </MDBTabsLink>
+          </MDBTabsItem>
+        </MDBTabs>
 
-      <MDBTabsContent>
-        <MDBTabsPane show={tab === "UserInformation"}>
-          <Main recordList={recordList} userData={userData} />
-        </MDBTabsPane>
-        <MDBTabsPane show={tab === "UserRecord"}>
-          <MyRecord recordList={recordList} />
-        </MDBTabsPane>
-      </MDBTabsContent>
-    </MDBContainer>
+        <MDBTabsContent>
+          <MDBTabsPane show={tab === "UserInformation"}>
+            <Main recordList={recordList} userData={userData} />
+          </MDBTabsPane>
+          <MDBTabsPane show={tab === "UserRecord"}>
+            <MyRecord recordList={recordList} />
+          </MDBTabsPane>
+        </MDBTabsContent>
+      </MDBContainer>
+      <Footer />
+    </>
   );
 }
 

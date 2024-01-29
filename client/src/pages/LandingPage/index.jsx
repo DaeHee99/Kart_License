@@ -34,17 +34,17 @@ function LandingPage() {
   }, []);
 
   return (
-    <div>
-      <MDBContainer fluid className="mb-7">
-        <MDBRow className="g-3">
-          <MDBCol lg="8">
+    <>
+      <MDBContainer className="mb-7">
+        <MDBRow className="g-3 g-lg-2">
+          <MDBCol lg="9">
             <Intro
               isAuth={user.userData.isAuth}
               content={content}
               setLoginCheckModal={setLoginCheckModal}
             />
           </MDBCol>
-          <MDBCol lg="4">
+          <MDBCol lg="3">
             {user.userData.isAuth ? (
               <Profile {...user.userData} />
             ) : (
@@ -66,7 +66,7 @@ function LandingPage() {
         />
       )}
       <Footer />
-    </div>
+    </>
   );
 }
 

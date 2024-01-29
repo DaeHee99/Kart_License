@@ -115,7 +115,7 @@ function TestPage() {
   if (loading) return <Loading />;
   return (
     <>
-      <MDBContainer className="mb-5">
+      <MDBContainer className="mb-7">
         <Progress num={num} />
         <div className="text-center mb-3">
           <img
