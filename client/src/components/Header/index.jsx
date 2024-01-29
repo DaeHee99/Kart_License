@@ -34,7 +34,7 @@ function Header() {
   return (
     <>
       <MDBNavbar sticky expand="lg" dark bgColor="primary">
-        <MDBContainer fluid>
+        <MDBContainer fluid={window.innerWidth < 992}>
           <MDBNavbarToggler
             type="button"
             data-target="#navbarColor02"
@@ -75,7 +75,7 @@ function Header() {
             <MDBIcon icon="bars" fas />
           </MDBNavbarToggler>
           <MDBCollapse show={showNavColor} navbar>
-            <MDBNavbarNav className="me-auto mb-2 mb-lg-0">
+            <MDBNavbarNav className="me-auto mb-2 mb-lg-0 justify-content-end">
               <MDBNavbarItem className="active">
                 <MDBNavbarLink
                   aria-current="page"
@@ -109,16 +109,18 @@ function Header() {
                   </MDBNavbarLink>
                 </MDBNavbarItem>
               )}
-              <MDBNavbarItem>
-                <MDBNavbarLink
-                  onClick={() => {
-                    navigation("/mypage");
-                    setShowNavColor(false);
-                  }}
-                >
-                  마이페이지
-                </MDBNavbarLink>
-              </MDBNavbarItem>
+              {user.userData.isAuth && (
+                <MDBNavbarItem>
+                  <MDBNavbarLink
+                    onClick={() => {
+                      navigation("/mypage");
+                      setShowNavColor(false);
+                    }}
+                  >
+                    마이페이지
+                  </MDBNavbarLink>
+                </MDBNavbarItem>
+              )}
               <MDBNavbarItem>
                 {user.userData.isAuth ? (
                   <MDBNavbarLink onClick={logoutHandler}>
