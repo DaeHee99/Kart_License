@@ -11,6 +11,7 @@ import {
   MDBCol,
   MDBContainer,
   MDBBtn,
+  MDBBadge,
 } from "mdb-react-ui-kit";
 
 function Profile({ image, name, license, isAdmin }) {
@@ -38,12 +39,18 @@ function Profile({ image, name, license, isAdmin }) {
             <MDBCardBody>
               <MDBCardTitle className="fw-bold">{name}</MDBCardTitle>
               <MDBCardText>
-                <small className="text-muted">{license}</small>
+                <MDBBadge style={{ fontSize: 14 }} light>
+                  {license}
+                </MDBBadge>
                 {isAdmin && (
-                  <>
-                    <br />
-                    <small className="text-danger fw-bold">관리자</small>
-                  </>
+                  <MDBBadge
+                    style={{ fontSize: 14 }}
+                    className="m-2"
+                    color="danger"
+                    light
+                  >
+                    관리자
+                  </MDBBadge>
                 )}
               </MDBCardText>
               <MDBRow className="g-2">

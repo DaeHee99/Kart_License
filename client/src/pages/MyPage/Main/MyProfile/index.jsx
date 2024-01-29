@@ -8,6 +8,7 @@ import {
   MDBRow,
   MDBCol,
   MDBContainer,
+  MDBBadge,
 } from "mdb-react-ui-kit";
 
 function MyProfile({ lastRecord }) {
@@ -24,13 +25,22 @@ function MyProfile({ lastRecord }) {
           </MDBCol>
           <MDBCol className="col-8">
             <MDBCardBody>
-              <MDBCardTitle className="fw-bold">
-                {userData.name}{" "}
+              <MDBCardTitle className="fw-bold">{userData.name}</MDBCardTitle>
+              <MDBCardText>
+                <MDBBadge style={{ fontSize: 14 }} light>
+                  {userData.license}
+                </MDBBadge>
                 {userData.isAdmin && (
-                  <span className="text-danger">(관리자)</span>
+                  <MDBBadge
+                    style={{ fontSize: 14 }}
+                    className="mx-2"
+                    color="danger"
+                    light
+                  >
+                    관리자
+                  </MDBBadge>
                 )}
-              </MDBCardTitle>
-              <MDBCardText>{userData.license}</MDBCardText>
+              </MDBCardText>
               <MDBCardText>
                 <small className="text-muted">
                   최근 측정 기록
