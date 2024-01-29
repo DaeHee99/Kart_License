@@ -48,9 +48,10 @@ function UserRow({ _id, image, name, updatedAt, license }) {
           rounded
           size="lg"
           style={{ whiteSpace: "nowrap" }}
+          className="fw-bold"
           onClick={() => navigation(`/userpage/${_id}`)}
         >
-          <b>정보</b>
+          정보
         </MDBBtn>
       </td>
     </tr>

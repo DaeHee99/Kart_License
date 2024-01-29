@@ -75,9 +75,7 @@ function NoticeModal({ noticeOpen, setNoticeOpen }) {
       <MDBModalDialog centered>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>
-              <b>공지 등록 & 삭제</b>
-            </MDBModalTitle>
+            <MDBModalTitle className="fw-bold">공지 등록 & 삭제</MDBModalTitle>
             <MDBBtn
               className="btn-close"
               color="none"
@@ -100,11 +98,15 @@ function NoticeModal({ noticeOpen, setNoticeOpen }) {
             </div>
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color="secondary" onClick={() => setNoticeOpen(false)}>
-              <b>취소</b>
+            <MDBBtn
+              className="fw-bold"
+              color="secondary"
+              onClick={() => setNoticeOpen(false)}
+            >
+              취소
             </MDBBtn>
-            <MDBBtn onClick={submitHandler}>
-              <b>등록</b>
+            <MDBBtn className="fw-bold" onClick={submitHandler}>
+              등록
             </MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>

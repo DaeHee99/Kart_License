@@ -32,9 +32,10 @@ function StarRow({ updatedAt, user, recordId, star, text }) {
           rounded
           size="lg"
           style={{ whiteSpace: "nowrap" }}
+          className="fw-bold"
           onClick={() => navigation(`/result/${recordId}`)}
         >
-          <b>결과 페이지</b>
+          결과 페이지
         </MDBBtn>
       </td>
       <td style={{ wordBreak: "break-all" }}>

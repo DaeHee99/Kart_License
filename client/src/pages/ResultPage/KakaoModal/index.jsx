@@ -53,9 +53,7 @@ function KakaoModal({ recordId, shareOpen, setShareOpen }) {
       <MDBModalDialog centered>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>
-              <b>카카오톡 공유하기</b>
-            </MDBModalTitle>
+            <MDBModalTitle className="fw-bold">카카오톡 공유하기</MDBModalTitle>
             <MDBBtn
               className="btn-close"
               color="none"
@@ -63,22 +61,26 @@ function KakaoModal({ recordId, shareOpen, setShareOpen }) {
             ></MDBBtn>
           </MDBModalHeader>
           <MDBModalBody>
-            <p className="text-center m-0">
-              <b>이 결과를 카카오톡으로 공유하시겠습니까?</b>
+            <p className="text-center m-0 fw-bold">
+              이 결과를 카카오톡으로 공유하시겠습니까?
               <img
                 width={"100%"}
                 src="https://play-lh.googleusercontent.com/8_0SDfkFXAFm12A7XEqkyChCdGC055J6fC8JR7qynNuO3qNOczIoNHo4U4lad8xYMJOL"
                 alt="kakao"
-                className="rounded-3"
+                className="rounded-3 mt-2"
               />
             </p>
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color="secondary" onClick={() => setShareOpen(false)}>
-              <b>취소</b>
+            <MDBBtn
+              color="secondary"
+              className="fw-bold"
+              onClick={() => setShareOpen(false)}
+            >
+              취소
             </MDBBtn>
-            <MDBBtn onClick={kakaoShare}>
-              <b>공유하기</b>
+            <MDBBtn onClick={kakaoShare} className="fw-bold">
+              공유하기
             </MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>

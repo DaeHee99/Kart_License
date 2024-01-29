@@ -43,13 +43,9 @@ function RecordCard({ _id, season, createdAt, license }) {
       style={{ cursor: "pointer" }}
       onClick={goResultPage}
     >
-      <MDBCardHeader>
-        <b>S{season}</b>
-      </MDBCardHeader>
+      <MDBCardHeader className="fw-bold">{`S${season}`}</MDBCardHeader>
       <MDBCardBody>
-        <MDBCardTitle>
-          <b>{license}</b>
-        </MDBCardTitle>
+        <MDBCardTitle className="fw-bold">{license}</MDBCardTitle>
         <MDBCardText>
           {date.getFullYear()}/{("00" + (date.getMonth() + 1)).slice(-2)}/
           {("00" + date.getDate()).slice(-2)}{" "}

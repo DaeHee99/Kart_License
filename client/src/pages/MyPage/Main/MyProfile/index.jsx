@@ -24,11 +24,11 @@ function MyProfile({ lastRecord }) {
           </MDBCol>
           <MDBCol className="col-8">
             <MDBCardBody>
-              <MDBCardTitle>
-                <b>
-                  {userData.name}{" "}
-                  {userData.isAdmin && <b className="text-danger">(관리자)</b>}
-                </b>
+              <MDBCardTitle className="fw-bold">
+                {userData.name}{" "}
+                {userData.isAdmin && (
+                  <span className="text-danger">(관리자)</span>
+                )}
               </MDBCardTitle>
               <MDBCardText>{userData.license}</MDBCardText>
               <MDBCardText>

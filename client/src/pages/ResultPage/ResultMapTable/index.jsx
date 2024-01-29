@@ -23,65 +23,68 @@ function ResultMapTable({ mapCount, record }) {
     >
       <MDBTableHead>
         <tr>
-          <th className="p-0" scope="col" style={{ width: "65%" }}>
-            <b>맵 이름</b>
+          <th className="p-0 fw-bold" scope="col" style={{ width: "65%" }}>
+            맵 이름
           </th>
           <th
-            className="p-0"
+            className="p-0 fw-bold"
             scope="col"
             style={{ width: "5%", backgroundColor: "rgba(255, 99, 132, 0.5)" }}
           >
-            <b>강</b>
+            강
           </th>
           <th
-            className="p-0"
+            className="p-0 fw-bold"
             scope="col"
             style={{ width: "5%", backgroundColor: "rgba(255, 159, 64, 0.5)" }}
           >
-            <b>주</b>
+            주
           </th>
           <th
-            className="p-0"
+            className="p-0 fw-bold"
             scope="col"
             style={{ width: "5%", backgroundColor: "rgba(255, 205, 86, 0.5)" }}
           >
-            <b>1</b>
+            1
           </th>
           <th
-            className="p-0"
+            className="p-0 fw-bold"
             scope="col"
             style={{ width: "5%", backgroundColor: "rgba(75, 192, 192, 0.5)" }}
           >
-            <b>2</b>
+            2
           </th>
           <th
-            className="p-0"
+            className="p-0 fw-bold"
             scope="col"
             style={{ width: "5%", backgroundColor: "rgba(54, 162, 235, 0.5)" }}
           >
-            <b>3</b>
+            3
           </th>
           <th
-            className="p-0"
+            className="p-0 fw-bold"
             scope="col"
             style={{ width: "5%", backgroundColor: "rgba(153, 102, 255, 0.5)" }}
           >
-            <b>4</b>
+            4
           </th>
           <th
-            className="p-0"
+            className="p-0 fw-bold"
             scope="col"
             style={{ width: "5%", backgroundColor: "rgba(201, 203, 207, 0.5)" }}
           >
-            <b>일</b>
+            일
           </th>
         </tr>
       </MDBTableHead>
       <MDBTableBody>
         {record.map((item, index) => (
           <tr key={index}>
-            <td className="p-0" style={{ backgroundColor: mapColor(index) }}>
-              <b>{item.mapName}</b>
+            <td
+              className="p-0 fw-bold"
+              style={{ backgroundColor: mapColor(index) }}
+            >
+              {item.mapName}
             </td>
             <td
               className="p-0"

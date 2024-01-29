@@ -37,45 +37,52 @@ function RecordRow({ _id, license, user, recordCount }) {
             <tr>
               <th
                 scope="col"
+                className="fw-bold"
                 style={{ backgroundColor: "rgba(255, 99, 132, 0.5)" }}
               >
-                <b>강</b>
+                강
               </th>
               <th
                 scope="col"
+                className="fw-bold"
                 style={{ backgroundColor: "rgba(255, 159, 64, 0.5)" }}
               >
-                <b>주</b>
+                주
               </th>
               <th
                 scope="col"
+                className="fw-bold"
                 style={{ backgroundColor: "rgba(255, 205, 86, 0.5)" }}
               >
-                <b>1</b>
+                1
               </th>
               <th
                 scope="col"
+                className="fw-bold"
                 style={{ backgroundColor: "rgba(75, 192, 192, 0.5)" }}
               >
-                <b>2</b>
+                2
               </th>
               <th
                 scope="col"
+                className="fw-bold"
                 style={{ backgroundColor: "rgba(54, 162, 235, 0.5)" }}
               >
-                <b>3</b>
+                3
               </th>
               <th
                 scope="col"
+                className="fw-bold"
                 style={{ backgroundColor: "rgba(153, 102, 255, 0.5)" }}
               >
-                <b>4</b>
+                4
               </th>
               <th
                 scope="col"
+                className="fw-bold"
                 style={{ backgroundColor: "rgba(201, 203, 207, 0.5)" }}
               >
-                <b>일</b>
+                일
               </th>
             </tr>
           </MDBTableHead>
@@ -138,9 +145,10 @@ function RecordRow({ _id, license, user, recordCount }) {
           rounded
           size="lg"
           style={{ whiteSpace: "nowrap" }}
+          className="fw-bold"
           onClick={() => navigation(`/result/${_id}`)}
         >
-          <b>결과</b>
+          결과
         </MDBBtn>
       </td>
     </tr>

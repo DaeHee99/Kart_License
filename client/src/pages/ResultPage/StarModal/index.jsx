@@ -50,9 +50,7 @@ function StarModal({ recordId, starOpen, setStarOpen }) {
       <MDBModalDialog centered>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>
-              <b>후기 작성</b>
-            </MDBModalTitle>
+            <MDBModalTitle className="fw-bold">후기 작성</MDBModalTitle>
             <MDBBtn
               className="btn-close"
               color="none"
@@ -112,11 +110,15 @@ function StarModal({ recordId, starOpen, setStarOpen }) {
             </div>
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color="secondary" onClick={() => setStarOpen(false)}>
-              <b>취소</b>
+            <MDBBtn
+              color="secondary"
+              className="fw-bold"
+              onClick={() => setStarOpen(false)}
+            >
+              취소
             </MDBBtn>
-            <MDBBtn onClick={submitHandler}>
-              <b>완료</b>
+            <MDBBtn className="fw-bold" onClick={submitHandler}>
+              완료
             </MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>

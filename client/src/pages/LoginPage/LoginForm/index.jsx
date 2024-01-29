@@ -45,8 +45,8 @@ function LoginForm() {
         value={loginPassword}
         onChange={loginPasswordHandler}
       />
-      <MDBBtn type="submit" className="mb-4" block>
-        <b>로그인</b>
+      <MDBBtn type="submit" className="mb-4 fw-bold" block>
+        로그인
       </MDBBtn>
     </form>
   );

@@ -41,24 +41,27 @@ function MyPage() {
           <MDBTabsLink
             onClick={() => setTab("MyInformation")}
             active={tab === "MyInformation"}
+            className="fw-bold"
           >
-            <b>내 정보</b>
+            내 정보
           </MDBTabsLink>
         </MDBTabsItem>
         <MDBTabsItem>
           <MDBTabsLink
             onClick={() => setTab("MyRecord")}
             active={tab === "MyRecord"}
+            className="fw-bold"
           >
-            <b>기록</b>
+            기록
           </MDBTabsLink>
         </MDBTabsItem>
         <MDBTabsItem>
           <MDBTabsLink
             onClick={() => setTab("ChangeInformation")}
             active={tab === "ChangeInformation"}
+            className="fw-bold"
           >
-            <b>정보 수정</b>
+            정보 수정
           </MDBTabsLink>
         </MDBTabsItem>
       </MDBTabs>

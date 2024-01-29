@@ -54,16 +54,18 @@ function UserPage() {
           <MDBTabsLink
             onClick={() => setTab("UserInformation")}
             active={tab === "UserInformation"}
+            className="fw-bold"
           >
-            <b>유저 정보</b>
+            유저 정보
           </MDBTabsLink>
         </MDBTabsItem>
         <MDBTabsItem>
           <MDBTabsLink
             onClick={() => setTab("UserRecord")}
             active={tab === "UserRecord"}
+            className="fw-bold"
           >
-            <b>기록</b>
+            기록
           </MDBTabsLink>
         </MDBTabsItem>
       </MDBTabs>

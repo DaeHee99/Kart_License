@@ -52,38 +52,38 @@ function AdminPage() {
         <MDBTabs pills justify className="mb-3">
           <MDBTabsItem>
             <MDBTabsLink
-              className="py-3 px-0"
+              className="py-3 px-0 fw-bold"
               onClick={() => navigation("/admin?tab=record&page=1")}
               active={tab === "record"}
             >
-              <b>실시간 기록</b>
+              실시간 기록
             </MDBTabsLink>
           </MDBTabsItem>
           <MDBTabsItem>
             <MDBTabsLink
-              className="py-3 px-0"
+              className="py-3 px-0 fw-bold"
               onClick={() => navigation("/admin?tab=user&page=1")}
               active={tab === "user"}
             >
-              <b>전체 유저</b>
+              전체 유저
             </MDBTabsLink>
           </MDBTabsItem>
           <MDBTabsItem>
             <MDBTabsLink
-              className="py-3 px-0"
+              className="py-3 px-0 fw-bold"
               onClick={() => navigation("/admin?tab=star&page=1")}
               active={tab === "star"}
             >
-              <b>후기</b>
+              후기
             </MDBTabsLink>
           </MDBTabsItem>
           <MDBTabsItem>
             <MDBTabsLink
-              className="py-3 px-0"
+              className="py-3 px-0 fw-bold"
               onClick={() => navigation("/admin?tab=log&page=1")}
               active={tab === "log"}
             >
-              <b>로그</b>
+              로그
             </MDBTabsLink>
           </MDBTabsItem>
         </MDBTabs>

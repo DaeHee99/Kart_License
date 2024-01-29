@@ -80,85 +80,79 @@ function SelectButtons({
           onClick={() => selectRecord(0)}
           rounded
           color={buttonColor}
+          className="fw-bold"
         >
-          <b>
-            강주력 &nbsp; <MDBIcon fas icon="crown" /> &nbsp;{" "}
-            {mapData[num - 1].record[0]}
-          </b>
+          강주력 &nbsp; <MDBIcon fas icon="crown" /> &nbsp;{" "}
+          {mapData[num - 1].record[0]}
         </MDBBtn>
         <MDBBtn
           outline={outlineState[1]}
           onClick={() => selectRecord(1)}
           rounded
           color={buttonColor}
+          className="fw-bold"
         >
-          <b>
-            주력 &nbsp; <MDBIcon fas icon="crown" /> &nbsp;{" "}
-            {mapData[num - 1].record[1]}
-          </b>
+          주력 &nbsp; <MDBIcon fas icon="crown" /> &nbsp;{" "}
+          {mapData[num - 1].record[1]}
         </MDBBtn>
         <MDBBtn
           outline={outlineState[2]}
           onClick={() => selectRecord(2)}
           rounded
           color={buttonColor}
+          className="fw-bold"
         >
-          <b>
-            1군 &nbsp; <MDBIcon fas icon="crown" /> &nbsp;{" "}
-            {mapData[num - 1].record[2]}
-          </b>
+          1군 &nbsp; <MDBIcon fas icon="crown" /> &nbsp;{" "}
+          {mapData[num - 1].record[2]}
         </MDBBtn>
         <MDBBtn
           outline={outlineState[3]}
           onClick={() => selectRecord(3)}
           rounded
           color={buttonColor}
+          className="fw-bold"
         >
-          <b>
-            2군 &nbsp; <MDBIcon fas icon="crown" /> &nbsp;{" "}
-            {mapData[num - 1].record[3]}
-          </b>
+          2군 &nbsp; <MDBIcon fas icon="crown" /> &nbsp;{" "}
+          {mapData[num - 1].record[3]}
         </MDBBtn>
         <MDBBtn
           outline={outlineState[4]}
           onClick={() => selectRecord(4)}
           rounded
           color={buttonColor}
+          className="fw-bold"
         >
-          <b>
-            3군 &nbsp; <MDBIcon fas icon="crown" /> &nbsp;{" "}
-            {mapData[num - 1].record[4]}
-          </b>
+          3군 &nbsp; <MDBIcon fas icon="crown" /> &nbsp;{" "}
+          {mapData[num - 1].record[4]}
         </MDBBtn>
         <MDBBtn
           outline={outlineState[5]}
           onClick={() => selectRecord(5)}
           rounded
           color={buttonColor}
+          className="fw-bold"
         >
-          <b>
-            4군 &nbsp; <MDBIcon fas icon="crown" /> &nbsp;{" "}
-            {mapData[num - 1].record[5]}
-          </b>
+          4군 &nbsp; <MDBIcon fas icon="crown" /> &nbsp;{" "}
+          {mapData[num - 1].record[5]}
         </MDBBtn>
         <MDBBtn
           outline={outlineState[6]}
           onClick={() => selectRecord(6)}
           rounded
           color={buttonColor}
+          className="fw-bold"
         >
-          <b>
-            일반 &nbsp; <MDBIcon fas icon="crown" /> &nbsp;{" "}
-            {mapData[num - 1].record[6]}
-          </b>
+          일반 &nbsp; <MDBIcon fas icon="crown" /> &nbsp;{" "}
+          {mapData[num - 1].record[6]}
         </MDBBtn>
         <MDBBtn
           outline={outlineState[7]}
           onClick={() => selectRecord(7)}
           rounded
           color="dark"
+          className="fw-bold"
         >
-          <b>선택 안함</b>
+          선택 안함
         </MDBBtn>
       </div>
       <div className="gap-2 d-flex justify-content-between">
@@ -171,7 +165,9 @@ function SelectButtons({
           <MDBBadge>
             <MDBIcon fas icon="arrow-left" />
           </MDBBadge>
-          <b style={{ marginLeft: 10 }}>이전으로</b>
+          <span className="fw-bold" style={{ marginLeft: 10 }}>
+            이전으로
+          </span>
         </MDBBtn>
         <MDBBtn
           className="px-2"
@@ -180,12 +176,14 @@ function SelectButtons({
           onClick={() => setSearchModal(true)}
         >
           <MDBIcon fas icon="search" />
-          <b style={{ marginLeft: 10 }}>트랙 검색</b>
+          <span className="fw-bold" style={{ marginLeft: 10 }}>
+            트랙 검색
+          </span>
         </MDBBtn>
         <MDBBtn className="px-2" color="secondary" onClick={nextHandler}>
-          <b style={{ marginRight: 10 }}>
+          <span className="fw-bold" style={{ marginRight: 10 }}>
             {mapAllCount === num ? "최종 결과" : "다음으로"}
-          </b>
+          </span>
           <MDBBadge>
             <MDBIcon fas icon="arrow-right" />
           </MDBBadge>

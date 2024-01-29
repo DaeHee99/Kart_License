@@ -129,8 +129,8 @@ function RegisterForm() {
         label="회원가입에 동의합니다."
         defaultChecked
       />
-      <MDBBtn type="submit" className="mb-4" block>
-        <b>회원가입</b>
+      <MDBBtn type="submit" className="mb-4 fw-bold" block>
+        회원가입
       </MDBBtn>
     </form>
   );

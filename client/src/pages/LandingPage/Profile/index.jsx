@@ -36,9 +36,7 @@ function Profile({ image, name, license, isAdmin }) {
           </MDBCol>
           <MDBCol col="4">
             <MDBCardBody>
-              <MDBCardTitle>
-                <b>{name}</b>
-              </MDBCardTitle>
+              <MDBCardTitle className="fw-bold">{name}</MDBCardTitle>
               <MDBCardText>
                 <small className="text-muted">{license}</small>
                 {isAdmin && (

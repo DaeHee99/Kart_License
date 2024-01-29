@@ -95,8 +95,8 @@ function InformationChange() {
           value={newName}
           onChange={newNameHandler}
         />
-        <MDBBtn block onClick={changeName}>
-          <b>변경하기</b>
+        <MDBBtn block onClick={changeName} className="fw-bold">
+          변경하기
         </MDBBtn>
       </MDBAccordionItem>
       <MDBAccordionItem collapseId={2} headerTitle="비밀번호 변경">
@@ -116,8 +116,8 @@ function InformationChange() {
           value={newPasswordConfirm}
           onChange={newPasswordConfirmHandler}
         />
-        <MDBBtn block onClick={changePassword}>
-          <b>변경하기</b>
+        <MDBBtn block onClick={changePassword} className="fw-bold">
+          변경하기
         </MDBBtn>
       </MDBAccordionItem>
       <MDBAccordionItem collapseId={3} headerTitle="프로필 사진 변경">
@@ -150,8 +150,8 @@ function InformationChange() {
             />
           ))}
         </div>
-        <MDBBtn block className="mt-4" onClick={changeImage}>
-          <b>변경하기</b>
+        <MDBBtn block className="mt-4 fw-bold" onClick={changeImage}>
+          변경하기
         </MDBBtn>
       </MDBAccordionItem>
     </MDBAccordion>

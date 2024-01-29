@@ -20,16 +20,18 @@ function LoginPage() {
           <MDBTabsLink
             onClick={() => handleLoginRegisterClick("login")}
             active={loginRegisterActive === "login"}
+            className="fw-bold"
           >
-            <b>로그인</b>
+            로그인
           </MDBTabsLink>
         </MDBTabsItem>
         <MDBTabsItem>
           <MDBTabsLink
             onClick={() => handleLoginRegisterClick("register")}
             active={loginRegisterActive === "register"}
+            className="fw-bold"
           >
-            <b>회원가입</b>
+            회원가입
           </MDBTabsLink>
         </MDBTabsItem>
       </MDBTabs>

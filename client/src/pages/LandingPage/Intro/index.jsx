@@ -27,9 +27,7 @@ function Intro({ isAuth, content, setLoginCheckModal }) {
       >
         <MDBCardImage src={introImage} position="top" alt="Intro" />
         <MDBCardBody>
-          <MDBCardTitle>
-            <b>카러플 군 계산기</b>
-          </MDBCardTitle>
+          <MDBCardTitle className="fw-bold">카러플 군 계산기</MDBCardTitle>
           {content !== "" ? (
             <MDBCardText style={{ whiteSpace: "pre-wrap" }}>
               {content}
