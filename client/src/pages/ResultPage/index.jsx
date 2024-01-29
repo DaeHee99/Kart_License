@@ -187,9 +187,9 @@ function ResultPage() {
 
         <MDBBtn
           className="w-100 text-center fw-bold"
-          style={{ backgroundColor: "#ac2bac" }}
           href="https://kart-chu-club.netlify.app/"
           size="lg"
+          color="info"
         >
           츄르 공식 홈페이지
         </MDBBtn>
