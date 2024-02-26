@@ -27,6 +27,7 @@ function RecordCard({ _id, season, createdAt, license }) {
     if (season === 22) return "info";
 
     if (season === 23) return "primary";
+    if (season === 24) return "secondary";
   };
 
   useEffect(() => {

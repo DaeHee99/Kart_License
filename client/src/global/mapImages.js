@@ -64,6 +64,7 @@ import L2_024 from "../assets/images/map/024 쥐라기 공룡섬 대모험.png";
 import L2_025 from "../assets/images/map/025 WKC 투어링 랠리.jpg";
 import L2_026 from "../assets/images/map/026 아찔한 헬기 점프.png";
 import L2_027 from "../assets/images/map/027 어비스 숨겨진 바닷길.png";
+import L2_028 from "../assets/images/map/028 사막 오래된 송수관.png";
 
 import L1_001 from "../assets/images/map/001 동이문.png";
 import L1_002 from "../assets/images/map/002 노익.png";
@@ -144,6 +145,7 @@ const mapImages = [
   L2_025,
   L2_026,
   L2_027,
+  L2_028,
 
   L1_001,
   L1_002,
