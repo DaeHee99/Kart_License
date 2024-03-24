@@ -26,7 +26,7 @@ function Header() {
       if (response.payload.success) {
         alert("로그아웃 완료");
         setShowNavColor(false);
-        navigation("/", { replace: true });
+        navigation("/");
       } else alert("로그아웃 실패");
     });
   };
@@ -50,7 +50,7 @@ function Header() {
           </MDBNavbarToggler>
           <MDBNavbarBrand
             onClick={() => {
-              navigation("/", { replace: true });
+              navigation("/");
               setShowNavColor(false);
             }}
             width={200}
@@ -80,7 +80,7 @@ function Header() {
                 <MDBNavbarLink
                   aria-current="page"
                   onClick={() => {
-                    navigation("/", { replace: true });
+                    navigation("/");
                     setShowNavColor(false);
                   }}
                 >
