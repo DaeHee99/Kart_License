@@ -19,26 +19,22 @@ function LoginCheckModal({ showModal, setModal }) {
     >
       <MDBModalDialog>
         <MDBModalContent>
-          <MDBModalBody className="py-1">
-            <div className="d-flex justify-content-around align-items-center my-3">
-              <p className="mb-0">
-                비로그인 상태입니다.
-                <br />
-                로그인 없이 그냥 진행할까요?
-              </p>
+          <MDBModalBody className="p-3 d-flex flex-column align-items-center gap-1">
+            <p className="fw-bold">
+              [비로그인 상태] 로그인 없이 그냥 진행할까요?
+            </p>
+            <div className="w-100 d-flex gap-2">
               <MDBBtn
                 color="success"
-                size="sm"
-                className="ms-2 text-nowrap"
+                className="w-100"
                 onClick={() => {
                   navigation("/test");
                 }}
               >
-                그냥 시작
+                바로 시작
               </MDBBtn>
               <MDBBtn
-                size="sm"
-                className="ms-2 text-nowrap"
+                className="w-100"
                 onClick={() => {
                   navigation("/login");
                 }}
