@@ -846,6 +846,19 @@ const mapData = [
     ],
     image: "028 사막 오래된 송수관.png",
   },
+  {
+    name: "공동묘지 해골성 대탐험",
+    record: [
+      "01:55:99",
+      "01:57:99",
+      "01:59:99",
+      "02:01:99",
+      "02:03:99",
+      "02:05:99",
+      "02:05:99 +",
+    ],
+    image: "029 해골성.png",
+  },
 
   {
     name: "동화나라 이상한 나라의 문",
@@ -995,7 +1008,7 @@ const mapData = [
 const mapCount = {
   Rookie: 9,
   L3: 27,
-  L2: 28,
+  L2: 29,
   L1: 11,
 };
 const mapAllCount = Object.values(mapCount).reduce((a, b) => a + b, 0);
