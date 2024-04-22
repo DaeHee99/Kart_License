@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { API } from "../../_actions/types";
@@ -23,6 +23,7 @@ import KakaoModal from "./KakaoModal";
 import StarModal from "./StarModal";
 
 function ResultPage() {
+  const ref = useRef();
   const { id } = useParams();
   const navigation = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -32,6 +33,7 @@ function ResultPage() {
   const [shareOpen, setShareOpen] = useState(false);
   const [starOpen, setStarOpen] = useState(false);
   const [titleColor, setTitleColor] = useState("primary");
+  const [isIntersecting, setIsIntersecting] = useState(false);
 
   const clickHandler = () => {
     if (open === "angle-down") setOpen("angle-up");
@@ -82,6 +84,28 @@ function ResultPage() {
         }
       });
   }, [id]);
+
+  useEffect(() => {
+    if (loading) return;
+
+    const observerCallback = (entries) => {
+      setIsIntersecting(entries[0].isIntersecting);
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+      threshold: 1,
+    });
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+    };
+  }, [loading]);
 
   if (loading) return <Loading />;
   return (
@@ -137,37 +161,6 @@ function ResultPage() {
           <ResultMapTable record={data.record} mapCount={data.mapCount} />
         </div>
 
-        <MDBBtn
-          size="lg"
-          color="secondary"
-          style={{
-            backgroundColor: "#FEE500",
-            color: "#000000",
-            position: "fixed",
-            top: "90%",
-            right: "50%",
-            marginRight: "-45%",
-            zIndex: "99",
-          }}
-          onClick={() => setShareOpen(true)}
-        >
-          <MDBIcon fas icon="comment" size="lg" /> 카카오톡 공유
-        </MDBBtn>
-        <MDBBtn
-          size="lg"
-          floating
-          style={{
-            position: "fixed",
-            top: "83%",
-            right: "50%",
-            marginRight: "-45%",
-            zIndex: "99",
-          }}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        >
-          <MDBIcon fas icon="angle-up" size="lg" />
-        </MDBBtn>
-
         <MDBBtnGroup shadow="0" className="w-100 my-4" size="lg">
           <MDBBtn
             color="secondary"
@@ -185,14 +178,86 @@ function ResultPage() {
           </MDBBtn>
         </MDBBtnGroup>
 
+        <div
+          ref={ref}
+          className="w-100 d-flex justify-content-center align-items-center gap-3"
+        >
+          <MDBBtn
+            size="lg"
+            color="secondary"
+            className="w-100 d-flex justify-content-center align-items-center gap-2"
+            style={{
+              backgroundColor: "#FEE500",
+              color: "#000000",
+            }}
+            onClick={() => setShareOpen(true)}
+          >
+            <MDBIcon fas icon="comment" size="lg" /> 카카오톡 공유
+          </MDBBtn>
+          <MDBBtn
+            size="lg"
+            floating
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="flex-shrink-0"
+          >
+            <MDBIcon fas icon="angle-up" size="lg" />
+          </MDBBtn>
+        </div>
+
         <MDBBtn
-          className="w-100 text-center fw-bold"
+          className="w-100 text-center fw-bold mt-4"
           href="https://kart-chu-club.netlify.app/"
           size="lg"
           color="info"
         >
           츄르 공식 홈페이지
         </MDBBtn>
+
+        {!isIntersecting && (
+          <div
+            style={{
+              width: "100%",
+              position: "fixed",
+              left: 0,
+              bottom: 0,
+              zIndex: 50,
+            }}
+          >
+            <div
+              style={{
+                width: "100%",
+                paddingTop: "1rem",
+                paddingBottom: "1rem",
+                backgroundColor: "white",
+              }}
+            >
+              <MDBContainer className="w-100 d-flex justify-content-center align-items-center gap-3">
+                <MDBBtn
+                  size="lg"
+                  color="secondary"
+                  className="w-100 d-flex justify-content-center align-items-center gap-2"
+                  style={{
+                    backgroundColor: "#FEE500",
+                    color: "#000000",
+                  }}
+                  onClick={() => setShareOpen(true)}
+                >
+                  <MDBIcon fas icon="comment" size="lg" /> 카카오톡 공유
+                </MDBBtn>
+                <MDBBtn
+                  size="lg"
+                  floating
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
+                  className="flex-shrink-0"
+                >
+                  <MDBIcon fas icon="angle-up" size="lg" />
+                </MDBBtn>
+              </MDBContainer>
+            </div>
+          </div>
+        )}
 
         <KakaoModal
           shareOpen={shareOpen}
