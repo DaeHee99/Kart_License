@@ -88,7 +88,7 @@ function ResultPage() {
     <>
       <MDBContainer className="mb-7">
         <h1>
-          <MDBBadge color={titleColor} light className="w-100">
+          <MDBBadge color={titleColor} light className="w-100 fw-bold">
             당신은 {data.license} 입니다!
             <MDBIcon
               fas
@@ -108,11 +108,11 @@ function ResultPage() {
                 fluid
                 className="col-md-8 col-6"
               />
-              <p className="mb-0 text-nowrap">
+              <p className="mb-0 text-nowrap fw-bold">
                 {data.user ? data.user.name : "비로그인 유저"}
               </p>
             </div>
-            <p className="mb-0 ps-3 text-secondary">
+            <p className="mb-0 ps-3 text-secondary fw-bold">
               {data.date.getFullYear()}/
               {("00" + (data.date.getMonth() + 1)).slice(-2)}/
               {("00" + data.date.getDate()).slice(-2)}{" "}

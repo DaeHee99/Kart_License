@@ -27,13 +27,13 @@ function MyProfile({ lastRecord }) {
             <MDBCardBody>
               <MDBCardTitle className="fw-bold">{userData.name}</MDBCardTitle>
               <MDBCardText>
-                <MDBBadge style={{ fontSize: 14 }} light>
+                <MDBBadge style={{ fontSize: 14 }} light className="fw-bold">
                   {userData.license}
                 </MDBBadge>
                 {userData.isAdmin && (
                   <MDBBadge
                     style={{ fontSize: 14 }}
-                    className="mx-2"
+                    className="mx-2 fw-bold"
                     color="danger"
                     light
                   >

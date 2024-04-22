@@ -68,7 +68,7 @@ function StatisticsPage() {
     <>
       <MDBContainer className="mb-7">
         <h1>
-          <MDBBadge color="primary" light className="w-100">
+          <MDBBadge color="primary" light className="w-100 fw-bold">
             전체 유저 기록 통계
             <MDBIcon
               fas
@@ -81,14 +81,14 @@ function StatisticsPage() {
 
         <MDBCollapse show={showShow}>
           <div className="text-center fw-bold mb-0">
-            <div className="text-secondary">
+            <div className="text-secondary fw-bold">
               {today.getFullYear()}/{("00" + (today.getMonth() + 1)).slice(-2)}/
               {("00" + today.getDate()).slice(-2)}{" "}
               {("00" + today.getHours()).slice(-2)}:
               {("00" + today.getMinutes()).slice(-2)}:
               {("00" + today.getSeconds()).slice(-2)} 기준
-              <br />총 <span className="text-success">{sum}</span>개의 기록을
-              성공적으로 불러왔습니다.
+              <br />총 <span className="text-success fw-bold">{sum}</span>개의
+              기록을 성공적으로 불러왔습니다.
               <br />
             </div>
             전체 유저의 기록을 통해 분석된 결과입니다.

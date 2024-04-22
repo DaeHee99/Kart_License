@@ -39,13 +39,13 @@ function Profile({ image, name, license, isAdmin }) {
             <MDBCardBody>
               <MDBCardTitle className="fw-bold">{name}</MDBCardTitle>
               <MDBCardText>
-                <MDBBadge style={{ fontSize: 14 }} light>
+                <MDBBadge style={{ fontSize: 14 }} light className="fw-bold">
                   {license}
                 </MDBBadge>
                 {isAdmin && (
                   <MDBBadge
                     style={{ fontSize: 14 }}
-                    className="m-2"
+                    className="m-2 fw-bold"
                     color="danger"
                     light
                   >

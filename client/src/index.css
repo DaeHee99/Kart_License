@@ -1,17 +1,32 @@
 @font-face {
-  font-family: "NanumSquareNeo-normal";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2")
-    format("woff2");
-  font-weight: normal;
+  font-family: "NanumSquareNeo700";
+  font-weight: 700;
   font-style: normal;
+  src: url("https://webfontworld.github.io/NanumSquareNeo/NanumSquareNeo-cBd.eot");
+  src: url("https://webfontworld.github.io/NanumSquareNeo/NanumSquareNeo-cBd.eot?#iefix")
+      format("embedded-opentype"),
+    url("https://webfontworld.github.io/NanumSquareNeo/NanumSquareNeo-cBd.woff2")
+      format("woff2"),
+    url("https://webfontworld.github.io/NanumSquareNeo/NanumSquareNeo-cBd.woff")
+      format("woff"),
+    url("https://webfontworld.github.io/NanumSquareNeo/NanumSquareNeo-cBd.ttf")
+      format("truetype");
+  font-display: swap;
 }
-
 @font-face {
-  font-family: "NanumSquareNeo-bold";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2")
-    format("woff2");
-  font-weight: bold;
+  font-family: "NanumSquareNeo800";
+  font-weight: 800;
   font-style: normal;
+  src: url("https://webfontworld.github.io/NanumSquareNeo/NanumSquareNeo-dEb.eot");
+  src: url("https://webfontworld.github.io/NanumSquareNeo/NanumSquareNeo-dEb.eot?#iefix")
+      format("embedded-opentype"),
+    url("https://webfontworld.github.io/NanumSquareNeo/NanumSquareNeo-dEb.woff2")
+      format("woff2"),
+    url("https://webfontworld.github.io/NanumSquareNeo/NanumSquareNeo-dEb.woff")
+      format("woff"),
+    url("https://webfontworld.github.io/NanumSquareNeo/NanumSquareNeo-dEb.ttf")
+      format("truetype");
+  font-display: swap;
 }
 
 body {
@@ -22,9 +37,15 @@ body {
 }
 
 * {
-  font-family: "NanumSquareNeo-normal", sans-serif;
+  font-family: "NanumSquareNeo700", -apple-system, BlinkMacSystemFont, system-ui,
+    Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    sans-serif;
 }
 
 .fw-bold {
-  font-family: "NanumSquareNeo-bold";
+  font-family: "NanumSquareNeo800", -apple-system, BlinkMacSystemFont, system-ui,
+    Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    sans-serif;
 }
