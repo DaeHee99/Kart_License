@@ -97,6 +97,16 @@ function Header() {
                   통계
                 </MDBNavbarLink>
               </MDBNavbarItem>
+              <MDBNavbarItem>
+                <MDBNavbarLink
+                  onClick={() => {
+                    navigation("/table");
+                    setShowNavColor(false);
+                  }}
+                >
+                  기록표
+                </MDBNavbarLink>
+              </MDBNavbarItem>
               {user.userData.isAdmin && (
                 <MDBNavbarItem>
                   <MDBNavbarLink
