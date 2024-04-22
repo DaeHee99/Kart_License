@@ -1,16 +1,26 @@
 import { useEffect, useState } from "react";
-import { MDBProgress, MDBProgressBar, MDBBadge } from "mdb-react-ui-kit";
+import {
+  MDBProgress,
+  MDBProgressBar,
+  MDBBadge,
+  MDBBtn,
+  MDBIcon,
+} from "mdb-react-ui-kit";
 import { mapCount, mapAllCount } from "../../../global/mapData";
+import SearchModal from "./SearchModal";
 
 const computeLength = (value) => (value / mapAllCount) * 100;
 
-function Progress({ num }) {
+function Progress({ num, mapSearch, selected }) {
+  const [searchModal, setSearchModal] = useState(false);
   const [barLength, setBarLength] = useState({
     Lookie: 0,
     L3: 0,
     L2: 0,
     L1: 0,
   });
+
+  const mapSearchHandler = (index) => mapSearch(index, selected);
 
   useEffect(() => {
     setBarLength({
@@ -77,11 +87,28 @@ function Progress({ num }) {
           valuemax={100}
         />
       </MDBProgress>
-      <div className="text-center mt-2 mb-3 fs-4">
-        <MDBBadge>
+      <div className="text-center my-3 fs-4 col-12 col-lg-10 mx-auto position-relative">
+        <MDBBadge className="fw-bold">
           {num} / {mapAllCount}
         </MDBBadge>
+        <MDBBtn
+          className="px-2 position-absolute"
+          color="primary"
+          outline
+          onClick={() => setSearchModal(true)}
+          style={{ top: 0, right: 0 }}
+        >
+          <MDBIcon fas icon="search" />
+          <span className="fw-bold" style={{ marginLeft: 10 }}>
+            트랙 검색
+          </span>
+        </MDBBtn>
       </div>
+      <SearchModal
+        searchModal={searchModal}
+        setSearchModal={setSearchModal}
+        mapSearchHandler={mapSearchHandler}
+      />
     </>
   );
 }

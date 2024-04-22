@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { MDBBtn, MDBIcon, MDBBadge } from "mdb-react-ui-kit";
 import mapData, { mapCount, mapAllCount } from "../../../global/mapData";
-import SearchModal from "./SearchModal";
 
 function SelectButtons({
   num,
@@ -9,9 +8,9 @@ function SelectButtons({
   latestRecord,
   prevMap,
   nextMap,
-  mapSearch,
+  selected,
+  setSelected,
 }) {
-  const [selected, setSelected] = useState(undefined);
   const [outlineState, setOutlineState] = useState([
     true,
     true,
@@ -23,7 +22,6 @@ function SelectButtons({
     true,
   ]);
   const [buttonColor, setButtonColor] = useState("warning");
-  const [searchModal, setSearchModal] = useState(false);
 
   const selectRecord = (i) => {
     let newOutline = [true, true, true, true, true, true, true, true];
@@ -34,7 +32,6 @@ function SelectButtons({
 
   const prevHandler = () => prevMap(selected);
   const nextHandler = () => nextMap(selected);
-  const mapSearchHandler = (index) => mapSearch(index, selected);
 
   const buttonColorHandler = () => {
     if (num < mapCount.Rookie + 1) {
@@ -155,9 +152,9 @@ function SelectButtons({
           선택 안함
         </MDBBtn>
       </div>
-      <div className="gap-2 d-flex justify-content-between">
+      <div className="gap-4 d-flex justify-content-between">
         <MDBBtn
-          className="px-2"
+          className="w-100 px-2"
           color="secondary"
           onClick={prevHandler}
           disabled={num <= 1}
@@ -169,18 +166,8 @@ function SelectButtons({
             이전으로
           </span>
         </MDBBtn>
-        <MDBBtn
-          className="px-2"
-          color="primary"
-          outline
-          onClick={() => setSearchModal(true)}
-        >
-          <MDBIcon fas icon="search" />
-          <span className="fw-bold" style={{ marginLeft: 10 }}>
-            트랙 검색
-          </span>
-        </MDBBtn>
-        <MDBBtn className="px-2" color="secondary" onClick={nextHandler}>
+
+        <MDBBtn className="w-100 px-2" color="secondary" onClick={nextHandler}>
           <span className="fw-bold" style={{ marginRight: 10 }}>
             {mapAllCount === num ? "최종 결과" : "다음으로"}
           </span>
@@ -189,11 +176,6 @@ function SelectButtons({
           </MDBBadge>
         </MDBBtn>
       </div>
-      <SearchModal
-        searchModal={searchModal}
-        setSearchModal={setSearchModal}
-        mapSearchHandler={mapSearchHandler}
-      />
     </div>
   );
 }

@@ -15,6 +15,7 @@ function TestPage() {
   const userData = useSelector((state) => state.user.userData);
   const navigation = useNavigate();
   const [num, setNum] = useState(1);
+  const [selected, setSelected] = useState(undefined);
   const [selectList, setSelectList] = useState([undefined]);
   const [latestRecord, setLatestRecord] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -116,7 +117,7 @@ function TestPage() {
   return (
     <>
       <MDBContainer className="mb-7">
-        <Progress num={num} />
+        <Progress num={num} mapSearch={mapSearch} selected={selected} />
         <div className="text-center mb-3">
           <img
             src={mapImages[num - 1]}
@@ -128,9 +129,10 @@ function TestPage() {
           nextMap={nextMap}
           prevMap={prevMap}
           num={num}
-          mapSearch={mapSearch}
           nowSelect={selectList[num - 1]}
           latestRecord={latestRecord}
+          selected={selected}
+          setSelected={setSelected}
         />
       </MDBContainer>
       <Footer />
