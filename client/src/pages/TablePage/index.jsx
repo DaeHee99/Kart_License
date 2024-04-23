@@ -8,22 +8,12 @@ function TablePage() {
   const [isIntersecting, setIsIntersecting] = useState(false);
 
   const downloadFile = async () => {
-    try {
-      const response = await fetch(tableImage);
-      const blob = await response.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = blobUrl;
-      a.download = "카러플_S25_기록표";
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(blobUrl);
-    } catch (error) {
-      console.error("Error downloading file:", error);
-      alert("다운로드를 할 수 없습니다.");
-    }
+    const element = document.createElement("a");
+    element.href = tableImage;
+    element.download = "카러플_S25_기록표";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
   };
 
   useEffect(() => {
