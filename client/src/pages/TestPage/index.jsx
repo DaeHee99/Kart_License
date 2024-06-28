@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { MDBContainer } from "mdb-react-ui-kit";
 import { API } from "../../_actions/types";
@@ -14,6 +14,7 @@ import SelectButtons from "./SelectButtons";
 function TestPage() {
   const userData = useSelector((state) => state.user.userData);
   const navigation = useNavigate();
+  const [searchParams] = useSearchParams();
   const [num, setNum] = useState(1);
   const [selected, setSelected] = useState(undefined);
   const [selectList, setSelectList] = useState([undefined]);
@@ -109,6 +110,10 @@ function TestPage() {
       .then((response) => {
         if (response.data.success && response.data.record !== null)
           setLatestRecord(response.data.record.record);
+
+        const track = searchParams.get("track");
+        setNum(parseInt(track) || 1);
+
         setLoading(false);
       });
   }, [userData.isAuth, userData._id]);
