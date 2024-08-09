@@ -17,9 +17,15 @@ let server;
 
 if (process.env.NODE_ENV === "production") {
   const options = {
-    ca: fs.readFileSync("/home/ubuntu/ssl/ca_bundle.crt"),
-    key: fs.readFileSync("/home/ubuntu/ssl/private.key"),
-    cert: fs.readFileSync("/home/ubuntu/ssl/certificate.crt"),
+    ca: fs.readFileSync(
+      "/etc/letsencrypt/live/kartrush.mylicense.kro.kr/fullchain.pem"
+    ),
+    key: fs.readFileSync(
+      "/etc/letsencrypt/live/kartrush.mylicense.kro.kr/privkey.pem"
+    ),
+    cert: fs.readFileSync(
+      "/etc/letsencrypt/live/kartrush.mylicense.kro.kr/cert.pem"
+    ),
     requestCert: false,
     rejectUnauthorized: false,
   };
