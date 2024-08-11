@@ -76,9 +76,9 @@ router.post("/login", (req, res) => {
       userInfo.generateToken((err, user) => {
         if (err) return res.status(400).send(err);
 
-        // Cookie Expires => 2 hour
+        // Cookie Expires => 30 days
         res
-          .cookie("token", user.token, { maxAge: 60 * 60 * 1000 * 2 })
+          .cookie("token", user.token, { maxAge: 60 * 60 * 1000 * 24 * 30 })
           .status(200)
           .json({ success: true, userId: user._id, name: user.name });
       });
@@ -89,15 +89,18 @@ router.post("/login", (req, res) => {
 /* 인증 */
 router.get("/auth", auth, (req, res) => {
   // auth 미들웨어 통과 => authentication True, 인증 통과
-  res.status(200).json({
-    _id: req.user._id,
-    isAuth: true,
-    name: req.user.name,
-    image: req.user.image,
-    license: req.user.license,
-    role: req.user.role,
-    isAdmin: req.user.role === 0 ? false : true,
-  });
+  res
+    .cookie("token", req.cookies.token, { maxAge: 60 * 60 * 1000 * 24 * 30 })
+    .status(200)
+    .json({
+      _id: req.user._id,
+      isAuth: true,
+      name: req.user.name,
+      image: req.user.image,
+      license: req.user.license,
+      role: req.user.role,
+      isAdmin: req.user.role === 0 ? false : true,
+    });
 });
 
 /* 로그아웃 */
