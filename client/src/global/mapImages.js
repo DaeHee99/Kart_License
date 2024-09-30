@@ -39,6 +39,7 @@ import L3_028 from "../assets/images/map/028 WKC 상해 서킷.png";
 import L3_029 from "../assets/images/map/029 노르테유 스카이웨이.png";
 import L3_030 from "../assets/images/map/030 카멜롯 팬드래건 캐슬.png";
 import L3_031 from "../assets/images/map/031 신화 오딘의 궁전.png";
+import L3_032 from "../assets/images/map/032 올림포스 제우스시티.png";
 
 import L2_001 from "../assets/images/map/001 병마용.png";
 import L2_002 from "../assets/images/map/002 만리장성.png";
@@ -125,6 +126,7 @@ const mapImages = [
   L3_029,
   L3_030,
   L3_031,
+  L3_032,
 
   L2_001,
   L2_002,

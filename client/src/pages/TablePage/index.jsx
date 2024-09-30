@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MDBBadge, MDBBtn, MDBContainer } from "mdb-react-ui-kit";
 import Footer from "../../components/Footer";
-import tableImage from "../../assets/images/S27_기록표.png";
+import tableImage from "../../assets/images/S28_기록표.png";
 
 function TablePage() {
   const ref = useRef();
@@ -10,7 +10,7 @@ function TablePage() {
   const downloadFile = async () => {
     const element = document.createElement("a");
     element.href = tableImage;
-    element.download = "카러플_S27_기록표";
+    element.download = "카러플_S28_기록표";
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
@@ -40,7 +40,7 @@ function TablePage() {
     <>
       <MDBContainer className="mb-7">
         <h2 className="fw-bold mb-4 d-flex align-items-center gap-2">
-          S27 기록표
+          S28 기록표
           <MDBBadge className="fs-6">NEW</MDBBadge>
         </h2>
         <img src={tableImage} className="w-100" />
