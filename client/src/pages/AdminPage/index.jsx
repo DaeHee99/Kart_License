@@ -17,6 +17,7 @@ import UserTable from "./UserTable";
 import LogTable from "./LogTable";
 import RecordTable from "./RecordTable";
 import StarTable from "./StarTable";
+import SurveyTable from "./SurveyTable";
 import Pagination from "./Pagination";
 import NoticeModal from "./NoticeModal";
 
@@ -43,6 +44,7 @@ function AdminPage() {
     if (tab === "record") return "기록";
     if (tab === "user") return "유저";
     if (tab === "star") return "후기";
+    if (tab === "survey") return "피드백";
     if (tab === "log") return "로그";
   };
 
@@ -75,6 +77,15 @@ function AdminPage() {
               active={tab === "star"}
             >
               후기
+            </MDBTabsLink>
+          </MDBTabsItem>
+          <MDBTabsItem>
+            <MDBTabsLink
+              className="py-3 px-0 fw-bold"
+              onClick={() => navigation("/admin?tab=survey&page=1")}
+              active={tab === "survey"}
+            >
+              피드백
             </MDBTabsLink>
           </MDBTabsItem>
           <MDBTabsItem>
@@ -147,6 +158,15 @@ function AdminPage() {
 
           <MDBTabsPane show={tab === "star"}>
             <StarTable
+              tab={tab}
+              page={page}
+              setDataAllCount={setDataAllCount}
+              setViewPageNavigation={setViewPageNavigation}
+            />
+          </MDBTabsPane>
+
+          <MDBTabsPane show={tab === "survey"}>
+            <SurveyTable
               tab={tab}
               page={page}
               setDataAllCount={setDataAllCount}
