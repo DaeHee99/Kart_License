@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @font-face {
   font-family: "NanumSquareNeo700";
   font-weight: 700;
@@ -39,7 +43,7 @@ body {
     sans-serif;
 }
 
-.fw-bold {
+.fw-bold .font-bold {
   font-family: "NanumSquareNeo800", -apple-system, BlinkMacSystemFont, system-ui,
     Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
     "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",

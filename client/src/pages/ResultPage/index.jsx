@@ -21,6 +21,7 @@ import BarChart from "./BarChart";
 import ResultMapTable from "./ResultMapTable";
 import KakaoModal from "./KakaoModal";
 import StarModal from "./StarModal";
+import SurveyModal from "./SurveyModal";
 
 function ResultPage() {
   const ref = useRef();
@@ -268,6 +269,12 @@ function ResultPage() {
           starOpen={starOpen}
           setStarOpen={setStarOpen}
           recordId={id}
+        />
+        <SurveyModal
+          userId={data.user?._id}
+          recentSurvey={data.user?.recentSurvey}
+          license={data.license}
+          season={data.season}
         />
       </MDBContainer>
       <Footer />
