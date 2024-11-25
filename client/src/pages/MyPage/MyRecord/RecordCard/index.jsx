@@ -32,6 +32,8 @@ function RecordCard({ _id, season, createdAt, license }) {
     if (season === 26) return "danger";
     if (season === 27) return "warning";
     if (season === 28) return "info";
+
+    if (season === 29) return "primary";
   };
 
   useEffect(() => {
