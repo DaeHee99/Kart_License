@@ -11,6 +11,7 @@ const surveySchema = mongoose.Schema(
     balance: Number,
     review: String,
     season: Number,
+    recordId: String,
   },
   { timestamps: true }
 );
