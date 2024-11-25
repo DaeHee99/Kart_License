@@ -6,6 +6,7 @@ const indexRouter = require("./routes/index");
 const userRouter = require("./routes/user");
 const recordRouter = require("./routes/record");
 const starRouter = require("./routes/star");
+const surveyRouter = require("./routes/survey");
 const logRouter = require("./routes/log");
 const noticeRouter = require("./routes/notice");
 
@@ -23,6 +24,7 @@ app.use("/", indexRouter);
 app.use("/api/user", userRouter);
 app.use("/api/record", recordRouter);
 app.use("/api/star", starRouter);
+app.use("/api/survey", surveyRouter);
 app.use("/api/log", logRouter);
 app.use("/api/notice", noticeRouter);
 app.use("*", indexRouter);

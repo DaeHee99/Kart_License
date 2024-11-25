@@ -41,6 +41,10 @@ const userSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    recentSurvey: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
