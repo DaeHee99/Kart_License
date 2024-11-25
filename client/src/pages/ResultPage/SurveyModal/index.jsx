@@ -15,7 +15,13 @@ import { useSelector } from "react-redux";
 import { API } from "../../../_actions/types";
 import axios from "axios";
 
-export default function SurveyModal({ userId, recentSurvey, license, season }) {
+export default function SurveyModal({
+  recordId,
+  userId,
+  recentSurvey,
+  license,
+  season,
+}) {
   const user = useSelector((state) => state.user);
   const [scrollableModal, setScrollableModal] = useState(false);
   const [review, setReview] = useState("");
@@ -39,7 +45,15 @@ export default function SurveyModal({ userId, recentSurvey, license, season }) {
       return;
     }
 
-    const body = { license, level, balance, review, season, userId };
+    const body = {
+      license,
+      level,
+      balance,
+      review,
+      season,
+      recordId,
+      user: userId,
+    };
 
     axios
       .post(API + "/survey/save", body, { withCredentials: true })

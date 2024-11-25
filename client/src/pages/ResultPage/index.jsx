@@ -271,6 +271,7 @@ function ResultPage() {
           recordId={id}
         />
         <SurveyModal
+          recordId={id}
           userId={data.user?._id}
           recentSurvey={data.user?.recentSurvey}
           license={data.license}
