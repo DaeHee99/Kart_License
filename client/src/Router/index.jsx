@@ -9,6 +9,7 @@ import StatisticsPage from "../pages/StatisticsPage";
 import AdminPage from "../pages/AdminPage";
 import UserPage from "../pages/UserPage";
 import TablePage from "../pages/TablePage";
+import SurveyPage from "../pages/SurveyPage";
 
 function Router() {
   const AuthLandingPage = Auth(LandingPage, null);
@@ -20,6 +21,7 @@ function Router() {
   const AuthAdminPage = Auth(AdminPage, true, true);
   const AuthUserPage = Auth(UserPage, null);
   const AuthTablePage = Auth(TablePage, null);
+  const AuthSurveyPage = Auth(SurveyPage, true);
 
   return (
     <Routes>
@@ -32,6 +34,7 @@ function Router() {
       <Route path="/admin" element={<AuthAdminPage />} />
       <Route path="/userpage/:id" element={<AuthUserPage />} />
       <Route path="/table" element={<AuthTablePage />} />
+      <Route path="/survey" element={<AuthSurveyPage />} />
     </Routes>
   );
 }

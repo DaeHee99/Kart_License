@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../../_actions/user_action";
 import {
   MDBCard,
@@ -15,6 +15,7 @@ import {
 } from "mdb-react-ui-kit";
 
 function Profile({ image, name, license, isAdmin }) {
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -50,6 +51,16 @@ function Profile({ image, name, license, isAdmin }) {
                     light
                   >
                     관리자
+                  </MDBBadge>
+                )}
+                {user.userData.role === 2 && (
+                  <MDBBadge
+                    style={{ fontSize: 14 }}
+                    className="m-2 fw-bold"
+                    color="success"
+                    light
+                  >
+                    운영진
                   </MDBBadge>
                 )}
               </MDBCardText>

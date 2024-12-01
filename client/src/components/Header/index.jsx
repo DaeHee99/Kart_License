@@ -107,6 +107,18 @@ function Header() {
                   기록표
                 </MDBNavbarLink>
               </MDBNavbarItem>
+              {user.userData.role > 0 && (
+                <MDBNavbarItem>
+                  <MDBNavbarLink
+                    onClick={() => {
+                      navigation("/survey");
+                      setShowNavColor(false);
+                    }}
+                  >
+                    피드백
+                  </MDBNavbarLink>
+                </MDBNavbarItem>
+              )}
               {user.userData.isAdmin && (
                 <MDBNavbarItem>
                   <MDBNavbarLink

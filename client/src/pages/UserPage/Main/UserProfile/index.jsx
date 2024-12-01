@@ -38,6 +38,16 @@ function UserProfile({ lastRecord, userData }) {
                     관리자
                   </MDBBadge>
                 )}
+                {userData.role === 2 && (
+                  <MDBBadge
+                    style={{ fontSize: 14 }}
+                    className="m-2 fw-bold"
+                    color="success"
+                    light
+                  >
+                    운영진
+                  </MDBBadge>
+                )}
               </MDBCardText>
               <MDBCardText>
                 <small className="text-muted">

@@ -13,19 +13,34 @@ import Loading from "../../components/Loading";
 import ResultTable from "../ResultPage/ResultTable";
 import PieChart from "../ResultPage/PieChart";
 import BarChart from "../ResultPage/BarChart";
+import SurveyTable from "./SurveyTable";
+import SurveyChart from "./SurveyChart";
 
 function StatisticsPage() {
   const [today] = useState(new Date());
   const [open, setOpen] = useState("angle-up");
   const [showShow, setShowShow] = useState(true);
+  const [open2, setOpen2] = useState("angle-up");
+  const [showShow2, setShowShow2] = useState(true);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [sum, setSum] = useState(0);
+  const [surveySum, setSurveySum] = useState(0);
+  const [surveyData, setSurveyData] = useState({
+    level: [0, 0, 0, 0, 0],
+    balance: [0, 0, 0, 0, 0],
+  });
 
   const clickHandler = () => {
     if (open === "angle-down") setOpen("angle-up");
     else setOpen("angle-down");
     setShowShow(!showShow);
+  };
+
+  const clickHandler2 = () => {
+    if (open2 === "angle-down") setOpen2("angle-up");
+    else setOpen2("angle-down");
+    setShowShow2(!showShow2);
   };
 
   useEffect(() => {
@@ -58,7 +73,26 @@ function StatisticsPage() {
           });
           setData(tempData);
           setSum(response.data.recordList.length);
-          setLoading(false);
+
+          axios
+            .get(API + "/survey/manager/all", { withCredentials: true })
+            .then((response) => {
+              if (!response.data.success)
+                return alert("데이터를 불러오는데 실패했습니다.");
+              else {
+                const survey = response.data.surveyList?.reduce(
+                  (acc, val) => {
+                    acc.level[val.level - 1]++;
+                    acc.balance[val.balance - 1]++;
+                    return acc;
+                  },
+                  { level: [0, 0, 0, 0, 0], balance: [0, 0, 0, 0, 0] }
+                );
+                setSurveyData(survey);
+                setSurveySum(response.data.surveyList.length);
+                setLoading(false);
+              }
+            });
         }
       });
   }, []);
@@ -119,6 +153,83 @@ function StatisticsPage() {
         >
           <MDBIcon fas icon="angle-up" size="lg" />
         </MDBBtn>
+
+        <hr style={{ marginTop: 25, marginBottom: 25 }} />
+
+        <h1>
+          <MDBBadge color="primary" light className="w-100 fw-bold">
+            S29 군표 피드백
+            <MDBIcon
+              fas
+              icon={open2}
+              onClick={clickHandler2}
+              style={{ float: "right", cursor: "pointer" }}
+            />
+          </MDBBadge>
+        </h1>
+
+        <MDBCollapse show={showShow2}>
+          <div className="text-center fw-bold mb-0">
+            <div className="text-secondary fw-bold">
+              {today.getFullYear()}/{("00" + (today.getMonth() + 1)).slice(-2)}/
+              {("00" + today.getDate()).slice(-2)}{" "}
+              {("00" + today.getHours()).slice(-2)}:
+              {("00" + today.getMinutes()).slice(-2)}:
+              {("00" + today.getSeconds()).slice(-2)} 기준
+              <br />총 <span className="text-success fw-bold">{surveySum}</span>
+              개의 피드백을 성공적으로 불러왔습니다.
+              <br />
+            </div>
+            이번 시즌에 유저분들이 작성해주신 결과입니다.
+          </div>
+        </MDBCollapse>
+
+        <div className="my-3 d-lg-flex flex-row justify-content-around gap-2">
+          <div className="col-lg-6 col-12 mb-2">
+            <SurveyTable
+              data={[
+                { name: "매우 쉬움", count: surveyData.level[0] },
+                { name: "쉬움", count: surveyData.level[1] },
+                { name: "보통", count: surveyData.level[2] },
+                { name: "어려움", count: surveyData.level[3] },
+                { name: "매우 어려움", count: surveyData.level[4] },
+              ]}
+              title={"이번 시즌 군표 난이도는 어떠셨나요?"}
+            />
+            <SurveyChart
+              data={[
+                { name: "매우 쉬움", count: surveyData.level[0] },
+                { name: "쉬움", count: surveyData.level[1] },
+                { name: "보통", count: surveyData.level[2] },
+                { name: "어려움", count: surveyData.level[3] },
+                { name: "매우 어려움", count: surveyData.level[4] },
+              ]}
+              title={"이번 시즌 군표 난이도는 어떠셨나요?"}
+            />
+          </div>
+          <div className="col-lg-6 col-12 mb-2">
+            <SurveyTable
+              data={[
+                { name: "매우 좋음", count: surveyData.balance[0] },
+                { name: "좋음", count: surveyData.balance[1] },
+                { name: "보통", count: surveyData.balance[2] },
+                { name: "나쁨", count: surveyData.balance[3] },
+                { name: "매우 나쁨", count: surveyData.balance[4] },
+              ]}
+              title={"이번 시즌 맵 별로 군표 밸런스 어떠셨나요?"}
+            />
+            <SurveyChart
+              data={[
+                { name: "매우 좋음", count: surveyData.balance[0] },
+                { name: "좋음", count: surveyData.balance[1] },
+                { name: "보통", count: surveyData.balance[2] },
+                { name: "나쁨", count: surveyData.balance[3] },
+                { name: "매우 나쁨", count: surveyData.balance[4] },
+              ]}
+              title={"이번 시즌 맵 별로 군표 밸런스 어떠셨나요?"}
+            />
+          </div>
+        </div>
       </MDBContainer>
       <Footer />
     </>
