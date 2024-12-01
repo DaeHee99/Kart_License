@@ -43,7 +43,7 @@ router.post("/save", (req, res) => {
 });
 
 /* 모든 피드백 조회 - 관리자 페이지 */
-router.get("/manager/all", auth, (req, res) => {
+router.get("/manager/all", (req, res) => {
   Survey.find()
     .sort({ createdAt: -1 })
     .populate("user", { name: 1, image: 1 })
