@@ -99,7 +99,7 @@ router.get("/auth", auth, (req, res) => {
       image: req.user.image,
       license: req.user.license,
       role: req.user.role,
-      isAdmin: req.user.role === 0 ? false : true,
+      isAdmin: req.user.role === 1,
     });
 });
 
@@ -229,7 +229,8 @@ router.get("/userData/:id", (req, res) => {
       name: userInfo.name,
       image: userInfo.image,
       license: userInfo.license,
-      isAdmin: userInfo.role === 0 ? false : true,
+      isAdmin: userInfo.role === 1,
+      role: userInfo.role,
     });
   });
 });
