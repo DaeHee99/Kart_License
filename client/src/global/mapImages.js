@@ -84,6 +84,7 @@ import L1_009 from "../assets/images/map/009 문힐시티 숨겨진 지하터널
 import L1_010 from "../assets/images/map/010 광산 위험한 제련소.png";
 import L1_011 from "../assets/images/map/011 차이나 용의 성지.png";
 import L1_012 from "../assets/images/map/012 해적 대해적 로두마니.png";
+import L1_013 from "../assets/images/map/013 아이스 부서진 빙산.png";
 
 const mapImages = [
   Rookie_001,
@@ -172,6 +173,7 @@ const mapImages = [
   L1_010,
   L1_011,
   L1_012,
+  L1_013,
 ];
 
 export default mapImages;
