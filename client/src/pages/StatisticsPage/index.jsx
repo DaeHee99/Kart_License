@@ -23,6 +23,7 @@ function StatisticsPage() {
   const [showShow2, setShowShow2] = useState(true);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [userLicense, setUserLicense] = useState([]);
   const [sum, setSum] = useState(0);
   const [surveySum, setSurveySum] = useState(0);
   const [surveyData, setSurveyData] = useState({
@@ -53,22 +54,32 @@ function StatisticsPage() {
           setSum(response.data.recordSum);
 
           axios
-            .get(API + "/survey/manager/all", { withCredentials: true })
+            .get(API + "/record/all/user/license", { withCredentials: true })
             .then((response) => {
               if (!response.data.success)
                 return alert("데이터를 불러오는데 실패했습니다.");
               else {
-                const survey = response.data.surveyList?.reduce(
-                  (acc, val) => {
-                    acc.level[val.level - 1]++;
-                    acc.balance[val.balance - 1]++;
-                    return acc;
-                  },
-                  { level: [0, 0, 0, 0, 0], balance: [0, 0, 0, 0, 0] }
-                );
-                setSurveyData(survey);
-                setSurveySum(response.data.surveyList.length);
-                setLoading(false);
+                setUserLicense(response.data.licenseData);
+
+                axios
+                  .get(API + "/survey/manager/all", { withCredentials: true })
+                  .then((response) => {
+                    if (!response.data.success)
+                      return alert("데이터를 불러오는데 실패했습니다.");
+                    else {
+                      const survey = response.data.surveyList?.reduce(
+                        (acc, val) => {
+                          acc.level[val.level - 1]++;
+                          acc.balance[val.balance - 1]++;
+                          return acc;
+                        },
+                        { level: [0, 0, 0, 0, 0], balance: [0, 0, 0, 0, 0] }
+                      );
+                      setSurveyData(survey);
+                      setSurveySum(response.data.surveyList.length);
+                      setLoading(false);
+                    }
+                  });
               }
             });
         }
@@ -107,7 +118,7 @@ function StatisticsPage() {
           </div>
         </MDBCollapse>
 
-        <div className="my-3 d-lg-flex flex-row justify-content-around">
+        <div className="my-3 d-lg-flex flex-row justify-content-around gap-2">
           <div className="col-lg-6 col-12 mb-2">
             <SurveyTable
               data={[
@@ -124,8 +135,21 @@ function StatisticsPage() {
             />
             <BarChart data={data} name={"누적 측정 결과"} />
           </div>
-          <div className="col-lg-6 col-12 d-flex align-items-center justify-content-center">
-            <PieChart data={data} name={"산출 횟수"} />
+          <div className="col-lg-6 col-12 mb-2">
+            <SurveyTable
+              data={[
+                { name: "강주력", count: userLicense[0] },
+                { name: "주력", count: userLicense[1] },
+                { name: "1군", count: userLicense[2] },
+                { name: "2군", count: userLicense[3] },
+                { name: "3군", count: userLicense[4] },
+                { name: "4군", count: userLicense[5] },
+                { name: "일반", count: userLicense[6] },
+              ]}
+              title={"유저 군 분포 결과 (로그인 유저 최신 기록 기준)"}
+              type="result"
+            />
+            <BarChart data={userLicense} name={"유저 군 분포 결과"} />
           </div>
         </div>
 

@@ -71,6 +71,31 @@ router.get("/all", (req, res) => {
     });
 });
 
+/* 모든 유저 군 분포 결과 조회 - 통계 */
+router.get("/all/user/license", (req, res) => {
+  User.find()
+    .select("license")
+    .exec((err, licenseList) => {
+      if (err) return res.status(400).json({ success: false, err });
+
+      const licenseData = licenseList.reduce(
+        (acc, { license }) => {
+          if (license === "강주력") acc[0]++;
+          else if (license === "주력") acc[1]++;
+          else if (license === "1군") acc[2]++;
+          else if (license === "2군") acc[3]++;
+          else if (license === "3군") acc[4]++;
+          else if (license === "4군") acc[5]++;
+          else acc[6]++;
+          return acc;
+        },
+        [0, 0, 0, 0, 0, 0, 0]
+      );
+
+      return res.status(200).json({ success: true, licenseData });
+    });
+});
+
 /* 실시간 모든 기록 조회 - 관리자 페이지 */
 router.get("/manager/all", auth, (req, res) => {
   Record.find()
