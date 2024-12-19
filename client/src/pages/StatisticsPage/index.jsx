@@ -10,7 +10,6 @@ import {
 import axios from "axios";
 import Footer from "../../components/Footer";
 import Loading from "../../components/Loading";
-import ResultTable from "../ResultPage/ResultTable";
 import PieChart from "../ResultPage/PieChart";
 import BarChart from "../ResultPage/BarChart";
 import SurveyTable from "./SurveyTable";
@@ -50,29 +49,8 @@ function StatisticsPage() {
         if (!response.data.success)
           return alert("데이터를 불러오는데 실패했습니다.");
         else {
-          let tempData = [0, 0, 0, 0, 0, 0, 0];
-          response.data.recordList.map((item) => {
-            switch (item.license) {
-              case "강주력":
-                return ++tempData[0];
-              case "주력":
-                return ++tempData[1];
-              case "1군":
-                return ++tempData[2];
-              case "2군":
-                return ++tempData[3];
-              case "3군":
-                return ++tempData[4];
-              case "4군":
-                return ++tempData[5];
-              case "일반":
-                return ++tempData[6];
-              default:
-                return 0;
-            }
-          });
-          setData(tempData);
-          setSum(response.data.recordList.length);
+          setData(response.data.recordData);
+          setSum(response.data.recordSum);
 
           axios
             .get(API + "/survey/manager/all", { withCredentials: true })
@@ -131,8 +109,20 @@ function StatisticsPage() {
 
         <div className="my-3 d-lg-flex flex-row justify-content-around">
           <div className="col-lg-6 col-12 mb-2">
-            <ResultTable data={data} name={"산출 횟수"} />
-            <BarChart data={data} name={"산출 횟수"} />
+            <SurveyTable
+              data={[
+                { name: "강주력", count: data[0] },
+                { name: "주력", count: data[1] },
+                { name: "1군", count: data[2] },
+                { name: "2군", count: data[3] },
+                { name: "3군", count: data[4] },
+                { name: "4군", count: data[5] },
+                { name: "일반", count: data[6] },
+              ]}
+              title={"누적 측정 결과"}
+              type="result"
+            />
+            <BarChart data={data} name={"누적 측정 결과"} />
           </div>
           <div className="col-lg-6 col-12 d-flex align-items-center justify-content-center">
             <PieChart data={data} name={"산출 횟수"} />
@@ -195,6 +185,7 @@ function StatisticsPage() {
                 { name: "매우 어려움", count: surveyData.level[4] },
               ]}
               title={"이번 시즌 군표 난이도는 어떠셨나요?"}
+              type="survey"
             />
             <SurveyChart
               data={[
@@ -217,6 +208,7 @@ function StatisticsPage() {
                 { name: "매우 나쁨", count: surveyData.balance[4] },
               ]}
               title={"이번 시즌 맵 별로 군표 밸런스 어떠셨나요?"}
+              type="survey"
             />
             <SurveyChart
               data={[

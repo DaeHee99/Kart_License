@@ -1,15 +1,27 @@
 import { memo, useMemo } from "react";
 import { MDBTable, MDBTableHead, MDBTableBody } from "mdb-react-ui-kit";
 
-function SurveyTable({ title, data }) {
+function SurveyTable({ title, data, type }) {
   const color = useMemo(
-    () => [
-      "rgba(153, 102, 255, 0.5)",
-      "rgba(54, 162, 235, 0.5)",
-      "rgba(201, 203, 207, 0.5)",
-      "rgba(255, 159, 64, 0.5)",
-      "rgba(255, 99, 132, 0.5)",
-    ],
+    () =>
+      type === "survey"
+        ? [
+            "rgba(153, 102, 255, 0.5)",
+            "rgba(54, 162, 235, 0.5)",
+            "rgba(201, 203, 207, 0.5)",
+            "rgba(255, 159, 64, 0.5)",
+            "rgba(255, 99, 132, 0.5)",
+          ]
+        : [
+            "rgba(255, 99, 132, 0.5)",
+            "rgba(255, 159, 64, 0.5)",
+            "rgba(255, 205, 86, 0.5)",
+            "rgba(75, 192, 192, 0.5)",
+            "rgba(54, 162, 235, 0.5)",
+            "rgba(153, 102, 255, 0.5)",
+            "rgba(201, 203, 207, 0.5)",
+            "rgba(0, 0, 0, 0.3)",
+          ],
     []
   );
 

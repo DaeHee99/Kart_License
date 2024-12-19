@@ -50,7 +50,24 @@ router.get("/all", (req, res) => {
     .select("license")
     .exec((err, recordList) => {
       if (err) return res.status(400).json({ success: false, err });
-      return res.status(200).json({ success: true, recordList: recordList });
+
+      const recordData = recordList.reduce(
+        (acc, { license }) => {
+          if (license === "강주력") acc[0]++;
+          else if (license === "주력") acc[1]++;
+          else if (license === "1군") acc[2]++;
+          else if (license === "2군") acc[3]++;
+          else if (license === "3군") acc[4]++;
+          else if (license === "4군") acc[5]++;
+          else acc[6]++;
+          return acc;
+        },
+        [0, 0, 0, 0, 0, 0, 0]
+      );
+
+      const recordSum = recordData.reduce((acc, val) => (acc += val), 0);
+
+      return res.status(200).json({ success: true, recordData, recordSum });
     });
 });
 
