@@ -13,6 +13,7 @@ import {
 } from "mdb-react-ui-kit";
 import { useSelector } from "react-redux";
 import { API } from "../../../_actions/types";
+import { season as nowSeason } from "../../../global/mapData";
 import axios from "axios";
 
 export default function SurveyModal({
@@ -71,8 +72,8 @@ export default function SurveyModal({
   if (
     !user.userData?.isAuth ||
     user.userData?._id !== userId ||
-    season !== 29 ||
-    recentSurvey === 29
+    season !== nowSeason ||
+    recentSurvey === nowSeason
   )
     return null;
   return (
@@ -85,7 +86,7 @@ export default function SurveyModal({
         <MDBModalDialog scrollable>
           <MDBModalContent>
             <MDBModalHeader>
-              <MDBModalTitle>S29 군표 피드백</MDBModalTitle>
+              <MDBModalTitle>S{nowSeason} 군표 피드백</MDBModalTitle>
               <MDBBtn
                 className="btn-close"
                 color="none"
@@ -96,9 +97,11 @@ export default function SurveyModal({
               <p className="text-center">
                 안녕하세요. 카러플 군 계산기 운영진입니다.
                 <br />
-                이번 S29 군표 기록에 대한 피드백을 받고있습니다.
+                이번 S{nowSeason} 군표 기록에 대한 피드백을 받고있습니다.
                 <br />
                 작성해주신 피드백은 다음 시즌에 반영할 예정입니다.
+                <br />
+                새로운 기능 관련 피드백은 현재 논의 중에 있습니다.
                 <br />
                 이용해주셔서 감사합니다 :)
               </p>

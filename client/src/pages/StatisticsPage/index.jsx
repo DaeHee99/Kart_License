@@ -7,10 +7,10 @@ import {
   MDBIcon,
   MDBBtn,
 } from "mdb-react-ui-kit";
+import { season as nowSeason } from "../../global/mapData";
 import axios from "axios";
 import Footer from "../../components/Footer";
 import Loading from "../../components/Loading";
-import PieChart from "../ResultPage/PieChart";
 import BarChart from "../ResultPage/BarChart";
 import SurveyTable from "./SurveyTable";
 import SurveyChart from "./SurveyChart";
@@ -172,7 +172,7 @@ function StatisticsPage() {
 
         <h1>
           <MDBBadge color="primary" light className="w-100 fw-bold">
-            S29 군표 피드백
+            S{nowSeason} 군표 피드백
             <MDBIcon
               fas
               icon={open2}
