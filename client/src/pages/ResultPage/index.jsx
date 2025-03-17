@@ -42,6 +42,12 @@ function ResultPage() {
     setShowShow(!showShow);
   };
 
+  const copyURL = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      alert("결과 링크 복사가 완료되었습니다!");
+    });
+  };
+
   const record = data.recordCount;
 
   useEffect(() => {
@@ -188,12 +194,24 @@ function ResultPage() {
             color="secondary"
             className="w-100 d-flex justify-content-center align-items-center gap-2"
             style={{
+              backgroundColor: "#25d366",
+              color: "#ffffff",
+            }}
+            onClick={copyURL}
+          >
+            <MDBIcon fas icon="link" size="lg" /> 링크 복사
+          </MDBBtn>
+          <MDBBtn
+            size="lg"
+            color="secondary"
+            className="w-100 d-flex justify-content-center align-items-center gap-2"
+            style={{
               backgroundColor: "#FEE500",
               color: "#000000",
             }}
             onClick={() => setShareOpen(true)}
           >
-            <MDBIcon fas icon="comment" size="lg" /> 카카오톡 공유
+            <MDBIcon fas icon="comment" size="lg" /> 카톡 공유
           </MDBBtn>
           <MDBBtn
             size="lg"
@@ -205,14 +223,14 @@ function ResultPage() {
           </MDBBtn>
         </div>
 
-        <MDBBtn
+        {/* <MDBBtn
           className="w-100 text-center fw-bold mt-4"
           href="https://kart-chu-club.netlify.app/"
           size="lg"
           color="info"
         >
           츄르 공식 홈페이지
-        </MDBBtn>
+        </MDBBtn> */}
 
         {!isIntersecting && (
           <div
@@ -238,12 +256,24 @@ function ResultPage() {
                   color="secondary"
                   className="w-100 d-flex justify-content-center align-items-center gap-2"
                   style={{
+                    backgroundColor: "#25d366",
+                    color: "#ffffff",
+                  }}
+                  onClick={copyURL}
+                >
+                  <MDBIcon fas icon="link" size="lg" /> 링크 복사
+                </MDBBtn>
+                <MDBBtn
+                  size="lg"
+                  color="secondary"
+                  className="w-100 d-flex justify-content-center align-items-center gap-2"
+                  style={{
                     backgroundColor: "#FEE500",
                     color: "#000000",
                   }}
                   onClick={() => setShareOpen(true)}
                 >
-                  <MDBIcon fas icon="comment" size="lg" /> 카카오톡 공유
+                  <MDBIcon fas icon="comment" size="lg" /> 카톡 공유
                 </MDBBtn>
                 <MDBBtn
                   size="lg"

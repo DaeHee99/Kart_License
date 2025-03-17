@@ -67,7 +67,11 @@ function StatisticsPage() {
                     if (!response.data.success)
                       return alert("데이터를 불러오는데 실패했습니다.");
                     else {
-                      const survey = response.data.surveyList?.reduce(
+                      const seasonSurveyList = response.data.surveyList?.filter(
+                        ({ season }) => season === nowSeason
+                      );
+
+                      const survey = seasonSurveyList.reduce(
                         (acc, val) => {
                           acc.level[val.level - 1]++;
                           acc.balance[val.balance - 1]++;
@@ -75,8 +79,9 @@ function StatisticsPage() {
                         },
                         { level: [0, 0, 0, 0, 0], balance: [0, 0, 0, 0, 0] }
                       );
+
                       setSurveyData(survey);
-                      setSurveySum(response.data.surveyList.length);
+                      setSurveySum(seasonSurveyList.length);
                       setLoading(false);
                     }
                   });

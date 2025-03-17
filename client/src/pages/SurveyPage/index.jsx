@@ -29,6 +29,7 @@ function SurveyPage() {
   const [open, setOpen] = useState("angle-up");
   const [showShow, setShowShow] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [seasonDataCount, setSeasonDataCount] = useState(0);
   const [dataAllCount, setDataAllCount] = useState(0);
   const [viewPageNavigation, setViewPageNavigation] = useState(false);
   const [surveyData, setSurveyData] = useState({
@@ -53,7 +54,11 @@ function SurveyPage() {
         if (!response.data.success)
           return alert("데이터를 불러오는데 실패했습니다.");
         else {
-          const survey = response.data.surveyList?.reduce(
+          const seasonSurveyList = response.data.surveyList?.filter(
+            ({ season }) => season === nowSeason
+          );
+
+          const survey = seasonSurveyList.reduce(
             (acc, val) => {
               acc.level[val.level - 1]++;
               acc.balance[val.balance - 1]++;
@@ -62,7 +67,7 @@ function SurveyPage() {
             { level: [0, 0, 0, 0, 0], balance: [0, 0, 0, 0, 0] }
           );
           setSurveyData(survey);
-          setDataAllCount(response.data.surveyList.length);
+          setSeasonDataCount(seasonSurveyList.length);
           setLoading(false);
         }
       });
@@ -100,7 +105,7 @@ function SurveyPage() {
               {("00" + today.getMinutes()).slice(-2)}:
               {("00" + today.getSeconds()).slice(-2)} 기준
               <br />총{" "}
-              <span className="text-success fw-bold">{dataAllCount}</span>
+              <span className="text-success fw-bold">{seasonDataCount}</span>
               개의 피드백을 성공적으로 불러왔습니다.
               <br />
             </div>
@@ -160,7 +165,7 @@ function SurveyPage() {
         {dataAllCount > 0 && (
           <MDBTypography listUnStyled className="mb-0 text-end" ref={tableRef}>
             <MDBIcon icon="check-circle" className="me-2 text-success" />
-            {dataAllCount}개의 피드백 데이터가 있습니다!
+            모든 시즌 {dataAllCount}개의 피드백 데이터가 있습니다!
           </MDBTypography>
         )}
 
