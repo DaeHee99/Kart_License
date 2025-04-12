@@ -9,6 +9,7 @@ import Rookie_008 from "../assets/images/map/008 쥐공무.png";
 import Rookie_009 from "../assets/images/map/009 차이나 바다의 운율.png";
 import Rookie_010 from "../assets/images/map/010 신화 차원의 관문.png";
 import Rookie_011 from "../assets/images/map/011 더 월드.png";
+import Rookie_012 from "../assets/images/map/012 어비스 운명의 갈림길.png";
 
 import L3_001 from "../assets/images/map/001 코리아서킷.png";
 import L3_002 from "../assets/images/map/002 두바이.png";
@@ -101,6 +102,7 @@ const mapImages = [
   Rookie_009,
   Rookie_010,
   Rookie_011,
+  Rookie_012,
 
   L3_001,
   L3_002,
