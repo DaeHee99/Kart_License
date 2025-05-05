@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { MDBBadge, MDBBtn, MDBContainer } from "mdb-react-ui-kit";
 import { season as nowSeason } from "../../global/mapData";
 import Footer from "../../components/Footer";
-import tableImage from "../../assets/images/S31_기록표.png";
+import tableImage from "../../assets/images/S32_기록표.png";
 
 function TablePage() {
   const ref = useRef();
