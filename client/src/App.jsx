@@ -6,6 +6,7 @@ import ReduxThunk from "redux-thunk";
 import Reducer from "./_reducers/index";
 import Router from "./Router";
 import Header from "./components/Header";
+import HealthCheck from "./components/HealthCheck";
 
 const createStoreWithMiddleware = applyMiddleware(
   promiseMiddleware,
@@ -19,6 +20,7 @@ function App() {
         <Header />
         <Router />
       </BrowserRouter>
+      <HealthCheck />
     </Provider>
   );
 }
