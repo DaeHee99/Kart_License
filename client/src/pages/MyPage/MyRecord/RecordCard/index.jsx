@@ -19,23 +19,16 @@ function RecordCard({ _id, season, createdAt, license }) {
   };
 
   const cardColor = () => {
-    if (season === 17) return "primary";
-    if (season === 18) return "secondary";
-    if (season === 19) return "success";
-    if (season === 20) return "danger";
-    if (season === 21) return "warning";
-    if (season === 22) return "info";
+    const colorList = [
+      "primary",
+      "secondary",
+      "success",
+      "danger",
+      "warning",
+      "info",
+    ];
 
-    if (season === 23) return "primary";
-    if (season === 24) return "secondary";
-    if (season === 25) return "success";
-    if (season === 26) return "danger";
-    if (season === 27) return "warning";
-    if (season === 28) return "info";
-
-    if (season === 29) return "primary";
-    if (season === 30) return "secondary";
-    if (season === 31) return "success";
+    return colorList[(season + 1) % 6];
   };
 
   useEffect(() => {
