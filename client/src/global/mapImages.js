@@ -45,6 +45,7 @@ import L3_031 from "../assets/images/map/031 신화 오딘의 궁전.png";
 import L3_032 from "../assets/images/map/032 올림포스 제우스시티.png";
 import L3_033 from "../assets/images/map/033 월드 이탈리아 여행.png";
 import L3_034 from "../assets/images/map/034 카멜롯 외곽 순찰로.png";
+import L3_035 from "../assets/images/map/035 어비스 바다 소용돌이.png";
 
 import L2_001 from "../assets/images/map/001 병마용.png";
 import L2_002 from "../assets/images/map/002 만리장성.png";
@@ -138,6 +139,7 @@ const mapImages = [
   L3_032,
   L3_033,
   L3_034,
+  L3_035,
 
   L2_001,
   L2_002,
