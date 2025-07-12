@@ -989,6 +989,19 @@ const mapData = [
     ],
     image: "029 해골성.png",
   },
+  {
+    name: "올림포스 하늘의 신전",
+    record: [
+      "02:01:49",
+      "02:03:49",
+      "02:05:49",
+      "02:07:49",
+      "02:09:49",
+      "02:11:49",
+      "02:11:49 +",
+    ],
+    image: "030 올림포스 하늘의 신전.png",
+  },
 
   {
     name: "동화나라 이상한 나라의 문",
@@ -1164,7 +1177,7 @@ const mapData = [
 const mapCount = {
   Rookie: 12,
   L3: 34,
-  L2: 29,
+  L2: 30,
   L1: 13,
 };
 const mapAllCount = Object.values(mapCount).reduce((a, b) => a + b, 0);
