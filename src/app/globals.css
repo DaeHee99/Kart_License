@@ -44,31 +44,38 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(0.975 0.004 252);
-  --foreground: oklch(0.22 0.011 252);
-  --card: oklch(0.975 0.004 252);
-  --card-foreground: oklch(0.22 0.011 252);
-  --popover: oklch(0.975 0.004 252);
-  --popover-foreground: oklch(0.22 0.011 252);
-  --primary: oklch(0.6 0.196 241);
-  --primary-foreground: oklch(0.96 0.013 241);
-  --secondary: oklch(0.7 0.15 276);
-  --secondary-foreground: oklch(0.15 0.016 252);
-  --muted: oklch(0.92 0.003 252);
-  --muted-foreground: oklch(0.48 0.011 252);
-  --accent: oklch(0.92 0.003 252);
-  --accent-foreground: oklch(0.22 0.011 252);
-  --destructive: oklch(0.62 0.225 29);
-  --destructive-foreground: oklch(0.96 0.003 29);
-  --border: oklch(0.88 0.006 252);
-  --input: oklch(0.88 0.006 252);
-  --ring: oklch(0.6 0.196 241);
+  --radius: 0.75rem;
+  --background: oklch(0.99 0.002 252);
+  --foreground: oklch(0.15 0.015 252);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.015 252);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.015 252);
+  --primary: oklch(0.55 0.22 255);
+  --primary-foreground: oklch(0.99 0.01 255);
+  --secondary: oklch(0.65 0.18 285);
+  --secondary-foreground: oklch(0.99 0.01 285);
+  --muted: oklch(0.95 0.005 252);
+  --muted-foreground: oklch(0.5 0.015 252);
+  --accent: oklch(0.96 0.008 252);
+  --accent-foreground: oklch(0.15 0.015 252);
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.99 0.01 25);
+  --border: oklch(0.9 0.005 252);
+  --input: oklch(0.9 0.005 252);
+  --ring: oklch(0.55 0.22 255);
   --chart-1: oklch(0.6 0.196 241);
   --chart-2: oklch(0.7 0.15 276);
   --chart-3: oklch(0.56 0.095 192);
   --chart-4: oklch(0.52 0.123 95);
   --chart-5: oklch(0.58 0.177 328);
+  --tier-elite: oklch(0.62 0.24 10);
+  --tier-master: oklch(0.6 0.2 300);
+  --tier-diamond: oklch(0.65 0.15 230);
+  --tier-platinum: oklch(0.7 0.1 200);
+  --tier-gold: oklch(0.75 0.15 85);
+  --tier-silver: oklch(0.65 0.02 252);
+  --tier-bronze: oklch(0.55 0.1 45);
   --sidebar: oklch(0.955 0.004 252);
   --sidebar-foreground: oklch(0.45 0.011 252);
   --sidebar-primary: oklch(0.58 0.196 241);
@@ -80,30 +87,37 @@
 }
 
 .dark {
-  --background: oklch(0.17 0.011 252);
-  --foreground: oklch(0.91 0.02 241);
-  --card: oklch(0.17 0.011 252);
-  --card-foreground: oklch(0.91 0.02 241);
-  --popover: oklch(0.17 0.011 252);
-  --popover-foreground: oklch(0.91 0.02 241);
-  --primary: oklch(0.6 0.196 241);
-  --primary-foreground: oklch(0.96 0.013 241);
-  --secondary: oklch(0.5 0.15 276);
-  --secondary-foreground: oklch(0.96 0.02 241);
-  --muted: oklch(0.28 0.022 252);
-  --muted-foreground: oklch(0.74 0.035 252);
-  --accent: oklch(0.28 0.022 252);
-  --accent-foreground: oklch(0.91 0.02 241);
-  --destructive: oklch(0.59 0.225 29);
-  --destructive-foreground: oklch(0.96 0.003 29);
-  --border: oklch(0.38 0.022 252);
-  --input: oklch(0.38 0.022 252);
-  --ring: oklch(0.6 0.196 241);
-  --chart-1: oklch(0.6 0.196 241);
-  --chart-2: oklch(0.58 0.15 276);
-  --chart-3: oklch(0.48 0.095 192);
-  --chart-4: oklch(0.52 0.123 95);
-  --chart-5: oklch(0.58 0.177 328);
+  --background: oklch(0.12 0.015 252);
+  --foreground: oklch(0.95 0.01 252);
+  --card: oklch(0.15 0.015 252);
+  --card-foreground: oklch(0.95 0.01 252);
+  --popover: oklch(0.15 0.015 252);
+  --popover-foreground: oklch(0.95 0.01 252);
+  --primary: oklch(0.65 0.25 255);
+  --primary-foreground: oklch(0.12 0.015 255);
+  --secondary: oklch(0.7 0.2 285);
+  --secondary-foreground: oklch(0.12 0.015 285);
+  --muted: oklch(0.25 0.015 252);
+  --muted-foreground: oklch(0.65 0.015 252);
+  --accent: oklch(0.25 0.015 252);
+  --accent-foreground: oklch(0.95 0.01 252);
+  --destructive: oklch(0.6 0.25 25);
+  --destructive-foreground: oklch(0.99 0.01 25);
+  --border: oklch(0.25 0.015 252);
+  --input: oklch(0.25 0.015 252);
+  --ring: oklch(0.65 0.25 255);
+  --chart-1: oklch(0.65 0.22 241);
+  --chart-2: oklch(0.7 0.18 276);
+  --chart-3: oklch(0.6 0.12 192);
+  --chart-4: oklch(0.65 0.15 95);
+  --chart-5: oklch(0.65 0.2 328);
+  --tier-elite: oklch(0.7 0.27 5);
+  --tier-master: oklch(0.7 0.25 300);
+  --tier-diamond: oklch(0.72 0.2 230);
+  --tier-platinum: oklch(0.75 0.12 200);
+  --tier-gold: oklch(0.8 0.18 85);
+  --tier-silver: oklch(0.7 0.03 252);
+  --tier-bronze: oklch(0.65 0.12 45);
   --sidebar: oklch(0.12 0.011 252);
   --sidebar-foreground: oklch(0.62 0.05 241);
   --sidebar-primary: oklch(0.55 0.196 241);
@@ -121,6 +135,26 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Performance optimization for animations on mobile */
+  @media (max-width: 768px) {
+    motion-div[style*="blur"],
+    .blur-3xl {
+      filter: blur(40px) !important;
+    }
+
+    /* Reduce animation complexity on mobile */
+    * {
+      animation-duration: 1s !important;
+    }
+  }
+
+  /* Hardware acceleration for animations */
+  .animate-smooth {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform, opacity;
+  }
 }
 
 html {
@@ -133,4 +167,103 @@ html {
 
 body {
   font-family: var(--font-pretendard);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground);
+}
+
+/* Tier Badge Gradients */
+.tier-elite {
+  background: linear-gradient(
+    135deg,
+    oklch(0.7 0.27 5) 0%,
+    oklch(0.75 0.25 15) 50%,
+    oklch(0.7 0.27 5) 100%
+  );
+  background-size: 200% 200%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.tier-master {
+  background: linear-gradient(
+    135deg,
+    oklch(0.7 0.25 300) 0%,
+    oklch(0.65 0.22 285) 100%
+  );
+}
+
+.tier-diamond {
+  background: linear-gradient(
+    135deg,
+    oklch(0.72 0.2 230) 0%,
+    oklch(0.68 0.18 220) 100%
+  );
+}
+
+.tier-platinum {
+  background: linear-gradient(
+    135deg,
+    oklch(0.75 0.12 200) 0%,
+    oklch(0.72 0.1 195) 100%
+  );
+}
+
+.tier-gold {
+  background: linear-gradient(
+    135deg,
+    oklch(0.8 0.18 85) 0%,
+    oklch(0.75 0.16 75) 100%
+  );
+}
+
+.tier-silver {
+  background: linear-gradient(
+    135deg,
+    oklch(0.7 0.03 252) 0%,
+    oklch(0.65 0.02 250) 100%
+  );
+}
+
+.tier-bronze {
+  background: linear-gradient(
+    135deg,
+    oklch(0.65 0.12 45) 0%,
+    oklch(0.6 0.1 40) 100%
+  );
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    background-position: 0%;
+  }
+  50% {
+    background-position: 100%;
+  }
+}
+
+.dark .tier-elite,
+.dark .tier-master,
+.dark .tier-diamond,
+.dark .tier-platinum,
+.dark .tier-gold,
+.dark .tier-silver,
+.dark .tier-bronze {
+  background-size: 200% 200%;
 }
