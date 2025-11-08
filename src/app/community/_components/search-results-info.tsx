@@ -27,7 +27,7 @@ export function SearchResultsInfo({
           </div>
         </Card>
       ) : (
-        <Card className="border-primary/20 from-background to-primary/5 bg-gradient-to-br p-12">
+        <Card className="border-primary/20 from-background to-primary/5 bg-linear-to-br p-12">
           <div className="text-center">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}

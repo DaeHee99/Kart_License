@@ -242,7 +242,7 @@ export default function ResultPage() {
         <label className="text-sm font-medium">QR 카드</label>
         <div
           ref={qrCardRef}
-          className="from-background to-muted border-border flex flex-col items-center gap-4 rounded-2xl border-2 bg-gradient-to-br p-8"
+          className="from-background to-muted border-border flex flex-col items-center gap-4 rounded-2xl border-2 bg-linear-to-br p-8"
         >
           <div className="space-y-2 text-center">
             <div className="relative inline-block">
@@ -326,7 +326,7 @@ export default function ResultPage() {
     return (
       <div className="relative flex min-h-screen items-center justify-center overflow-hidden pb-24">
         {/* Animated Background */}
-        <div className="from-primary/10 via-background to-secondary/10 absolute inset-0 bg-gradient-to-br">
+        <div className="from-primary/10 via-background to-secondary/10 absolute inset-0 bg-linear-to-br">
           <motion.div
             className="bg-primary/20 absolute top-1/4 left-1/4 h-64 w-64 rounded-full blur-3xl"
             animate={{
@@ -386,10 +386,10 @@ export default function ResultPage() {
   return (
     <div className="relative min-h-screen overflow-hidden pb-24">
       {/* Spectacular Animated Background */}
-      <div className="from-primary/5 via-background to-secondary/5 absolute inset-0 bg-gradient-to-br">
+      <div className="from-primary/5 via-background to-secondary/5 absolute inset-0 bg-linear-to-br">
         {/* Large gradient blobs */}
         <motion.div
-          className="from-primary/20 to-secondary/20 absolute top-10 right-10 h-96 w-96 rounded-full bg-gradient-to-br blur-3xl"
+          className="from-primary/20 to-secondary/20 absolute top-10 right-10 h-96 w-96 rounded-full bg-linear-to-br blur-3xl"
           animate={{
             scale: [1, 1.4, 1],
             opacity: [0.3, 0.6, 0.3],
@@ -403,7 +403,7 @@ export default function ResultPage() {
           }}
         />
         <motion.div
-          className="from-secondary/20 to-primary/20 absolute bottom-10 left-10 h-80 w-80 rounded-full bg-gradient-to-br blur-3xl"
+          className="from-secondary/20 to-primary/20 absolute bottom-10 left-10 h-80 w-80 rounded-full bg-linear-to-br blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             opacity: [0.5, 0.3, 0.5],
@@ -459,10 +459,10 @@ export default function ResultPage() {
             transition={{ duration: 0.3 }}
             className="relative"
           >
-            <Card className="border-primary/20 from-card via-card to-primary/5 relative overflow-hidden border-2 bg-gradient-to-br p-8 shadow-2xl">
+            <Card className="border-primary/20 from-card via-card to-primary/5 relative overflow-hidden border-2 bg-linear-to-br p-8 shadow-2xl">
               {/* Shimmer effect */}
               <motion.div
-                className="via-primary/10 absolute inset-0 bg-gradient-to-r from-transparent to-transparent"
+                className="via-primary/10 absolute inset-0 bg-linear-to-r from-transparent to-transparent"
                 animate={{ x: ["-200%", "200%"] }}
                 transition={{
                   duration: 3,
@@ -487,7 +487,7 @@ export default function ResultPage() {
                   <div className="relative inline-block">
                     {/* Glow effect */}
                     <motion.div
-                      className={`absolute inset-0 bg-gradient-to-br ${TIERS[finalTier].color} rounded-full opacity-50 blur-2xl`}
+                      className={`absolute inset-0 bg-linear-to-br ${TIERS[finalTier].color} rounded-full opacity-50 blur-2xl`}
                       animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
                       transition={{ duration: 2, repeat: Infinity }}
                     />
@@ -510,7 +510,7 @@ export default function ResultPage() {
                   <h1 className="text-4xl font-bold md:text-5xl">
                     당신은{" "}
                     <span
-                      className={`bg-gradient-to-r ${TIERS[finalTier].color.replace("bg-", "from-")} to-primary rounded-sm bg-clip-text`}
+                      className={`bg-linear-to-r ${TIERS[finalTier].color.replace("bg-", "from-")} to-primary rounded-sm bg-clip-text`}
                     >
                       {TIERS[finalTier].nameKo}
                     </span>
@@ -526,7 +526,7 @@ export default function ResultPage() {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.25, duration: 0.2 }}
-                  className="from-primary/20 to-secondary/20 border-primary/20 inline-flex items-center gap-2 rounded-full border bg-gradient-to-r px-6 py-3 backdrop-blur-sm"
+                  className="from-primary/20 to-secondary/20 border-primary/20 inline-flex items-center gap-2 rounded-full border bg-linear-to-r px-6 py-3 backdrop-blur-sm"
                 >
                   <TrendingUp className="text-primary h-4 w-4" />
                   <span className="text-sm font-medium">{insights}</span>
@@ -548,7 +548,7 @@ export default function ResultPage() {
                 setShowShareDialog(true);
               }}
               size="lg"
-              className="from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 border-0 bg-gradient-to-r shadow-lg"
+              className="from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 border-0 bg-linear-to-r shadow-lg"
             >
               <Share2 className="mr-2 h-4 w-4" />
               공유하기
@@ -573,7 +573,7 @@ export default function ResultPage() {
             <Card className="border-border/50 relative overflow-hidden border-2 p-6">
               {/* Subtle shimmer */}
               <motion.div
-                className="via-primary/5 absolute inset-0 bg-gradient-to-r from-transparent to-transparent"
+                className="via-primary/5 absolute inset-0 bg-linear-to-r from-transparent to-transparent"
                 animate={{ x: ["-200%", "200%"] }}
                 transition={{
                   duration: 4,
@@ -686,7 +686,7 @@ export default function ResultPage() {
             <Card className="border-border/50 relative overflow-hidden border-2 p-6">
               {/* Subtle shimmer */}
               <motion.div
-                className="via-secondary/5 absolute inset-0 bg-gradient-to-r from-transparent to-transparent"
+                className="via-secondary/5 absolute inset-0 bg-linear-to-r from-transparent to-transparent"
                 animate={{ x: ["-200%", "200%"] }}
                 transition={{
                   duration: 4,
@@ -737,7 +737,7 @@ export default function ResultPage() {
                         }}
                         className={`border-border/50 hover:bg-primary/5 relative grid grid-cols-3 border-b transition-colors last:border-b-0 ${
                           tier
-                            ? `bg-gradient-to-r from-transparent to-${tier}/5`
+                            ? `bg-linear-to-r from-transparent to-${tier}/5`
                             : ""
                         }`}
                       >

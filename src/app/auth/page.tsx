@@ -113,9 +113,9 @@ function AuthPageContent() {
   return (
     <div className="relative min-h-screen overflow-hidden pb-24">
       {/* Animated Background */}
-      <div className="from-primary/10 via-background to-secondary/10 absolute inset-0 bg-gradient-to-br">
+      <div className="from-primary/10 via-background to-secondary/10 absolute inset-0 bg-linear-to-br">
         <motion.div
-          className="from-primary/20 to-secondary/20 absolute top-20 right-10 h-96 w-96 rounded-full bg-gradient-to-br blur-3xl"
+          className="from-primary/20 to-secondary/20 absolute top-20 right-10 h-96 w-96 rounded-full bg-linear-to-br blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -129,7 +129,7 @@ function AuthPageContent() {
           }}
         />
         <motion.div
-          className="from-secondary/20 to-primary/20 absolute bottom-20 left-10 h-80 w-80 rounded-full bg-gradient-to-br blur-3xl"
+          className="from-secondary/20 to-primary/20 absolute bottom-20 left-10 h-80 w-80 rounded-full bg-linear-to-br blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             opacity: [0.4, 0.3, 0.4],
@@ -153,7 +153,7 @@ function AuthPageContent() {
             transition={{ duration: 0.3 }}
             className="relative"
           >
-            <div className="from-primary/10 via-primary/5 absolute inset-0 -z-10 rounded-2xl bg-gradient-to-r to-transparent blur-3xl" />
+            <div className="from-primary/10 via-primary/5 absolute inset-0 -z-10 rounded-2xl bg-linear-to-r to-transparent blur-3xl" />
             <Card className="border-primary/20 relative overflow-hidden border-2 p-6">
               <div className="bg-primary/5 pointer-events-none absolute top-0 right-0 h-32 w-32 rounded-full blur-3xl" />
               <div className="bg-secondary/5 pointer-events-none absolute bottom-0 left-0 h-24 w-24 rounded-full blur-3xl" />
@@ -163,7 +163,7 @@ function AuthPageContent() {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
-                  className="from-primary to-primary/60 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br shadow-lg"
+                  className="from-primary to-primary/60 flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br shadow-lg"
                 >
                   {activeTab === "login" ? (
                     <LogIn className="text-primary-foreground h-7 w-7" />
@@ -211,7 +211,7 @@ function AuthPageContent() {
               {activeTab === "login" && (
                 <motion.div
                   layoutId="activeTab"
-                  className="from-primary to-primary/80 absolute inset-0 bg-gradient-to-r"
+                  className="from-primary to-primary/80 absolute inset-0 bg-linear-to-r"
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
@@ -229,7 +229,7 @@ function AuthPageContent() {
               {activeTab === "signup" && (
                 <motion.div
                   layoutId="activeTab"
-                  className="from-primary to-primary/80 absolute inset-0 bg-gradient-to-r"
+                  className="from-primary to-primary/80 absolute inset-0 bg-linear-to-r"
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
@@ -252,7 +252,7 @@ function AuthPageContent() {
               >
                 <Card className="border-border/50 relative overflow-hidden border-2 p-6">
                   <motion.div
-                    className="via-primary/5 absolute inset-0 bg-gradient-to-r from-transparent to-transparent"
+                    className="via-primary/5 absolute inset-0 bg-linear-to-r from-transparent to-transparent"
                     animate={{ x: ["-200%", "200%"] }}
                     transition={{
                       duration: 3,
@@ -354,10 +354,10 @@ function AuthPageContent() {
                     >
                       <Button
                         type="submit"
-                        className="from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 group relative h-12 w-full overflow-hidden bg-gradient-to-r"
+                        className="from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 group relative h-12 w-full overflow-hidden bg-linear-to-r"
                       >
                         <motion.div
-                          className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+                          className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0"
                           initial={{ x: "-100%" }}
                           whileHover={{ x: "100%" }}
                           transition={{ duration: 0.5 }}
@@ -381,7 +381,7 @@ function AuthPageContent() {
               >
                 <Card className="border-border/50 relative overflow-hidden border-2 p-6">
                   <motion.div
-                    className="via-secondary/5 absolute inset-0 bg-gradient-to-r from-transparent to-transparent"
+                    className="via-secondary/5 absolute inset-0 bg-linear-to-r from-transparent to-transparent"
                     animate={{ x: ["-200%", "200%"] }}
                     transition={{
                       duration: 3,
@@ -574,10 +574,10 @@ function AuthPageContent() {
                     >
                       <Button
                         type="submit"
-                        className="from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 group relative h-12 w-full overflow-hidden bg-gradient-to-r"
+                        className="from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 group relative h-12 w-full overflow-hidden bg-linear-to-r"
                       >
                         <motion.div
-                          className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+                          className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0"
                           initial={{ x: "-100%" }}
                           whileHover={{ x: "100%" }}
                           transition={{ duration: 0.5 }}

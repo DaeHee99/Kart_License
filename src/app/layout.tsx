@@ -45,6 +45,7 @@ export default function RootLayout({
             <main className="pt-14 pb-16">{children}</main>
             <BottomNavigation />
             <Toaster />
+            <div id="portal" />
           </div>
         </ThemeProvider>
       </body>

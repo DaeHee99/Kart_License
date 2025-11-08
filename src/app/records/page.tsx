@@ -63,7 +63,7 @@ export default function RecordsPage() {
   };
 
   return (
-    <div className="from-primary/5 via-background to-background min-h-screen bg-gradient-to-b pb-24">
+    <div className="from-primary/5 via-background to-background min-h-screen bg-linear-to-b pb-24">
       <div className="px-4 py-6">
         <div className="mx-auto max-w-6xl space-y-6">
           {/* Header */}
@@ -72,7 +72,7 @@ export default function RecordsPage() {
             animate={{ opacity: 1, y: 0 }}
             className="relative"
           >
-            <div className="from-primary/10 via-primary/5 absolute inset-0 -z-10 rounded-2xl bg-gradient-to-r to-transparent blur-3xl" />
+            <div className="from-primary/10 via-primary/5 absolute inset-0 -z-10 rounded-2xl bg-linear-to-r to-transparent blur-3xl" />
             <Card className="border-primary/20 relative overflow-hidden border-2 p-6">
               <div className="bg-primary/5 pointer-events-none absolute top-0 right-0 h-40 w-40 rounded-full blur-3xl" />
               <div className="bg-primary/5 pointer-events-none absolute bottom-0 left-0 h-32 w-32 rounded-full blur-3xl" />
@@ -81,7 +81,7 @@ export default function RecordsPage() {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                  className="from-primary to-primary/60 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br shadow-lg"
+                  className="from-primary to-primary/60 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br shadow-lg"
                 >
                   <Trophy className="text-primary-foreground h-8 w-8" />
                 </motion.div>
@@ -285,7 +285,7 @@ export default function RecordsPage() {
                                   <td className="p-4">
                                     <div className="flex items-center gap-3">
                                       <motion.div
-                                        className="from-primary/20 to-primary/10 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br shadow-sm"
+                                        className="from-primary/20 to-primary/10 flex h-12 w-12 items-center justify-center rounded-lg bg-linear-to-br shadow-sm"
                                         whileHover={{ rotate: 360 }}
                                         transition={{ duration: 0.6 }}
                                       >

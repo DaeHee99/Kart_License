@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { Moon, Sun, Menu } from 'lucide-react';
-import { Button } from './ui/button';
-import { motion } from 'motion/react';
-import { useTheme } from 'next-themes';
-import { useRouter } from 'next/navigation';
+import { Moon, Sun, Menu } from "lucide-react";
+import { Button } from "./ui/button";
+import { motion } from "motion/react";
+import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 
 interface HeaderProps {
   showMenu?: boolean;
@@ -14,18 +14,18 @@ interface HeaderProps {
 export function Header({ showMenu, onMenuClick }: HeaderProps) {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
-  const isDark = theme === 'dark';
+  const isDark = theme === "dark";
 
   const handleToggleTheme = () => {
-    setTheme(isDark ? 'light' : 'dark');
+    setTheme(isDark ? "light" : "dark");
   };
 
   const handleLogoClick = () => {
-    router.push('/');
+    router.push("/");
   };
   return (
-    <header className="fixed top-0 left-0 right-0 h-14 bg-card/80 backdrop-blur-md border-b border-border z-50">
-      <div className="flex items-center justify-between h-full px-4 max-w-screen-xl mx-auto">
+    <header className="bg-card/80 border-border fixed top-0 right-0 left-0 z-50 h-14 border-b backdrop-blur-md">
+      <div className="mx-auto flex h-full max-w-screen-xl items-center justify-between px-4">
         <div className="flex items-center gap-2">
           {showMenu && onMenuClick && (
             <Button
@@ -34,11 +34,11 @@ export function Header({ showMenu, onMenuClick }: HeaderProps) {
               onClick={onMenuClick}
               className="lg:hidden"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="h-5 w-5" />
             </Button>
           )}
           <motion.h1
-            className="font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent cursor-pointer"
+            className="from-primary to-secondary cursor-pointer bg-linear-to-r bg-clip-text font-bold text-transparent"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             onClick={handleLogoClick}
@@ -59,9 +59,9 @@ export function Header({ showMenu, onMenuClick }: HeaderProps) {
             transition={{ duration: 0.3 }}
           >
             {isDark ? (
-              <Moon className="w-5 h-5" />
+              <Moon className="h-5 w-5" />
             ) : (
-              <Sun className="w-5 h-5" />
+              <Sun className="h-5 w-5" />
             )}
           </motion.div>
         </Button>

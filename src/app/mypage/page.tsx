@@ -174,7 +174,7 @@ export default function MyPage() {
 
   if (showEditProfile) {
     return (
-      <div className="from-primary/5 via-background to-background min-h-screen bg-gradient-to-b pb-24">
+      <div className="from-primary/5 via-background to-background min-h-screen bg-linear-to-b pb-24">
         <div className="px-4 py-6">
           <div className="mx-auto max-w-2xl space-y-6">
             {/* Header */}
@@ -207,7 +207,7 @@ export default function MyPage() {
               <Card className="border-primary/20 relative overflow-hidden border-2 p-6">
                 <div className="bg-primary/5 pointer-events-none absolute top-0 right-0 h-32 w-32 rounded-full blur-3xl" />
                 <h3 className="mb-4 font-bold">프로필 사진 변경</h3>
-                <div className="from-primary/10 to-primary/5 border-primary/20 mb-4 rounded-lg border bg-gradient-to-r p-4 text-center text-sm">
+                <div className="from-primary/10 to-primary/5 border-primary/20 mb-4 rounded-lg border bg-linear-to-r p-4 text-center text-sm">
                   원하는 프로필 사진을 하나 선택하세요.
                 </div>
                 <RadioGroup
@@ -357,7 +357,7 @@ export default function MyPage() {
   }
 
   return (
-    <div className="from-primary/5 via-background to-background min-h-screen bg-gradient-to-b pb-24">
+    <div className="from-primary/5 via-background to-background min-h-screen bg-linear-to-b pb-24">
       <div className="px-4 py-6">
         <div className="mx-auto max-w-4xl space-y-6">
           {/* Header */}
@@ -366,7 +366,7 @@ export default function MyPage() {
             animate={{ opacity: 1, y: 0 }}
             className="relative"
           >
-            <div className="from-primary/10 via-primary/5 absolute inset-0 -z-10 rounded-2xl bg-gradient-to-r to-transparent blur-3xl" />
+            <div className="from-primary/10 via-primary/5 absolute inset-0 -z-10 rounded-2xl bg-linear-to-r to-transparent blur-3xl" />
             <Card className="border-primary/20 relative overflow-hidden border-2 p-6">
               <div className="bg-primary/5 pointer-events-none absolute top-0 right-0 h-40 w-40 rounded-full blur-3xl" />
               <div className="bg-primary/5 pointer-events-none absolute bottom-0 left-0 h-32 w-32 rounded-full blur-3xl" />
@@ -375,7 +375,7 @@ export default function MyPage() {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                  className="from-primary to-primary/60 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br shadow-lg"
+                  className="from-primary to-primary/60 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br shadow-lg"
                 >
                   <User className="text-primary-foreground h-8 w-8" />
                 </motion.div>
@@ -422,7 +422,7 @@ export default function MyPage() {
           >
             <Card className="border-primary/20 relative overflow-hidden border-2">
               {/* Background Pattern */}
-              <div className="from-primary/5 to-primary/10 pointer-events-none absolute inset-0 bg-gradient-to-br via-transparent" />
+              <div className="from-primary/5 to-primary/10 pointer-events-none absolute inset-0 bg-linear-to-br via-transparent" />
               <div className="bg-primary/5 pointer-events-none absolute top-0 right-0 h-40 w-40 rounded-full blur-3xl" />
 
               <div className="relative p-6">
@@ -598,7 +598,7 @@ export default function MyPage() {
                       </LineChart>
                     </ResponsiveContainer>
 
-                    <div className="from-primary/10 to-primary/5 border-primary/20 mt-6 rounded-lg border bg-gradient-to-r p-4">
+                    <div className="from-primary/10 to-primary/5 border-primary/20 mt-6 rounded-lg border bg-linear-to-r p-4">
                       <p className="text-center text-sm">
                         최근 1개월 동안{" "}
                         <span className="text-primary font-bold">2단계</span>{" "}

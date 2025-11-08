@@ -139,7 +139,7 @@ function CommunityPageContent() {
   };
 
   return (
-    <div className="from-primary/5 via-background to-background min-h-screen bg-gradient-to-b pb-24">
+    <div className="from-primary/5 via-background to-background min-h-screen bg-linear-to-b pb-24">
       <div className="px-4 py-6">
         <div className="mx-auto max-w-4xl space-y-6">
           {/* Header */}

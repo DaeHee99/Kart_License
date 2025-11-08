@@ -37,10 +37,10 @@ export function AnimatedBackground({
   return (
     <div className={`relative ${className}`}>
       {/* Gradient Background */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${config.gradient}`}>
+      <div className={`absolute inset-0 bg-linear-to-br ${config.gradient}`}>
         {/* Animated Blobs - Hidden on mobile for performance */}
         <motion.div
-          className={`${config.blob1} absolute top-20 right-10 h-96 w-96 rounded-full blur-3xl hidden md:block`}
+          className={`${config.blob1} absolute top-20 right-10 hidden h-96 w-96 rounded-full blur-3xl md:block`}
           animate={{
             scale: [1, 1.3, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -53,7 +53,7 @@ export function AnimatedBackground({
           style={{ willChange: "transform, opacity" }}
         />
         <motion.div
-          className={`${config.blob2} absolute bottom-20 left-10 h-80 w-80 rounded-full blur-3xl hidden md:block`}
+          className={`${config.blob2} absolute bottom-20 left-10 hidden h-80 w-80 rounded-full blur-3xl md:block`}
           animate={{
             scale: [1.2, 1, 1.2],
             opacity: [0.4, 0.3, 0.4],

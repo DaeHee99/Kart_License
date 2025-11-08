@@ -82,7 +82,7 @@ export function ShareContent({ post, currentUrl, onClose }: ShareContentProps) {
         <label className="text-sm font-medium">QR 카드</label>
         <div
           ref={qrCardRef}
-          className="from-background to-muted border-border flex flex-col items-center gap-4 rounded-2xl border-2 bg-gradient-to-br p-8"
+          className="from-background to-muted border-border flex flex-col items-center gap-4 rounded-2xl border-2 bg-linear-to-br p-8"
         >
           <h2 className="text-primary text-4xl font-bold">
             {post.title.length > 20

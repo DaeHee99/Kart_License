@@ -56,7 +56,7 @@ export function PostCard({ post, index, onClick }: PostCardProps) {
               </span>
             </div>
 
-            <h4 className="from-foreground to-foreground/70 mb-2 bg-gradient-to-r bg-clip-text text-lg font-semibold">
+            <h4 className="from-foreground to-foreground/70 mb-2 bg-linear-to-r bg-clip-text text-lg font-semibold">
               {post.title}
             </h4>
             <div
@@ -77,11 +77,7 @@ export function PostCard({ post, index, onClick }: PostCardProps) {
                 onClick={(e) => e.stopPropagation()}
               >
                 {post.images.map((image, idx) => (
-                  <ImageZoom
-                    key={idx}
-                    images={post.images}
-                    currentIndex={idx}
-                  >
+                  <ImageZoom key={idx} images={post.images} currentIndex={idx}>
                     <motion.img
                       src={image}
                       alt={`${post.title} - ${idx + 1}`}

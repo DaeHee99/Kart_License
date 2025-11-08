@@ -56,7 +56,7 @@ export function TierBadge({
       <div
         className={`${sizeClasses[size]} ${tierData.color} relative flex items-center justify-center overflow-hidden rounded-full text-white shadow-lg`}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-br from-white/20 to-transparent" />
         <Icon className={`${iconSizes[size]} relative z-10`} />
       </div>
       {showLabel && (

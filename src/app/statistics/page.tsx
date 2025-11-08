@@ -96,9 +96,9 @@ export default function StatisticsPage() {
   return (
     <div className="relative min-h-screen overflow-hidden pb-24">
       {/* Animated Background */}
-      <div className="from-primary/5 via-background to-secondary/5 absolute inset-0 bg-gradient-to-br">
+      <div className="from-primary/5 via-background to-secondary/5 absolute inset-0 bg-linear-to-br">
         <motion.div
-          className="from-primary/10 to-secondary/10 absolute top-20 right-10 h-96 w-96 rounded-full bg-gradient-to-br blur-3xl"
+          className="from-primary/10 to-secondary/10 absolute top-20 right-10 h-96 w-96 rounded-full bg-linear-to-br blur-3xl"
           animate={{
             scale: [1, 1.3, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -110,7 +110,7 @@ export default function StatisticsPage() {
           }}
         />
         <motion.div
-          className="from-secondary/10 to-primary/10 absolute bottom-20 left-10 h-80 w-80 rounded-full bg-gradient-to-br blur-3xl"
+          className="from-secondary/10 to-primary/10 absolute bottom-20 left-10 h-80 w-80 rounded-full bg-linear-to-br blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             opacity: [0.4, 0.3, 0.4],
@@ -132,7 +132,7 @@ export default function StatisticsPage() {
             transition={{ duration: 0.2 }}
             className="relative"
           >
-            <div className="from-primary/10 via-primary/5 absolute inset-0 -z-10 rounded-2xl bg-gradient-to-r to-transparent blur-3xl" />
+            <div className="from-primary/10 via-primary/5 absolute inset-0 -z-10 rounded-2xl bg-linear-to-r to-transparent blur-3xl" />
             <Card className="border-primary/20 relative overflow-hidden border-2 p-6">
               <div className="bg-primary/5 pointer-events-none absolute top-0 right-0 h-40 w-40 rounded-full blur-3xl" />
               <div className="bg-primary/5 pointer-events-none absolute bottom-0 left-0 h-32 w-32 rounded-full blur-3xl" />
@@ -142,7 +142,7 @@ export default function StatisticsPage() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                    className="from-primary to-primary/60 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br shadow-lg"
+                    className="from-primary to-primary/60 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br shadow-lg"
                   >
                     <BarChart3 className="text-primary-foreground h-8 w-8" />
                   </motion.div>
@@ -183,7 +183,7 @@ export default function StatisticsPage() {
                 transition={{ duration: 3, repeat: Infinity }}
               />
               <div className="relative flex items-center gap-4">
-                <div className="from-primary/20 to-primary/10 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br">
+                <div className="from-primary/20 to-primary/10 flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-br">
                   <Users className="text-primary h-6 w-6" />
                 </div>
                 <div>
@@ -202,7 +202,7 @@ export default function StatisticsPage() {
                 transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
               />
               <div className="relative flex items-center gap-4">
-                <div className="from-secondary/20 to-secondary/10 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br">
+                <div className="from-secondary/20 to-secondary/10 flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-br">
                   <Activity className="text-secondary h-6 w-6" />
                 </div>
                 <div>
@@ -221,7 +221,7 @@ export default function StatisticsPage() {
                 transition={{ duration: 3, repeat: Infinity, delay: 1 }}
               />
               <div className="relative flex items-center gap-4">
-                <div className="from-primary/20 to-secondary/10 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br">
+                <div className="from-primary/20 to-secondary/10 flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-br">
                   <TrendingUp className="text-primary h-6 w-6" />
                 </div>
                 <div>
@@ -264,7 +264,7 @@ export default function StatisticsPage() {
               <TabsContent value="realtime" className="mt-6">
                 <Card className="border-border/50 relative overflow-hidden border-2 p-6">
                   <motion.div
-                    className="via-primary/5 absolute inset-0 bg-gradient-to-r from-transparent to-transparent"
+                    className="via-primary/5 absolute inset-0 bg-linear-to-r from-transparent to-transparent"
                     animate={{ x: ["-200%", "200%"] }}
                     transition={{
                       duration: 4,
@@ -359,7 +359,7 @@ export default function StatisticsPage() {
               <TabsContent value="statistics" className="mt-6">
                 <Card className="border-border/50 relative overflow-hidden border-2 p-6">
                   <motion.div
-                    className="via-secondary/5 absolute inset-0 bg-gradient-to-r from-transparent to-transparent"
+                    className="via-secondary/5 absolute inset-0 bg-linear-to-r from-transparent to-transparent"
                     animate={{ x: ["-200%", "200%"] }}
                     transition={{
                       duration: 4,
@@ -536,7 +536,7 @@ export default function StatisticsPage() {
               <TabsContent value="feedback" className="mt-6">
                 <Card className="border-border/50 relative overflow-hidden border-2 p-6">
                   <motion.div
-                    className="via-secondary/5 absolute inset-0 bg-gradient-to-r from-transparent to-transparent"
+                    className="via-secondary/5 absolute inset-0 bg-linear-to-r from-transparent to-transparent"
                     animate={{ x: ["-200%", "200%"] }}
                     transition={{
                       duration: 4,

@@ -27,7 +27,7 @@ export function PageHeader({
       transition={{ duration: 0.3 }}
       className="relative"
     >
-      <div className="from-primary/10 via-primary/5 absolute inset-0 -z-10 rounded-2xl bg-gradient-to-r to-transparent blur-3xl hidden md:block" />
+      <div className="from-primary/10 via-primary/5 absolute inset-0 -z-10 hidden rounded-2xl bg-linear-to-r to-transparent blur-3xl md:block" />
 
       <Card className="border-primary/20 relative overflow-hidden border-2 p-6">
         {/* Background decorations */}
@@ -40,13 +40,13 @@ export function PageHeader({
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-            className="from-primary to-primary/60 flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br shadow-lg"
+            className="from-primary to-primary/60 flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-linear-to-br shadow-lg"
           >
             <Icon className="text-primary-foreground h-8 w-8" />
           </motion.div>
 
           {/* Content */}
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <motion.h1
               className="mb-2 text-3xl font-bold"
               initial={{ opacity: 0, x: -20 }}

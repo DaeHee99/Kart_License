@@ -52,19 +52,19 @@ export function StatCard({
         className={`${colors.border} relative overflow-hidden border-2 p-6 transition-all`}
       >
         <motion.div
-          className={`${colors.bg} absolute top-0 right-0 h-32 w-32 rounded-full blur-2xl hidden md:block`}
+          className={`${colors.bg} absolute top-0 right-0 hidden h-32 w-32 rounded-full blur-2xl md:block`}
           animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 3, repeat: Infinity }}
         />
         <div className="relative flex items-center gap-4">
           <div
-            className={`${colors.iconBg} flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br`}
+            className={`${colors.iconBg} flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-linear-to-br`}
           >
             <Icon className={`${colors.iconColor} h-6 w-6`} />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-muted-foreground text-sm truncate">{label}</p>
-            <p className="text-2xl font-bold truncate">{value}</p>
+            <p className="text-muted-foreground truncate text-sm">{label}</p>
+            <p className="truncate text-2xl font-bold">{value}</p>
           </div>
         </div>
       </Card>
