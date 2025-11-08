@@ -9,18 +9,23 @@ import { TIERS } from "@/lib/types";
 import { MOCK_CURRENT_USER } from "@/lib/mock-data";
 import { Users, LogIn, User, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-interface UserProfileCardProps {
-  isLoggedIn: boolean;
-  onToggleLogin: () => void;
-}
-
-export function UserProfileCard({ isLoggedIn, onToggleLogin }: UserProfileCardProps) {
+export function UserProfileCard() {
   const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // Mock login state
+
+  const onToggleLogin = () => {
+    if (isLoggedIn) {
+      setIsLoggedIn(false);
+    } else {
+      router.push("/auth");
+    }
+  };
 
   if (!isLoggedIn) {
     return (
-      <Card className="from-primary/10 via-card/95 to-secondary/10 border-primary/30 sticky top-20 border bg-gradient-to-br p-8 text-center backdrop-blur-sm">
+      <Card className="from-primary/10 via-card/95 to-secondary/10 border-primary/30 sticky top-20 border bg-linear-to-br p-8 text-center backdrop-blur-sm">
         <Users className="text-primary mx-auto mb-4 h-16 w-16" />
         <h3 className="mb-2 font-bold">로그인이 필요해요</h3>
         <p className="text-muted-foreground mb-6 text-sm">
@@ -36,11 +41,11 @@ export function UserProfileCard({ isLoggedIn, onToggleLogin }: UserProfileCardPr
   }
 
   return (
-    <Card className="border-primary/30 from-primary/10 via-card/95 to-secondary/10 sticky top-20 border-2 bg-gradient-to-br p-6 backdrop-blur-sm">
+    <Card className="border-primary/30 from-primary/10 via-card/95 to-secondary/10 sticky top-20 border-2 bg-linear-to-br p-6 backdrop-blur-sm">
       <div className="flex flex-col items-center space-y-4 text-center">
         <div className="relative">
           <Avatar className="border-primary/20 h-20 w-20 border-4">
-            <AvatarFallback className="from-primary to-secondary text-primary-foreground bg-gradient-to-br text-2xl">
+            <AvatarFallback className="from-primary to-secondary text-primary-foreground bg-linear-to-br text-2xl">
               {MOCK_CURRENT_USER.nickname[0]}
             </AvatarFallback>
           </Avatar>
@@ -60,9 +65,7 @@ export function UserProfileCard({ isLoggedIn, onToggleLogin }: UserProfileCardPr
         </div>
 
         <div className="w-full">
-          <h3 className="mb-2 text-xl">
-            {MOCK_CURRENT_USER.nickname}
-          </h3>
+          <h3 className="mb-2 text-xl">{MOCK_CURRENT_USER.nickname}</h3>
           {MOCK_CURRENT_USER.currentTier && (
             <Badge className="mb-3 gap-2 px-4 py-1.5">
               <div
@@ -81,11 +84,7 @@ export function UserProfileCard({ isLoggedIn, onToggleLogin }: UserProfileCardPr
           >
             <User className="mr-2 h-4 w-4" />내 정보
           </Button>
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={onToggleLogin}
-          >
+          <Button variant="outline" className="w-full" onClick={onToggleLogin}>
             <LogOut className="mr-2 h-4 w-4" />
             로그아웃
           </Button>

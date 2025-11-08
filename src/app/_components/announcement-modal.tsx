@@ -18,41 +18,88 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useState, useEffect } from "react";
+import { MOCK_ANNOUNCEMENTS } from "@/lib/mock-data";
 
-interface Announcement {
-  id: string;
-  title: string;
-  content: string;
-  isActive: boolean;
-}
+export function AnnouncementModal() {
+  const isMobile = useIsMobile();
 
-interface AnnouncementModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  isMobile: boolean;
-  currentAnnouncement: Announcement | undefined;
-  currentIndex: number;
-  totalCount: number;
-  dontShowAgain: boolean;
-  onDontShowAgainChange: (checked: boolean) => void;
-  onPrevious: () => void;
-  onNext: () => void;
-  onClose: () => void;
-}
+  const [showAnnouncement, setShowAnnouncement] = useState(false);
+  const [currentAnnouncementIndex, setCurrentAnnouncementIndex] = useState(0);
+  const [dontShowAgain, setDontShowAgain] = useState(false);
 
-export function AnnouncementModal({
-  open,
-  onOpenChange,
-  isMobile,
-  currentAnnouncement,
-  currentIndex,
-  totalCount,
-  dontShowAgain,
-  onDontShowAgainChange,
-  onPrevious,
-  onNext,
-  onClose,
-}: AnnouncementModalProps) {
+  // Get all active announcements that haven't been dismissed
+  const getDismissedAnnouncements = (): string[] => {
+    try {
+      const dismissed = localStorage.getItem("dismissed-announcements");
+      return dismissed ? JSON.parse(dismissed) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const activeAnnouncements = MOCK_ANNOUNCEMENTS.filter((a) => {
+    const dismissedIds = getDismissedAnnouncements();
+    return a.isActive && !dismissedIds.includes(a.id);
+  });
+
+  const currentAnnouncement = activeAnnouncements[currentAnnouncementIndex];
+
+  const totalCount = activeAnnouncements.length;
+
+  useEffect(() => {
+    // Show announcement on first mount only
+    if (activeAnnouncements.length > 0) {
+      setTimeout(() => {
+        setShowAnnouncement(true);
+      }, 500);
+    }
+  }, []);
+
+  const handleCloseAnnouncement = () => {
+    if (currentAnnouncement && dontShowAgain) {
+      const dismissedIds = getDismissedAnnouncements();
+      dismissedIds.push(currentAnnouncement.id);
+      localStorage.setItem(
+        "dismissed-announcements",
+        JSON.stringify(dismissedIds),
+      );
+    }
+
+    // 다음 공지사항이 있으면 표시, 없으면 닫기
+    if (currentAnnouncementIndex < activeAnnouncements.length - 1) {
+      setCurrentAnnouncementIndex(currentAnnouncementIndex + 1);
+      setDontShowAgain(false);
+    } else {
+      setShowAnnouncement(false);
+      setCurrentAnnouncementIndex(0);
+      setDontShowAgain(false);
+    }
+  };
+
+  const handlePreviousAnnouncement = () => {
+    if (currentAnnouncementIndex > 0) {
+      setCurrentAnnouncementIndex(currentAnnouncementIndex - 1);
+      setDontShowAgain(false);
+    }
+  };
+
+  const handleNextAnnouncement = () => {
+    if (currentAnnouncementIndex < activeAnnouncements.length - 1) {
+      if (dontShowAgain && currentAnnouncement) {
+        const dismissedIds = getDismissedAnnouncements();
+        dismissedIds.push(currentAnnouncement.id);
+        localStorage.setItem(
+          "dismissed-announcements",
+          JSON.stringify(dismissedIds),
+        );
+      }
+      setCurrentAnnouncementIndex(currentAnnouncementIndex + 1);
+      setDontShowAgain(false);
+    }
+  };
+
   if (!currentAnnouncement) return null;
 
   const content = (
@@ -76,7 +123,7 @@ export function AnnouncementModal({
             <div
               key={index}
               className={`h-1.5 rounded-full transition-all ${
-                index === currentIndex
+                index === currentAnnouncementIndex
                   ? "bg-primary w-8"
                   : "bg-muted-foreground/30 w-1.5"
               }`}
@@ -90,7 +137,7 @@ export function AnnouncementModal({
         <Checkbox
           id="dont-show-again"
           checked={dontShowAgain}
-          onCheckedChange={(checked) => onDontShowAgainChange(checked as boolean)}
+          onCheckedChange={(checked) => setDontShowAgain(checked as boolean)}
         />
         <Label
           htmlFor="dont-show-again"
@@ -102,18 +149,18 @@ export function AnnouncementModal({
 
       {/* 액션 버튼 */}
       <div className="flex gap-2">
-        {totalCount > 1 && currentIndex > 0 && (
+        {totalCount > 1 && currentAnnouncementIndex > 0 && (
           <Button
             variant="outline"
-            onClick={onPrevious}
+            onClick={handlePreviousAnnouncement}
             className="flex-1"
           >
             <ChevronLeft className="mr-1 h-4 w-4" />
             이전
           </Button>
         )}
-        <Button onClick={onClose} className="flex-1">
-          {currentIndex < totalCount - 1 ? (
+        <Button onClick={handleCloseAnnouncement} className="flex-1">
+          {currentAnnouncementIndex < totalCount - 1 ? (
             <>
               다음
               <ChevronRight className="ml-1 h-4 w-4" />
@@ -128,7 +175,7 @@ export function AnnouncementModal({
 
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={onOpenChange}>
+      <Drawer open={showAnnouncement} onOpenChange={setShowAnnouncement}>
         <DrawerContent>
           <DrawerHeader>
             <DrawerTitle>공지사항</DrawerTitle>
@@ -141,7 +188,7 @@ export function AnnouncementModal({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={showAnnouncement} onOpenChange={setShowAnnouncement}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>공지사항</DialogTitle>

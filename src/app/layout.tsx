@@ -7,8 +7,23 @@ import { BottomNavigation } from "@/components/bottom-navigation";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
-  title: "카러플 군 계산기 | Kart Rush+ License Calculator",
-  description: "카트라이더 러쉬플러스 라이센스 군 계산기",
+  title: "카러플 군 계산기 | KartRider Rush+ License Calculator",
+  description: "카트라이더 러쉬플러스 군 계산기",
+  keywords: [
+    "카러플 군 계산기",
+    "카트라이더",
+    "카트라이더 러쉬플러스",
+    "카러플 군표",
+  ],
+  openGraph: {
+    title: "카러플 군 계산기 | KartRider Rush+ License Calculator",
+    description: "카트라이더 러쉬플러스 군 계산기",
+    images: ["/og-logo.png"],
+    url: "https://kartrush.mylicense.kro.kr",
+    siteName: "카러플 군 계산기",
+    locale: "ko-KR",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

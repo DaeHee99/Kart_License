@@ -2,7 +2,14 @@
 
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { Zap, TrendingUp, ChevronRight, Sparkles, Star, Trophy } from "lucide-react";
+import {
+  Zap,
+  TrendingUp,
+  ChevronRight,
+  Sparkles,
+  Star,
+  Trophy,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, ReactNode } from "react";
 
@@ -27,7 +34,7 @@ export function HeroSection({ userProfileSlot }: HeroSectionProps) {
   return (
     <section className="relative overflow-hidden px-4 py-12 md:py-20">
       {/* Animated Background */}
-      <div className="from-primary/10 via-secondary/10 to-primary/5 absolute inset-0 bg-gradient-to-br">
+      <div className="from-primary/10 via-secondary/10 to-primary/5 absolute inset-0 bg-linear-to-br">
         {/* Animated circles - optimized for mobile */}
         <motion.div
           className="bg-primary/20 absolute top-20 left-10 h-64 w-64 rounded-full blur-3xl"
@@ -73,11 +80,11 @@ export function HeroSection({ userProfileSlot }: HeroSectionProps) {
         />
 
         {/* Racing lines effect - simplified for mobile */}
-        <div className="absolute inset-0 opacity-10 hidden md:block">
+        <div className="absolute inset-0 hidden opacity-10 md:block">
           {[...Array(5)].map((_, i) => (
             <motion.div
               key={i}
-              className="via-primary absolute h-1 bg-gradient-to-r from-transparent to-transparent"
+              className="via-primary absolute h-1 bg-linear-to-r from-transparent to-transparent"
               style={{
                 top: `${20 + i * 15}%`,
                 width: "100%",
@@ -99,7 +106,7 @@ export function HeroSection({ userProfileSlot }: HeroSectionProps) {
         {particlePositions.map((particle, i) => (
           <motion.div
             key={`particle-${i}`}
-            className={`absolute ${i > 7 ? 'hidden md:block' : ''}`}
+            className={`absolute ${i > 7 ? "hidden md:block" : ""}`}
             style={{
               left: `${particle.left}%`,
               top: `${particle.top}%`,
@@ -142,7 +149,7 @@ export function HeroSection({ userProfileSlot }: HeroSectionProps) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="from-primary/20 to-secondary/20 border-primary/20 inline-flex items-center gap-2 rounded-full border bg-gradient-to-r px-6 py-3 backdrop-blur-sm"
+              className="from-primary/20 to-secondary/20 border-primary/20 inline-flex items-center gap-2 rounded-full border bg-linear-to-r px-6 py-3 backdrop-blur-sm"
             >
               <motion.div
                 animate={{
@@ -156,14 +163,14 @@ export function HeroSection({ userProfileSlot }: HeroSectionProps) {
               >
                 <Zap className="text-primary h-5 w-5" />
               </motion.div>
-              <span className="from-primary to-secondary bg-gradient-to-r bg-clip-text font-medium text-transparent">
+              <span className="from-primary to-secondary bg-linear-to-r bg-clip-text font-medium text-transparent">
                 카트라이더 러쉬 플러스 실력 측정
               </span>
             </motion.div>
 
             <div className="space-y-4">
               <motion.h1
-                className="from-primary via-secondary to-primary bg-gradient-to-r bg-clip-text text-5xl font-bold text-transparent md:text-7xl"
+                className="from-primary via-secondary to-primary bg-linear-to-r bg-clip-text text-5xl font-bold text-transparent md:text-7xl"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
@@ -227,7 +234,7 @@ export function HeroSection({ userProfileSlot }: HeroSectionProps) {
                   className="group shadow-primary/50 relative h-16 overflow-hidden px-10 text-lg shadow-2xl"
                 >
                   <motion.div
-                    className="from-primary via-secondary to-primary absolute inset-0 bg-gradient-to-r"
+                    className="from-primary via-secondary to-primary absolute inset-0 bg-linear-to-r"
                     animate={{
                       x: ["-100%", "100%"],
                     }}

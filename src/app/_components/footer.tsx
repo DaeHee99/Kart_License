@@ -3,14 +3,11 @@
 import { Separator } from "@/components/ui/separator";
 import { Zap, Award, Trophy, Star, Sparkles, ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
+import Link from "next/link";
 
-interface FooterProps {
-  onNavigate: (page: string) => void;
-}
-
-export function Footer({ onNavigate }: FooterProps) {
+export function Footer() {
   return (
-    <footer className="border-primary/20 from-muted/30 via-muted/50 to-muted/70 relative overflow-hidden border-t-2 bg-gradient-to-b px-4 py-16">
+    <footer className="border-primary/20 from-muted/30 via-muted/50 to-muted/70 relative overflow-hidden border-t-2 bg-linear-to-b px-4 py-16">
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-30">
         <motion.div
@@ -49,7 +46,7 @@ export function Footer({ onNavigate }: FooterProps) {
             className="space-y-4"
           >
             <div className="flex items-center gap-2">
-              <div className="from-primary to-secondary flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br">
+              <div className="from-primary to-secondary flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-br">
                 <Zap className="text-primary-foreground h-6 w-6" />
               </div>
               <h3 className="text-xl font-bold">카러플 군 계산기</h3>
@@ -93,40 +90,40 @@ export function Footer({ onNavigate }: FooterProps) {
             <h4 className="font-semibold">바로가기</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <button
-                  onClick={() => onNavigate("/measure")}
+                <Link
+                  href="/measure"
                   className="text-muted-foreground hover:text-primary group flex items-center gap-2 transition-colors"
                 >
                   <ChevronRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
                   군 측정하기
-                </button>
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate("/records")}
+                <Link
+                  href="/records"
                   className="text-muted-foreground hover:text-primary group flex items-center gap-2 transition-colors"
                 >
                   <ChevronRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
                   기록표 보기
-                </button>
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate("/community")}
+                <Link
+                  href="/community"
                   className="text-muted-foreground hover:text-primary group flex items-center gap-2 transition-colors"
                 >
                   <ChevronRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
                   커뮤니티
-                </button>
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate("/statistics")}
+                <Link
+                  href="/statistics"
                   className="text-muted-foreground hover:text-primary group flex items-center gap-2 transition-colors"
                 >
                   <ChevronRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
                   통계
-                </button>
+                </Link>
               </li>
             </ul>
           </motion.div>

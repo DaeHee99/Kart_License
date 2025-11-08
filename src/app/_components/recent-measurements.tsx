@@ -11,13 +11,16 @@ import { formatRelativeTime } from "@/lib/utils-calc";
 import { motion } from "motion/react";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-interface RecentMeasurementsProps {
-  isMounted: boolean;
-}
-
-export function RecentMeasurements({ isMounted }: RecentMeasurementsProps) {
+export function RecentMeasurements() {
   const router = useRouter();
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <section className="px-4 py-16">
