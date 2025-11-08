@@ -23,14 +23,14 @@ import { NewPostForm } from "./new-post-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface NewPostDialogButtonProps {
-  editingPost: Post | null;
-  onEditComplete: () => void;
+  editingPost?: Post | null;
+  onEditComplete?: () => void;
   onPostCreate: (post: Post) => void;
   isMobile: boolean;
 }
 
 export function NewPostDialogButton({
-  editingPost,
+  editingPost = null,
   onEditComplete,
   onPostCreate,
   isMobile,
@@ -93,7 +93,7 @@ export function NewPostDialogButton({
       setNewPostImages([]);
     } else if (!open) {
       if (editingPost) {
-        onEditComplete();
+        onEditComplete?.();
       }
       setNewPostTitle("");
       setNewPostContent("");

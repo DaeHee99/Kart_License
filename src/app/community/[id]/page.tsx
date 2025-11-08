@@ -12,35 +12,90 @@ import { CommentsSection } from "./_components/comments-section";
 import { BackButton } from "./_components/back-button";
 import { ShareDialogWrapper } from "./_components/share-dialog-wrapper";
 import { DeleteAlerts } from "./_components/delete-alerts";
+import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+} from "@/components/ui/drawer";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { NewPostForm } from "../_components/new-post-form";
+import { Button } from "@/components/ui/button";
 
 export default function CommunityDetailPage() {
   const router = useRouter();
   const params = useParams();
   const postId = params.id as string;
+  const isMobile = useIsMobile();
 
-  const post = MOCK_POSTS.find((p) => p.id === postId);
+  const [currentPost, setCurrentPost] = useState<Post | null>(
+    MOCK_POSTS.find((p) => p.id === postId) || null
+  );
 
-  if (!post) {
+  if (!currentPost) {
     router.replace("/community");
     return null;
   }
 
   const currentUserId = "current-user";
-  const isPostAuthor = post.userId === currentUserId;
+  const isPostAuthor = currentPost.userId === currentUserId;
 
-  const [comments, setComments] = useState<Comment[]>(post.comments || []);
+  const [comments, setComments] = useState<Comment[]>(currentPost.comments || []);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [deletingCommentId, setDeletingCommentId] = useState<string | null>(
     null,
   );
   const [deletingPost, setDeletingPost] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [editImages, setEditImages] = useState<File[]>([]);
 
   const onBack = () => {
     router.push("/community");
   };
 
   const onEditPost = (post: Post) => {
-    router.push(`/community?edit=${post.id}`);
+    setEditTitle(post.title);
+    setEditContent(post.content);
+    setEditImages([]);
+    setShowEditDialog(true);
+  };
+
+  const handleEditComplete = () => {
+    if (!editTitle.trim() || !editContent.trim()) return;
+
+    // 수정된 게시글로 상태 업데이트
+    const updatedPost: Post = {
+      ...currentPost,
+      title: editTitle,
+      content: editContent,
+    };
+
+    setCurrentPost(updatedPost);
+    setShowEditDialog(false);
+    setEditTitle("");
+    setEditContent("");
+    setEditImages([]);
+    toast.success("게시글이 수정되었습니다.");
+  };
+
+  const handleEditDialogChange = (open: boolean) => {
+    if (!open) {
+      setEditTitle("");
+      setEditContent("");
+      setEditImages([]);
+    }
+    setShowEditDialog(open);
   };
 
   const handleAddComment = (content: string) => {
@@ -92,7 +147,7 @@ export default function CommunityDetailPage() {
           transition={{ delay: 0.2 }}
         >
           <PostContent
-            post={post}
+            post={currentPost}
             commentsCount={comments.length}
             isPostAuthor={isPostAuthor}
             onShare={handleShare}
@@ -118,7 +173,7 @@ export default function CommunityDetailPage() {
         <ShareDialogWrapper
           showShareDialog={showShareDialog}
           onOpenChange={setShowShareDialog}
-          post={post}
+          post={currentPost}
         />
 
         <DeleteAlerts
@@ -129,6 +184,57 @@ export default function CommunityDetailPage() {
           onCancelDeleteComment={() => setDeletingCommentId(null)}
           onCancelDeletePost={() => setDeletingPost(false)}
         />
+
+        {/* Edit Dialog/Drawer */}
+        {!isMobile ? (
+          <Dialog open={showEditDialog} onOpenChange={handleEditDialogChange}>
+            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
+              <DialogHeader>
+                <DialogTitle>글 수정</DialogTitle>
+                <DialogDescription>
+                  게시글을 수정하세요.
+                </DialogDescription>
+              </DialogHeader>
+              <NewPostForm
+                title={editTitle}
+                content={editContent}
+                images={editImages}
+                onTitleChange={setEditTitle}
+                onContentChange={setEditContent}
+                onImagesChange={setEditImages}
+              />
+              <Button onClick={handleEditComplete} className="w-full">
+                수정하기
+              </Button>
+            </DialogContent>
+          </Dialog>
+        ) : (
+          <Drawer open={showEditDialog} onOpenChange={handleEditDialogChange}>
+            <DrawerContent className="max-h-[95vh]">
+              <DrawerHeader>
+                <DrawerTitle>글 수정</DrawerTitle>
+                <DrawerDescription>
+                  게시글을 수정하세요.
+                </DrawerDescription>
+              </DrawerHeader>
+              <ScrollArea className="max-h-[95vh] overflow-y-auto px-1">
+                <div className="px-4 pb-6">
+                  <NewPostForm
+                    title={editTitle}
+                    content={editContent}
+                    images={editImages}
+                    onTitleChange={setEditTitle}
+                    onContentChange={setEditContent}
+                    onImagesChange={setEditImages}
+                  />
+                  <Button onClick={handleEditComplete} className="mt-4 w-full">
+                    수정하기
+                  </Button>
+                </div>
+              </ScrollArea>
+            </DrawerContent>
+          </Drawer>
+        )}
       </div>
     </div>
   );

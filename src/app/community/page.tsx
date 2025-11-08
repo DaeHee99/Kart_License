@@ -5,7 +5,7 @@ import { MOCK_POSTS } from "@/lib/mock-data";
 import { Post } from "@/lib/types";
 import { motion } from "motion/react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { CommunityHeader } from "./_components/community-header";
 import { SearchBar } from "./_components/search-bar";
 import { PostList } from "./_components/post-list";
@@ -14,19 +14,9 @@ import { NewPostDialogButton } from "./_components/new-post-dialog-button";
 
 export default function CommunityPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const editingPostId = searchParams.get("edit");
 
   const onPostClick = (postId: string) => {
     router.push(`/community/${postId}`);
-  };
-
-  const editingPost = editingPostId
-    ? MOCK_POSTS.find((p) => p.id === editingPostId) || null
-    : null;
-
-  const onEditComplete = () => {
-    router.push("/community");
   };
 
   const [posts, setPosts] = useState<Post[]>(MOCK_POSTS);
@@ -71,8 +61,6 @@ export default function CommunityPage() {
           >
             <SearchBar value={searchQuery} onChange={setSearchQuery} />
             <NewPostDialogButton
-              editingPost={editingPost}
-              onEditComplete={onEditComplete}
               onPostCreate={handleCreatePost}
               isMobile={isMobile}
             />
