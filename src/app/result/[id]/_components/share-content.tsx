@@ -40,7 +40,7 @@ export function ShareContent({ finalTier, onDialogClose }: ShareContentProps) {
       const dataUrl = await toPng(qrCardRef.current, {
         quality: 1.0,
         pixelRatio: 2,
-        backgroundColor: "#ffffff",
+        backgroundColor: "#ffffff00",
       });
 
       const link = document.createElement("a");

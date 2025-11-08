@@ -2,7 +2,13 @@
 
 import { motion } from "motion/react";
 import { Clock, BarChart3, MessageCircle } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  TabsContents,
+} from "@/components/ui/shadcn-io/tabs";
 import { RealtimeTab } from "./realtime-tab";
 import { StatisticsTab } from "./statistics-tab";
 import { FeedbackTab } from "./feedback-tab";
@@ -32,21 +38,22 @@ export function StatisticsTabs() {
             시즌 피드백
           </TabsTrigger>
         </TabsList>
+        <TabsContents>
+          {/* Realtime Tab */}
+          <TabsContent value="realtime" className="mt-6">
+            <RealtimeTab />
+          </TabsContent>
 
-        {/* Realtime Tab */}
-        <TabsContent value="realtime" className="mt-6">
-          <RealtimeTab />
-        </TabsContent>
+          {/* Statistics Tab */}
+          <TabsContent value="statistics" className="mt-6">
+            <StatisticsTab />
+          </TabsContent>
 
-        {/* Statistics Tab */}
-        <TabsContent value="statistics" className="mt-6">
-          <StatisticsTab />
-        </TabsContent>
-
-        {/* Feedback Tab */}
-        <TabsContent value="feedback" className="mt-6">
-          <FeedbackTab />
-        </TabsContent>
+          {/* Feedback Tab */}
+          <TabsContent value="feedback" className="mt-6">
+            <FeedbackTab />
+          </TabsContent>
+        </TabsContents>
       </Tabs>
     </motion.div>
   );
