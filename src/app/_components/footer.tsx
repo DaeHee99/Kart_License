@@ -36,7 +36,7 @@ export function Footer() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-screen-xl">
+      <div className="relative z-10 mx-auto max-w-7xl">
         <div className="mb-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand Section */}
           <motion.div

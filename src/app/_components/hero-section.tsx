@@ -136,7 +136,7 @@ export function HeroSection({ userProfileSlot }: HeroSectionProps) {
         ))}
       </div>
 
-      <div className="relative z-10 mx-auto max-w-screen-xl">
+      <div className="relative z-10 mx-auto max-w-7xl">
         <div className="grid items-start gap-8 lg:grid-cols-3">
           {/* Main Content - Left/Center */}
           <motion.div

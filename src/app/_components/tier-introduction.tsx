@@ -24,7 +24,7 @@ export function TierIntroduction() {
   return (
     <>
       <section className="bg-muted/30 px-4 py-16">
-        <div className="mx-auto max-w-screen-xl">
+        <div className="mx-auto max-w-7xl">
           <div className="mb-10">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}

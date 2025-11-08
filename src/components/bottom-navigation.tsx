@@ -25,7 +25,7 @@ export function BottomNavigation() {
         damping: 30,
       }}
     >
-      <div className="mx-auto flex h-16 max-w-screen-xl items-center justify-around px-2">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-around px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.id;

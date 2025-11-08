@@ -24,7 +24,7 @@ export function RecentMeasurements() {
 
   return (
     <section className="px-4 py-16">
-      <div className="mx-auto max-w-screen-xl">
+      <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h3 className="mb-2 text-3xl font-bold md:text-4xl">

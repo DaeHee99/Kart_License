@@ -11,13 +11,13 @@ import { toast } from "sonner";
 
 interface ShareContentProps {
   post: Post;
-  currentUrl: string;
   onClose: () => void;
 }
 
-export function ShareContent({ post, currentUrl, onClose }: ShareContentProps) {
+export function ShareContent({ post, onClose }: ShareContentProps) {
   const [copySuccess, setCopySuccess] = useState(false);
   const qrCardRef = useRef<HTMLDivElement>(null);
+  const currentUrl = window.location.href;
 
   const handleCopyLink = async () => {
     try {
@@ -38,12 +38,12 @@ export function ShareContent({ post, currentUrl, onClose }: ShareContentProps) {
       const dataUrl = await toPng(qrCardRef.current, {
         quality: 1.0,
         pixelRatio: 2,
-        backgroundColor: "#ffffff",
+        backgroundColor: "#ffffff00",
       });
 
       const link = document.createElement("a");
       link.href = dataUrl;
-      link.download = `kartrush-post-${post.id}-qr-card.png`;
+      link.download = `kartrush-${post.title}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -106,7 +106,7 @@ export function ShareContent({ post, currentUrl, onClose }: ShareContentProps) {
             <p className="font-medium">게시글 전용 페이지로 이동해요!</p>
           </div>
 
-          <p className="text-muted-foreground text-xs">카러플 제공</p>
+          <p className="text-muted-foreground text-xs">카러플 군 계산기 제공</p>
         </div>
       </div>
 
