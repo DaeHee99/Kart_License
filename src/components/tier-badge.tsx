@@ -7,7 +7,7 @@ import { LucideIcon } from "lucide-react";
 
 interface TierBadgeProps {
   tier: TierType;
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: "sm" | "base" | "md" | "lg" | "xl";
   showLabel?: boolean;
   animate?: boolean;
 }
@@ -22,6 +22,7 @@ export function TierBadge({
 
   const sizeClasses = {
     sm: "w-5 h-5",
+    base: "w-8 h-8 text-xs",
     md: "w-12 h-12 text-sm",
     lg: "w-20 h-20 text-base",
     xl: "w-32 h-32 text-2xl",
@@ -29,6 +30,7 @@ export function TierBadge({
 
   const iconSizes = {
     sm: "w-3 h-3",
+    base: "w-5 h-5",
     md: "w-6 h-6",
     lg: "w-10 h-10",
     xl: "w-16 h-16",
