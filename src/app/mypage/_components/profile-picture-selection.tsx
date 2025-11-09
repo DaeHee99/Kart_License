@@ -4,11 +4,13 @@ import { motion } from "motion/react";
 import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { AVATAR_OPTIONS } from "../../../lib/mypage-constants";
+import { Check } from "lucide-react";
+import ProfileImages from "@/lib/profile-images";
+import Image from "next/image";
 
 interface ProfilePictureSelectionProps {
   selectedAvatar: string;
-  onAvatarChange: (avatarId: string) => void;
+  onAvatarChange: (avatarSrc: string) => void;
 }
 
 export function ProfilePictureSelection({
@@ -29,28 +31,45 @@ export function ProfilePictureSelection({
         </div>
         <RadioGroup value={selectedAvatar} onValueChange={onAvatarChange}>
           <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-8">
-            {AVATAR_OPTIONS.map((avatar, index) => (
+            {ProfileImages.map((image, index) => (
               <motion.div
-                key={avatar.id}
-                className="flex flex-col items-center gap-2"
+                key={image.src}
+                className="relative flex flex-col items-center gap-2"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.02 }}
               >
                 <RadioGroupItem
-                  value={avatar.id}
-                  id={`avatar-${avatar.id}`}
+                  value={image.src}
+                  id={`avatar-${image.src}`}
                   className="sr-only"
                 />
                 <Label
-                  htmlFor={`avatar-${avatar.id}`}
-                  className={`h-14 w-14 rounded-full ${avatar.color} flex cursor-pointer items-center justify-center text-2xl transition-all ${
-                    selectedAvatar === avatar.id
-                      ? "ring-primary scale-110 shadow-lg ring-4"
-                      : "hover:scale-105 hover:shadow-md"
+                  htmlFor={`avatar-${image.src}`}
+                  className={`relative flex h-14 w-14 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 transition-all ${
+                    selectedAvatar === image.src
+                      ? "ring-primary border-primary scale-110 shadow-lg ring-4"
+                      : "hover:scale-105 hover:shadow-md border-transparent"
                   }`}
                 >
-                  {avatar.emoji}
+                  <Image
+                    src={image.src}
+                    alt={image.name}
+                    width={56}
+                    height={56}
+                    className={`h-full w-full object-cover transition-all ${
+                      selectedAvatar === image.src ? "brightness-110" : "brightness-75"
+                    }`}
+                  />
+                  {selectedAvatar === image.src && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full"
+                    >
+                      <Check className="text-primary-foreground h-3 w-3" />
+                    </motion.div>
+                  )}
                 </Label>
               </motion.div>
             ))}

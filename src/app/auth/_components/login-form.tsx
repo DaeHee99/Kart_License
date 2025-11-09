@@ -7,25 +7,20 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { LogIn, Lock, User } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useLogin } from "@/hooks/use-auth";
 
 export function LoginForm() {
-  const router = useRouter();
   const [loginId, setLoginId] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const { mutate: login, isPending } = useLogin();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!loginId || !loginPassword) {
-      toast.error("아이디와 비밀번호를 입력해주세요");
-      return;
-    }
-
-    // Mock login
-    toast.success("로그인 성공!");
-    router.push("/");
+    login({
+      id: loginId,
+      password: loginPassword,
+    });
   };
 
   return (
@@ -65,6 +60,7 @@ export function LoginForm() {
                 placeholder="아이디를 입력하세요"
                 value={loginId}
                 onChange={(e) => setLoginId(e.target.value)}
+                disabled={isPending}
                 className="focus:border-primary/50 group-hover:border-primary/30 h-12 border-2 pr-4 pl-4 transition-all"
               />
               <motion.div
@@ -93,6 +89,7 @@ export function LoginForm() {
                 placeholder="비밀번호를 입력하세요"
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
+                disabled={isPending}
                 className="focus:border-primary/50 group-hover:border-primary/30 h-12 border-2 pr-4 pl-4 transition-all"
               />
               <motion.div
@@ -111,7 +108,8 @@ export function LoginForm() {
           >
             <Button
               type="submit"
-              className="from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 group relative h-12 w-full overflow-hidden bg-linear-to-r"
+              disabled={isPending}
+              className="from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 group relative h-12 w-full overflow-hidden bg-linear-to-r disabled:opacity-50"
             >
               <motion.div
                 className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0"
@@ -121,7 +119,7 @@ export function LoginForm() {
               />
               <span className="relative z-10 flex items-center justify-center gap-2">
                 <LogIn className="h-4 w-4" />
-                로그인
+                {isPending ? "로그인 중..." : "로그인"}
               </span>
             </Button>
           </motion.div>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { QueryProvider } from "@/providers/query-provider";
 import { Header } from "@/components/header";
 import { BottomNavigation } from "@/components/bottom-navigation";
 import { Toaster } from "@/components/ui/sonner";
@@ -34,20 +35,22 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <body className="antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="bg-background text-foreground min-h-screen">
-            <Header />
-            <main className="pt-14 pb-16">{children}</main>
-            <BottomNavigation />
-            <Toaster />
-            <div id="portal" />
-          </div>
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="bg-background text-foreground min-h-screen">
+              <Header />
+              <main className="pt-14 pb-16">{children}</main>
+              <BottomNavigation />
+              <Toaster />
+              <div id="portal" />
+            </div>
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );

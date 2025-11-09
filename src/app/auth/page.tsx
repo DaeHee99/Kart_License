@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { AnimatePresence } from "motion/react";
 import { AnimatedBackground } from "./_components/animated-background";
 import { AuthHeader } from "./_components/auth-header";
@@ -9,7 +10,16 @@ import { LoginForm } from "./_components/login-form";
 import { SignupForm } from "./_components/signup-form";
 
 export default function AuthPage() {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
   const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
+
+  // URL 쿼리 파라미터로 탭 초기화
+  useEffect(() => {
+    if (tabParam === "login" || tabParam === "signup") {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
 
   return (
     <div className="relative min-h-screen overflow-hidden pb-24">

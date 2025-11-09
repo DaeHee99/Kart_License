@@ -9,11 +9,13 @@ import { User } from "lucide-react";
 interface NicknameChangeProps {
   nickname: string;
   onNicknameChange: (nickname: string) => void;
+  disabled?: boolean;
 }
 
 export function NicknameChange({
   nickname,
   onNicknameChange,
+  disabled,
 }: NicknameChangeProps) {
   return (
     <motion.div
@@ -34,6 +36,7 @@ export function NicknameChange({
             onChange={(e) => onNicknameChange(e.target.value)}
             placeholder="닉네임을 입력하세요"
             className="border-primary/20"
+            disabled={disabled}
           />
         </div>
       </Card>

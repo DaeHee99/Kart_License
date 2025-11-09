@@ -10,16 +10,18 @@ import { UserPlus, Lock, User, Sparkles } from "lucide-react";
 import { ProfileIconSelector } from "./profile-icon-selector";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRegister } from "@/hooks/use-auth";
+import { basicProfileImage } from "@/lib/profile-images";
 
 export function SignupForm() {
-  const router = useRouter();
   const [signupNickname, setSignupNickname] = useState("");
   const [signupId, setSignupId] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupPasswordConfirm, setSignupPasswordConfirm] = useState("");
-  const [selectedProfile, setSelectedProfile] = useState(1);
+  const [selectedProfile, setSelectedProfile] = useState(basicProfileImage);
   const [agreeTerms, setAgreeTerms] = useState(false);
+
+  const { mutate: register, isPending } = useRegister();
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,9 +46,13 @@ export function SignupForm() {
       return;
     }
 
-    // Mock signup
-    toast.success("회원가입이 완료되었습니다!");
-    router.push("/");
+    register({
+      name: signupNickname,
+      id: signupId,
+      password: signupPassword,
+      plainPassword: signupPassword,
+      image: selectedProfile,
+    });
   };
 
   return (
@@ -88,6 +94,7 @@ export function SignupForm() {
               placeholder="닉네임을 입력하세요"
               value={signupNickname}
               onChange={(e) => setSignupNickname(e.target.value)}
+              disabled={isPending}
               className="focus:border-primary/50 hover:border-primary/30 h-12 border-2 pr-4 pl-4 transition-all"
             />
           </motion.div>
@@ -108,6 +115,7 @@ export function SignupForm() {
               placeholder="아이디를 입력하세요"
               value={signupId}
               onChange={(e) => setSignupId(e.target.value)}
+              disabled={isPending}
               className="focus:border-primary/50 hover:border-primary/30 h-12 border-2 pr-4 pl-4 transition-all"
             />
           </motion.div>
@@ -131,6 +139,7 @@ export function SignupForm() {
               placeholder="비밀번호를 입력하세요"
               value={signupPassword}
               onChange={(e) => setSignupPassword(e.target.value)}
+              disabled={isPending}
               className="focus:border-primary/50 hover:border-primary/30 h-12 border-2 pr-4 pl-4 transition-all"
             />
           </motion.div>
@@ -154,6 +163,7 @@ export function SignupForm() {
               placeholder="비밀번호를 다시 입력하세요"
               value={signupPasswordConfirm}
               onChange={(e) => setSignupPasswordConfirm(e.target.value)}
+              disabled={isPending}
               className="focus:border-primary/50 hover:border-primary/30 h-12 border-2 pr-4 pl-4 transition-all"
             />
           </motion.div>
@@ -175,6 +185,7 @@ export function SignupForm() {
               onCheckedChange={(checked: boolean) =>
                 setAgreeTerms(checked as boolean)
               }
+              disabled={isPending}
               className="border-2"
             />
             <Label
@@ -192,7 +203,8 @@ export function SignupForm() {
           >
             <Button
               type="submit"
-              className="from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 group relative h-12 w-full overflow-hidden bg-linear-to-r"
+              disabled={isPending}
+              className="from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 group relative h-12 w-full overflow-hidden bg-linear-to-r disabled:opacity-50"
             >
               <motion.div
                 className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0"
@@ -202,7 +214,7 @@ export function SignupForm() {
               />
               <span className="relative z-10 flex items-center justify-center gap-2">
                 <UserPlus className="h-4 w-4" />
-                회원가입
+                {isPending ? "가입 중..." : "회원가입"}
               </span>
             </Button>
           </motion.div>

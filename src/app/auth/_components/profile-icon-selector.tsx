@@ -3,11 +3,12 @@
 import { motion } from "motion/react";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Check } from "lucide-react";
-import { PROFILE_ICONS } from "./constants";
+import ProfileImages from "@/lib/profile-images";
+import Image from "next/image";
 
 interface ProfileIconSelectorProps {
-  selectedProfile: number;
-  setSelectedProfile: (id: number) => void;
+  selectedProfile: string;
+  setSelectedProfile: (src: string) => void;
 }
 
 export function ProfileIconSelector({
@@ -27,45 +28,33 @@ export function ProfileIconSelector({
       </Label>
 
       <div className="grid grid-cols-8 gap-2">
-        {PROFILE_ICONS.map((icon, index) => (
+        {ProfileImages.map((image, index) => (
           <motion.button
-            key={icon.id}
+            key={image.src}
             type="button"
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              duration: 0.2,
-              delay: 0.25 + index * 0.02,
-              type: "spring",
-              stiffness: 200,
-            }}
-            whileHover={{ scale: 1.1, rotate: 5 }}
+            whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setSelectedProfile(icon.id)}
-            className={`relative flex aspect-square items-center justify-center overflow-hidden rounded-lg text-2xl transition-all ${
-              selectedProfile === icon.id
-                ? "ring-primary ring-offset-background ring-2 ring-offset-2"
-                : "hover:ring-primary/50 hover:ring-offset-background hover:ring-2 hover:ring-offset-2"
+            onClick={() => setSelectedProfile(image.src)}
+            className={`relative flex aspect-square items-center justify-center overflow-hidden rounded border-2 transition-all ${
+              selectedProfile === image.src
+                ? "ring-primary ring-offset-background border-primary ring-2 ring-offset-2"
+                : "hover:ring-primary/50 hover:ring-offset-background hover:border-primary/30 border-transparent hover:ring-2 hover:ring-offset-2"
             }`}
-            style={{ backgroundColor: `${icon.color}30` }}
           >
-            {selectedProfile === icon.id && (
-              <motion.div
-                layoutId="selectedProfile"
-                className="bg-primary/10 absolute inset-0"
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 30,
-                }}
-              />
-            )}
-            <span className="relative z-10">{icon.emoji}</span>
-            {selectedProfile === icon.id && (
+            <Image
+              src={image.src}
+              alt={image.name}
+              width={64}
+              height={64}
+              className="relative z-10 h-full w-full object-cover"
+            />
+            {selectedProfile === image.src && (
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full"
+                className="bg-primary absolute -top-1 -right-1 z-10 flex h-5 w-5 items-center justify-center rounded-full"
               >
                 <Check className="text-primary-foreground h-3 w-3" />
               </motion.div>

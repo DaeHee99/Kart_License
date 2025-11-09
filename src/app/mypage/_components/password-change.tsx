@@ -7,21 +7,19 @@ import { Label } from "@/components/ui/label";
 import { Lock } from "lucide-react";
 
 interface PasswordChangeProps {
-  currentPassword: string;
   newPassword: string;
   confirmPassword: string;
-  onCurrentPasswordChange: (password: string) => void;
   onNewPasswordChange: (password: string) => void;
   onConfirmPasswordChange: (password: string) => void;
+  disabled?: boolean;
 }
 
 export function PasswordChange({
-  currentPassword,
   newPassword,
   confirmPassword,
-  onCurrentPasswordChange,
   onNewPasswordChange,
   onConfirmPasswordChange,
+  disabled,
 }: PasswordChangeProps) {
   return (
     <motion.div
@@ -32,23 +30,6 @@ export function PasswordChange({
       <Card className="border-primary/20 border-2 p-6">
         <h3 className="mb-4 font-bold">비밀번호 변경</h3>
         <div className="space-y-4">
-          <div>
-            <Label
-              htmlFor="current-password"
-              className="mb-2 flex items-center gap-2"
-            >
-              <Lock className="h-4 w-4" />
-              현재 비밀번호
-            </Label>
-            <Input
-              id="current-password"
-              type="password"
-              value={currentPassword}
-              onChange={(e) => onCurrentPasswordChange(e.target.value)}
-              placeholder="현재 비밀번호를 입력하세요"
-              className="border-primary/20"
-            />
-          </div>
           <div>
             <Label
               htmlFor="new-password"
@@ -63,6 +44,7 @@ export function PasswordChange({
               onChange={(e) => onNewPasswordChange(e.target.value)}
               placeholder="새 비밀번호를 입력하세요"
               className="border-primary/20"
+              disabled={disabled}
             />
           </div>
           <div>
@@ -80,6 +62,7 @@ export function PasswordChange({
               onChange={(e) => onConfirmPasswordChange(e.target.value)}
               placeholder="비밀번호를 다시 입력하세요"
               className="border-primary/20"
+              disabled={disabled}
             />
           </div>
         </div>

@@ -4,23 +4,30 @@ import { motion } from "motion/react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TierBadge } from "@/components/tier-badge";
-import { MOCK_CURRENT_USER } from "@/lib/mock-data";
 import { TIERS } from "@/lib/types";
-import { AVATAR_OPTIONS } from "../../../lib/mypage-constants";
+import { useAuth } from "@/hooks/use-auth";
 
 interface ProfileSummaryCardProps {
   onEditProfile: () => void;
 }
 
 export function ProfileSummaryCard({ onEditProfile }: ProfileSummaryCardProps) {
-  // 최근 측정 정보
+  const { user, isLoading } = useAuth();
+
+  // 최근 측정 정보 (더미 데이터)
   const latestMeasurement = {
     season: "S35",
     date: "2025-10-25",
     time: "14:30",
   };
+
+  if (isLoading || !user) {
+    return null;
+  }
+
+  const userTier = user.license as keyof typeof TIERS;
 
   return (
     <motion.div
@@ -42,16 +49,15 @@ export function ProfileSummaryCard({ onEditProfile }: ProfileSummaryCardProps) {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <Avatar className="border-background h-20 w-20 border-4 shadow-lg">
-                <AvatarFallback
-                  className={`text-3xl ${AVATAR_OPTIONS[0].color}`}
-                >
-                  {AVATAR_OPTIONS[0].emoji}
+                <AvatarImage src={user.image} alt={user.name} className="object-cover" />
+                <AvatarFallback className="from-primary to-secondary text-primary-foreground bg-linear-to-br text-3xl">
+                  {user.name[0]}
                 </AvatarFallback>
               </Avatar>
-              {MOCK_CURRENT_USER.currentTier && (
+              {user.license && TIERS[userTier] && (
                 <div className="absolute -right-1 -bottom-1">
                   <TierBadge
-                    tier={MOCK_CURRENT_USER.currentTier}
+                    tier={userTier}
                     size="base"
                     showLabel={false}
                   />
@@ -62,14 +68,13 @@ export function ProfileSummaryCard({ onEditProfile }: ProfileSummaryCardProps) {
             {/* Info */}
             <div className="min-w-0 flex-1">
               <h2 className="mb-3 truncate text-2xl font-bold">
-                {MOCK_CURRENT_USER.nickname}
+                {user.name}
               </h2>
 
               <div className="mb-2 flex items-start gap-3">
                 <div className="flex gap-1.5">
                   <Badge variant="outline" className="w-fit">
-                    {MOCK_CURRENT_USER.currentTier &&
-                      TIERS[MOCK_CURRENT_USER.currentTier].nameKo}
+                    {user.license && TIERS[userTier] && TIERS[userTier].nameKo}
                   </Badge>
                   <Badge variant="secondary" className="w-fit font-mono">
                     {latestMeasurement.season}
