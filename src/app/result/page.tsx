@@ -1,15 +1,24 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { LoadingScreen } from "./_components/loading-screen";
 
 export default function ResultPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const recordId = searchParams.get("id");
+
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
+    // recordId가 없으면 측정 페이지로 리디렉션
+    if (!recordId) {
+      router.replace("/measure");
+      return;
+    }
+
     // Animate loading progress from 0 to 100 over 2.5 seconds
     const duration = 2500; // 2.5 seconds
     const interval = 16; // ~60fps
@@ -28,13 +37,13 @@ export default function ResultPage() {
     }, interval);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [recordId, router]);
 
   useEffect(() => {
-    if (isComplete) {
-      router.replace("/result/1");
+    if (isComplete && recordId) {
+      router.replace(`/result/${recordId}`);
     }
-  }, [isComplete, router]);
+  }, [isComplete, recordId, router]);
 
   return <LoadingScreen loadingProgress={loadingProgress} />;
 }

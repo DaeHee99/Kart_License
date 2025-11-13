@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import { Card } from "@/components/ui/card";
 import { InputMethod, TierType, UserMapRecord } from "@/lib/types";
-import { MOCK_MAPS } from "@/lib/mock-data";
+import { MapRecord as APIMapRecord } from "@/lib/api/types";
 import { AnimatedBackground } from "./animated-background";
 import { InputHeader } from "./input-header";
 import { MapInfoCard } from "./map-info-card";
@@ -14,9 +14,17 @@ import { useRef } from "react";
 interface InputStepProps {
   inputMethod: InputMethod;
   currentMapIndex: number;
+  totalMaps: number;
+  currentMap: APIMapRecord & { id: string };
   records: UserMapRecord[];
   currentInput: string;
   matchedTier: TierType | null;
+  previousRecord: {
+    mapName: string;
+    difficulty: string;
+    record: string;
+    tier: TierType;
+  } | null;
   onCancel: () => void;
   onTierSelect: (tier: TierType) => void;
   onInputChange: (value: string) => void;
@@ -27,17 +35,19 @@ interface InputStepProps {
 export function InputStep({
   inputMethod,
   currentMapIndex,
+  totalMaps,
+  currentMap,
   records,
   currentInput,
   matchedTier,
+  previousRecord,
   onCancel,
   onTierSelect,
   onInputChange,
   onManualInput,
   onSkip,
 }: InputStepProps) {
-  const currentMap = MOCK_MAPS[currentMapIndex];
-  const progress = ((records.length + 1) / MOCK_MAPS.length) * 100;
+  const progress = ((records.length + 1) / totalMaps) * 100;
 
   // Reduced particles for confirm screen
   const confirmParticles = useRef(
@@ -71,7 +81,7 @@ export function InputStep({
       {/* Header */}
       <InputHeader
         currentMapNumber={records.length + 1}
-        totalMaps={MOCK_MAPS.length}
+        totalMaps={totalMaps}
         progress={progress}
         onCancel={onCancel}
       />
@@ -107,12 +117,14 @@ export function InputStep({
                 {inputMethod === "button" ? (
                   <TierSelectionInput
                     map={currentMap}
+                    previousTier={previousRecord?.tier}
                     onTierSelect={onTierSelect}
                   />
                 ) : (
                   <ManualRecordInput
                     currentInput={currentInput}
                     matchedTier={matchedTier}
+                    previousRecord={previousRecord?.record}
                     onInputChange={onInputChange}
                     onSkip={onSkip}
                     onSubmit={onManualInput}

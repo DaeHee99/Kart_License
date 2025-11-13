@@ -189,3 +189,18 @@ export function getTierInsights(
 
   return "꾸준히 연습하여 군을 올려보세요! 🎯";
 }
+
+// Convert Korean tier name to English TierType
+export function convertKoreanTierToEnglish(koreanTier: string): TierType {
+  const tierMap: Record<string, TierType> = {
+    강주력: "elite",
+    주력: "master",
+    "1군": "diamond",
+    "2군": "platinum",
+    "3군": "gold",
+    "4군": "silver",
+    일반: "bronze",
+  };
+
+  return tierMap[koreanTier] || "bronze";
+}

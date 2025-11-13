@@ -4,7 +4,9 @@ import { motion, AnimatePresence } from "motion/react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Search } from "lucide-react";
-import { TIERS, TierType, MapRecord } from "@/lib/types";
+import { TIERS, TierType } from "@/lib/types";
+import { MapRecord } from "@/lib/api/types";
+import Image from "next/image";
 
 interface MapsTableProps {
   filteredMaps: MapRecord[];
@@ -58,14 +60,26 @@ export function MapsTable({ filteredMaps, selectedTier }: MapsTableProps) {
                 <AnimatePresence>
                   {filteredMaps.map((map, index) => (
                     <motion.tr
-                      key={map.id}
+                      key={`${map.name}-${index}`}
                       className={`${index === filteredMaps.length - 1 ? "" : "border-border border-b"} group hover:bg-accent cursor-pointer transition-colors duration-200`}
                     >
                       <td className="bg-background group-hover:bg-accent sticky left-0 z-10 p-4 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                         <div className="flex items-center gap-3">
-                          <div className="from-primary/20 to-primary/10 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-linear-to-br shadow-sm">
-                            <Trophy className="text-primary h-5 w-5" />
-                          </div>
+                          {map.imageUrl ? (
+                            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg shadow-sm">
+                              <Image
+                                src={map.imageUrl}
+                                alt={map.name}
+                                fill
+                                className="object-cover"
+                                sizes="48px"
+                              />
+                            </div>
+                          ) : (
+                            <div className="from-primary/20 to-primary/10 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-linear-to-br shadow-sm">
+                              <Trophy className="text-primary h-5 w-5" />
+                            </div>
+                          )}
                           <span className="min-w-[100px] font-medium">
                             {map.name}
                           </span>

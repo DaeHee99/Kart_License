@@ -121,7 +121,7 @@ export function TierDetailModal({
           <DrawerHeader>
             <DrawerTitle>군 상세 정보</DrawerTitle>
             <DrawerDescription>
-              {TIERS[selectedTier].nameKo} 군에 대해 자세히 알아보세요
+              {TIERS[selectedTier].nameKo}에 대해 자세히 알아보세요
             </DrawerDescription>
           </DrawerHeader>
 
@@ -139,7 +139,7 @@ export function TierDetailModal({
         <DialogHeader>
           <DialogTitle>군 상세 정보</DialogTitle>
           <DialogDescription>
-            {TIERS[selectedTier].nameKo} 군에 대해 자세히 알아보세요
+            {TIERS[selectedTier].nameKo}에 대해 자세히 알아보세요
           </DialogDescription>
         </DialogHeader>
 

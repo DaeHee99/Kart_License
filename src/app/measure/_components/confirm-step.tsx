@@ -4,27 +4,35 @@ import { motion } from "motion/react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { UserMapRecord } from "@/lib/types";
-import { MOCK_MAPS } from "@/lib/mock-data";
+import { MapRecord as APIMapRecord } from "@/lib/api/types";
 import { TIERS } from "@/lib/types";
 import { AnimatedBackground } from "./animated-background";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import Portal from "@/components/portal";
+import { useSaveRecord } from "@/hooks/use-records";
 
 interface ConfirmStepProps {
   records: UserMapRecord[];
+  maps: Array<APIMapRecord & { id: string }>;
+  season: number;
+  userId?: string;
   onEditMap: (mapIndex: number) => void;
   onRestart: () => void;
 }
 
 export function ConfirmStep({
   records,
+  maps,
+  season,
+  userId,
   onEditMap,
   onRestart,
 }: ConfirmStepProps) {
   const router = useRouter();
+  const { mutate: saveRecord, isPending } = useSaveRecord();
 
   // Reduced particles for input screen
   const inputParticles = useRef(
@@ -48,9 +56,23 @@ export function ConfirmStep({
   ).current;
 
   const handleSubmit = () => {
-    // Store records in sessionStorage for result page
-    sessionStorage.setItem("measurementRecords", JSON.stringify(records));
-    router.push("/result");
+    // 서버에 저장할 데이터 준비
+    const recordsToSave = records.map((record, index) => {
+      const map = maps[index];
+      return {
+        mapName: map.name,
+        difficulty: map.difficulty,
+        record: record.record || "",
+        tier: record.tier || "bronze",
+      };
+    });
+
+    // 서버에 저장
+    saveRecord({
+      userId,
+      season,
+      records: recordsToSave,
+    });
   };
 
   return (
@@ -96,7 +118,7 @@ export function ConfirmStep({
           <Card className="border-primary/10 border-2 p-6 shadow-lg">
             <div className="space-y-2">
               {records.map((record, index) => {
-                const map = MOCK_MAPS.find((m) => m.id === record.mapId);
+                const map = maps.find((m) => m.id === record.mapId);
                 return (
                   <motion.div
                     key={index}
@@ -143,9 +165,17 @@ export function ConfirmStep({
               </Button>
               <Button
                 onClick={handleSubmit}
+                disabled={isPending}
                 className="from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 flex-1 bg-linear-to-r"
               >
-                결과 확인하기
+                {isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    저장 중...
+                  </>
+                ) : (
+                  "결과 확인하기"
+                )}
               </Button>
             </div>
           </motion.div>

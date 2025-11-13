@@ -2,10 +2,15 @@
 
 import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
-import { MapRecord } from "@/lib/types";
 
 interface MapInfoCardProps {
-  map: MapRecord;
+  map: {
+    id: string;
+    name: string;
+    difficulty: "루키" | "L3" | "L2" | "L1";
+    imageUrl?: string;
+    tierRecords: Record<string, string>;
+  };
 }
 
 export function MapInfoCard({ map }: MapInfoCardProps) {
@@ -26,8 +31,29 @@ export function MapInfoCard({ map }: MapInfoCardProps) {
           className="group relative"
         >
           <div className="from-primary/30 to-secondary/30 absolute -inset-1 rounded-xl bg-linear-to-br opacity-0 blur transition-opacity duration-300 group-hover:opacity-100" />
-          <div className="from-muted to-muted/50 border-primary/10 relative flex h-20 w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-linear-to-br">
-            <span className="text-muted-foreground text-xs">맵 이미지</span>
+          <div className="from-muted to-muted/50 border-primary/10 relative h-20 w-36 shrink-0 overflow-hidden rounded-lg border bg-linear-to-br">
+            {map.imageUrl ? (
+              <img
+                src={map.imageUrl}
+                alt={map.name}
+                className="h-full w-full object-cover"
+                onError={(e) => {
+                  // 이미지 로드 실패 시 대체 텍스트 표시
+                  e.currentTarget.style.display = "none";
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) {
+                    parent.innerHTML =
+                      '<span class="flex h-full w-full items-center justify-center text-xs text-muted-foreground">이미지 없음</span>';
+                  }
+                }}
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center">
+                <span className="text-muted-foreground text-xs">
+                  이미지 없음
+                </span>
+              </div>
+            )}
           </div>
         </motion.div>
 
@@ -38,7 +64,7 @@ export function MapInfoCard({ map }: MapInfoCardProps) {
           transition={{ delay: 0.2, duration: 0.2 }}
           className="min-w-0 flex-1"
         >
-          <h3 className="from-foreground to-foreground/70 mb-1 truncate bg-linear-to-r bg-clip-text text-xl font-bold">
+          <h3 className="from-foreground to-foreground/70 mb-1 bg-linear-to-r bg-clip-text text-xl font-bold">
             {map.name}
           </h3>
           <div className="flex items-center gap-2">

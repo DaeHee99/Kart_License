@@ -4,13 +4,14 @@ import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, CheckCircle2 } from "lucide-react";
+import { Trophy, CheckCircle2, History } from "lucide-react";
 import { TierType } from "@/lib/types";
 import { TIERS } from "@/lib/types";
 
 interface ManualRecordInputProps {
   currentInput: string;
   matchedTier: TierType | null;
+  previousRecord?: string;
   onInputChange: (value: string) => void;
   onSkip: () => void;
   onSubmit: () => void;
@@ -19,6 +20,7 @@ interface ManualRecordInputProps {
 export function ManualRecordInput({
   currentInput,
   matchedTier,
+  previousRecord,
   onInputChange,
   onSkip,
   onSubmit,
@@ -31,13 +33,24 @@ export function ManualRecordInput({
       className="relative space-y-4"
     >
       <div className="space-y-3">
-        <label className="mb-2 block text-sm font-medium">
-          기록 입력 (MM:SS:mm)
-        </label>
+        <div className="flex items-center justify-between">
+          <label className="block text-sm font-medium">
+            기록 입력 (MM:SS:mm)
+          </label>
+          {previousRecord && (
+            <button
+              onClick={() => onInputChange(previousRecord)}
+              className="bg-blue-500/10 hover:bg-blue-500/20 border-blue-500/30 flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs transition-colors"
+            >
+              <History className="h-3 w-3 text-blue-500" />
+              <span className="text-blue-500">최근: {previousRecord}</span>
+            </button>
+          )}
+        </div>
         <Input
           type="tel"
           inputMode="numeric"
-          placeholder="012345"
+          placeholder={previousRecord || "012345"}
           value={currentInput}
           onChange={(e) => onInputChange(e.target.value)}
           className="focus:border-primary from-background to-background focus:from-primary/5 focus:to-secondary/5 h-14 border-2 bg-linear-to-r text-center font-mono text-lg transition-all"

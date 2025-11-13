@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { MOCK_MAPS } from "@/lib/mock-data";
+import { useState, useEffect, useMemo } from "react";
 import { TierType, UserMapRecord, InputMethod } from "@/lib/types";
 import { findMatchingTier } from "@/lib/utils-calc";
 import { MethodSelectStep } from "./_components/method-select-step";
 import { ConfirmStep } from "./_components/confirm-step";
 import { InputStep } from "./_components/input-step";
+import { useLatestMaps, useLatestRecord } from "@/hooks/use-records";
+import { useAuth } from "@/hooks/use-auth";
+import { Loader2 } from "lucide-react";
 
 export default function MeasurePage() {
   const [step, setStep] = useState<"select-method" | "input" | "confirm">(
@@ -19,7 +21,63 @@ export default function MeasurePage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
-  const currentMap = MOCK_MAPS[currentMapIndex];
+  // API 데이터 불러오기
+  const { maps, season, isLoading: mapsLoading } = useLatestMaps();
+  const { user, isAuthenticated } = useAuth();
+  const { record: latestRecord, isLoading: recordLoading } = useLatestRecord(
+    user?._id,
+  );
+
+  // 맵 데이터를 프론트엔드 형식으로 변환 (id 추가)
+  const mapsWithId = useMemo(() => {
+    return maps.map((map, index) => ({
+      ...map,
+      id: `map-${index}`,
+    }));
+  }, [maps]);
+
+  const currentMap = mapsWithId[currentMapIndex];
+
+  // 현재 맵의 최근 기록 찾기 (맵 이름으로 매칭)
+  const previousRecordForCurrentMap = useMemo(() => {
+    if (!latestRecord || !latestRecord.records || !currentMap) {
+      return null;
+    }
+    // 현재 맵과 이름이 같은 기록 찾기
+    const matchedRecord = latestRecord.records.find(
+      (r) => r.mapName === currentMap.name,
+    );
+    return matchedRecord || null;
+  }, [latestRecord, currentMap]);
+
+  // 맵이 변경되거나 최근 기록이 있을 때 자동으로 입력값 설정
+  useEffect(() => {
+    if (
+      step === "input" &&
+      inputMethod === "manual" &&
+      previousRecordForCurrentMap?.record
+    ) {
+      setCurrentInput(previousRecordForCurrentMap.record);
+    }
+  }, [currentMapIndex, previousRecordForCurrentMap, step, inputMethod]);
+
+  // 로딩 중
+  if (mapsLoading || (isAuthenticated && recordLoading)) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  // 맵 데이터가 없으면 에러 표시
+  if (!mapsWithId || mapsWithId.length === 0) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-muted-foreground">맵 데이터를 불러올 수 없습니다.</p>
+      </div>
+    );
+  }
 
   // Get matched tier for current input
   const matchedTier =
@@ -54,7 +112,7 @@ export default function MeasurePage() {
     if (isEditMode) {
       setIsEditMode(false);
       setStep("confirm");
-    } else if (currentMapIndex < MOCK_MAPS.length - 1) {
+    } else if (currentMapIndex < mapsWithId.length - 1) {
       setCurrentMapIndex(currentMapIndex + 1);
     } else {
       setStep("confirm");
@@ -86,7 +144,7 @@ export default function MeasurePage() {
     if (isEditMode) {
       setIsEditMode(false);
       setStep("confirm");
-    } else if (currentMapIndex < MOCK_MAPS.length - 1) {
+    } else if (currentMapIndex < mapsWithId.length - 1) {
       setCurrentMapIndex(currentMapIndex + 1);
     } else {
       setStep("confirm");
@@ -134,7 +192,7 @@ export default function MeasurePage() {
     if (isEditMode) {
       setIsEditMode(false);
       setStep("confirm");
-    } else if (currentMapIndex < MOCK_MAPS.length - 1) {
+    } else if (currentMapIndex < mapsWithId.length - 1) {
       setCurrentMapIndex(currentMapIndex + 1);
     } else {
       setStep("confirm");
@@ -171,6 +229,9 @@ export default function MeasurePage() {
     return (
       <ConfirmStep
         records={records}
+        maps={mapsWithId}
+        season={season}
+        userId={user?._id}
         onEditMap={handleEditMap}
         onRestart={handleRestart}
       />
@@ -181,9 +242,12 @@ export default function MeasurePage() {
     <InputStep
       inputMethod={inputMethod!}
       currentMapIndex={currentMapIndex}
+      totalMaps={mapsWithId.length}
+      currentMap={currentMap}
       records={records}
       currentInput={currentInput}
       matchedTier={matchedTier}
+      previousRecord={previousRecordForCurrentMap}
       onCancel={handleCancel}
       onTierSelect={handleTierSelect}
       onInputChange={handleInputChange}
