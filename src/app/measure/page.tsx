@@ -50,6 +50,46 @@ export default function MeasurePage() {
     return matchedRecord || null;
   }, [latestRecord, currentMap]);
 
+  // '+' 문자가 있는 기록을 처리하여 0.01초를 더한 값으로 변환
+  const processRecordWithPlus = (record: string): string => {
+    // '+' 문자가 없으면 그대로 반환
+    if (!record.includes("+")) {
+      return record;
+    }
+
+    // '+' 제거하고 trim
+    const cleanRecord = record.replace("+", "").trim();
+
+    // MM:SS:mm 형식 파싱
+    const parts = cleanRecord.split(":");
+    if (parts.length !== 3) {
+      return cleanRecord; // 형식이 맞지 않으면 그대로 반환
+    }
+
+    let minutes = parseInt(parts[0], 10);
+    let seconds = parseInt(parts[1], 10);
+    let centiseconds = parseInt(parts[2], 10);
+
+    // 0.01초 (1 centisecond) 추가
+    centiseconds += 1;
+
+    // Overflow 처리
+    if (centiseconds >= 100) {
+      centiseconds = 0;
+      seconds += 1;
+    }
+
+    if (seconds >= 60) {
+      seconds = 0;
+      minutes += 1;
+    }
+
+    // 포맷팅 (2자리 숫자로)
+    const formatted = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}:${String(centiseconds).padStart(2, "0")}`;
+
+    return formatted;
+  };
+
   // 맵이 변경되거나 최근 기록이 있을 때 자동으로 입력값 설정
   useEffect(() => {
     if (
@@ -57,7 +97,10 @@ export default function MeasurePage() {
       inputMethod === "manual" &&
       previousRecordForCurrentMap?.record
     ) {
-      setCurrentInput(previousRecordForCurrentMap.record);
+      const processedRecord = processRecordWithPlus(
+        previousRecordForCurrentMap.record,
+      );
+      setCurrentInput(processedRecord);
     }
   }, [currentMapIndex, previousRecordForCurrentMap, step, inputMethod]);
 

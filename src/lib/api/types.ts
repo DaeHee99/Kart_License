@@ -219,3 +219,47 @@ export interface RecentRecordsResponse {
   message?: string;
   error?: string;
 }
+
+// Mypage 관련 타입
+export interface MypageLatestRecord {
+  season: number;
+  tier: string;
+  tierEn: string;
+  createdAt: Date;
+}
+
+export interface MypageTierHistoryItem {
+  date: string;
+  tier: string;
+  value: number;
+}
+
+export interface MypageSeasonRecord {
+  season: string;
+  tier: string;
+  tierEn: string;
+  value: number;
+  recordId: string;
+  createdAt: Date;
+}
+
+export interface MypageMeasurementHistoryItem {
+  id: string;
+  season: string;
+  tier: string;
+  tierEn: string;
+  maps: number;
+  createdAt: Date;
+}
+
+export interface MypageDataResponse {
+  success: boolean;
+  data?: {
+    latestRecord: MypageLatestRecord | null;
+    tierHistory: MypageTierHistoryItem[];
+    seasonRecords: MypageSeasonRecord[];
+    measurementHistory: MypageMeasurementHistoryItem[];
+  };
+  message?: string;
+  error?: string;
+}

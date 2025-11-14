@@ -12,78 +12,44 @@ import { TierProgressTab } from "./tier-progress-tab";
 import { MeasurementHistoryTab } from "./measurement-history-tab";
 import { SeasonRecordsTab } from "./season-records-tab";
 import { TrendingUp, Crown, FileChartColumnIncreasing } from "lucide-react";
-import {
-  TierHistoryItem,
-  MeasurementHistoryItem,
-  SeasonRecord,
-} from "@/lib/mypage-constants";
 import { useState } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import { useMypageData } from "@/hooks/use-mypage";
+import { TierType } from "@/lib/types";
 
 export default function MypageTabs() {
   const [activeTab, setActiveTab] = useState("progress");
+  const { user } = useAuth();
+  const { tierHistory, seasonRecords, measurementHistory, isLoading } =
+    useMypageData(user?._id);
 
-  // Mock tier history data
-  const tierHistory: TierHistoryItem[] = [
-    { date: "10/01", tier: "gold", value: 3 },
-    { date: "10/08", tier: "gold", value: 3 },
-    { date: "10/15", tier: "platinum", value: 4 },
-    { date: "10/22", tier: "diamond", value: 5 },
-    { date: "10/25", tier: "diamond", value: 5 },
-  ];
+  // 데이터 변환 함수
+  const transformedTierHistory = tierHistory.map((item) => ({
+    date: item.date,
+    tier: item.tier,
+    value: item.value,
+  }));
 
-  // Mock season records
-  const seasonRecords: SeasonRecord[] = [
-    { season: "S17", tier: "gold", value: 3 },
-    { season: "S18", tier: "gold", value: 3 },
-    { season: "S29", tier: "gold", value: 3 },
-    { season: "S35", tier: "diamond", value: 5 },
-  ];
+  const transformedSeasonRecords = seasonRecords.map((item) => ({
+    season: item.season,
+    tier: item.tierEn as TierType,
+    value: item.value,
+    recordId: item.recordId,
+  }));
 
-  // Mock measurement history
-  const measurements: MeasurementHistoryItem[] = [
-    {
-      id: "1",
-      date: "2025-10-25 14:30",
-      tier: "diamond",
-      maps: 70,
-      season: "S35",
-    },
-    {
-      id: "2",
-      date: "2025-10-22 16:45",
-      tier: "diamond",
-      maps: 70,
-      season: "S35",
-    },
-    {
-      id: "3",
-      date: "2025-10-15 10:20",
-      tier: "platinum",
-      maps: 70,
-      season: "S35",
-    },
-    {
-      id: "4",
-      date: "2024-11-26 03:13",
-      tier: "gold",
-      maps: 70,
-      season: "S29",
-    },
-    {
-      id: "5",
-      date: "2023-03-12 21:47",
-      tier: "gold",
-      maps: 70,
-      season: "S18",
-    },
-    {
-      id: "6",
-      date: "2023-02-19 04:18",
-      tier: "gold",
-      maps: 70,
-      season: "S17",
-    },
-  ];
+  const transformedMeasurements = measurementHistory.map((item) => ({
+    id: item.id,
+    date: new Date(item.createdAt).toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+    tier: item.tierEn as TierType,
+    maps: item.maps,
+    season: item.season,
+  }));
 
   return (
     <motion.div
@@ -108,17 +74,26 @@ export default function MypageTabs() {
         <TabsContents>
           {/* Tier Progress Tab */}
           <TabsContent value="progress" className="mt-6">
-            <TierProgressTab tierHistory={tierHistory} />
+            <TierProgressTab
+              tierHistory={transformedTierHistory}
+              isLoading={isLoading}
+            />
           </TabsContent>
 
           {/* Season Best Records Tab */}
           <TabsContent value="seasons" className="mt-6">
-            <SeasonRecordsTab seasonRecords={seasonRecords} />
+            <SeasonRecordsTab
+              seasonRecords={transformedSeasonRecords}
+              isLoading={isLoading}
+            />
           </TabsContent>
 
           {/* Measurement History Tab */}
           <TabsContent value="history" className="mt-6">
-            <MeasurementHistoryTab measurements={measurements} />
+            <MeasurementHistoryTab
+              measurements={transformedMeasurements}
+              isLoading={isLoading}
+            />
           </TabsContent>
         </TabsContents>
       </Tabs>

@@ -49,7 +49,7 @@ export function ProfilePictureSelection({
                   className={`relative flex h-14 w-14 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 transition-all ${
                     selectedAvatar === image.src
                       ? "ring-primary border-primary scale-110 shadow-lg ring-4"
-                      : "hover:scale-105 hover:shadow-md border-transparent"
+                      : "border-transparent hover:scale-105 hover:shadow-md"
                   }`}
                 >
                   <Image
@@ -58,18 +58,11 @@ export function ProfilePictureSelection({
                     width={56}
                     height={56}
                     className={`h-full w-full object-cover transition-all ${
-                      selectedAvatar === image.src ? "brightness-110" : "brightness-75"
+                      selectedAvatar === image.src
+                        ? "brightness-110"
+                        : "brightness-75"
                     }`}
                   />
-                  {selectedAvatar === image.src && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full"
-                    >
-                      <Check className="text-primary-foreground h-3 w-3" />
-                    </motion.div>
-                  )}
                 </Label>
               </motion.div>
             ))}

@@ -128,10 +128,27 @@ export class RecordService {
       query.season = season;
     }
 
-    return await Record.find(query)
-      .select("season recordCount license createdAt")
+    const records = await Record.find(query)
+      .select("season tierDistribution finalTier createdAt")
       .sort({ createdAt: -1 })
       .lean();
+
+    // tierDistribution을 recordCount로 변환
+    return records.map((record: any) => ({
+      _id: record._id.toString(),
+      season: record.season,
+      recordCount: [
+        record.tierDistribution.elite,
+        record.tierDistribution.master,
+        record.tierDistribution.diamond,
+        record.tierDistribution.platinum,
+        record.tierDistribution.gold,
+        record.tierDistribution.silver,
+        record.tierDistribution.bronze,
+      ],
+      license: record.finalTier,
+      createdAt: record.createdAt,
+    }));
   }
 
   /**
@@ -186,11 +203,31 @@ export class RecordService {
    * 모든 기록 조회 (관리자용)
    */
   async getAllRecordsForAdmin(): Promise<RecordListItem[]> {
-    return await Record.find()
+    const records = await Record.find()
       .sort({ createdAt: -1 })
       .select("finalTier tierDistribution createdAt")
       .populate("user", "name image")
       .lean();
+
+    return records.map((record: any) => ({
+      _id: record._id.toString(),
+      license: record.finalTier,
+      recordCount: [
+        record.tierDistribution.elite,
+        record.tierDistribution.master,
+        record.tierDistribution.diamond,
+        record.tierDistribution.platinum,
+        record.tierDistribution.gold,
+        record.tierDistribution.silver,
+        record.tierDistribution.bronze,
+      ],
+      user: record.user ? {
+        _id: record.user._id.toString(),
+        name: record.user.name,
+        image: record.user.image,
+      } : undefined,
+      createdAt: record.createdAt,
+    }));
   }
 
   /**
@@ -200,7 +237,7 @@ export class RecordService {
     const limit = 20;
     const skip = limit * (page - 1);
 
-    const [recordList, count] = await Promise.all([
+    const [records, count] = await Promise.all([
       Record.find()
         .sort({ createdAt: -1 })
         .select("finalTier tierDistribution createdAt")
@@ -211,7 +248,27 @@ export class RecordService {
       Record.countDocuments(),
     ]);
 
-    return { recordList: recordList as any, count };
+    const recordList = records.map((record: any) => ({
+      _id: record._id.toString(),
+      license: record.finalTier,
+      recordCount: [
+        record.tierDistribution.elite,
+        record.tierDistribution.master,
+        record.tierDistribution.diamond,
+        record.tierDistribution.platinum,
+        record.tierDistribution.gold,
+        record.tierDistribution.silver,
+        record.tierDistribution.bronze,
+      ],
+      user: record.user ? {
+        _id: record.user._id.toString(),
+        name: record.user.name,
+        image: record.user.image,
+      } : undefined,
+      createdAt: record.createdAt,
+    }));
+
+    return { recordList, count };
   }
 
   /**

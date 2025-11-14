@@ -14,15 +14,71 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { TIERS, TierType } from "@/lib/types";
-import { SeasonRecord, SEASON_COLORS } from "../../../lib/mypage-constants";
+import { SEASON_COLORS } from "../../../lib/mypage-constants";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+
+interface SeasonRecord {
+  season: string;
+  tier: TierType;
+  value: number;
+  recordId: string;
+}
 
 interface SeasonRecordsTabProps {
   seasonRecords: SeasonRecord[];
+  isLoading?: boolean;
 }
 
-export function SeasonRecordsTab({ seasonRecords }: SeasonRecordsTabProps) {
+export function SeasonRecordsTab({
+  seasonRecords,
+  isLoading,
+}: SeasonRecordsTabProps) {
   const router = useRouter();
+
+  // 시즌 색상 생성 함수 (빨주노초파남보 반복)
+  const getSeasonColor = (season: string) => {
+    if (SEASON_COLORS[season]) {
+      return SEASON_COLORS[season];
+    }
+
+    // 기본 색상 배열
+    const colors = [
+      { bg: "bg-red-500/10", border: "border-red-500" },
+      { bg: "bg-orange-500/10", border: "border-orange-500" },
+      { bg: "bg-yellow-500/10", border: "border-yellow-500" },
+      { bg: "bg-green-500/10", border: "border-green-500" },
+      { bg: "bg-blue-500/10", border: "border-blue-500" },
+      { bg: "bg-indigo-500/10", border: "border-indigo-500" },
+      { bg: "bg-purple-500/10", border: "border-purple-500" },
+    ];
+
+    const seasonNumber = parseInt(season.replace("S", ""));
+    return colors[seasonNumber % colors.length];
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <Card className="border-primary/20 flex items-center justify-center p-6">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </Card>
+      </div>
+    );
+  }
+
+  if (seasonRecords.length === 0) {
+    return (
+      <div className="space-y-4">
+        <Card className="border-primary/20 p-6">
+          <h3 className="mb-4 font-bold">시즌별 최고 기록 그래프</h3>
+          <div className="text-muted-foreground flex h-[300px] items-center justify-center text-center">
+            <p>측정 기록이 없습니다. 기록 측정을 해보세요!</p>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -99,8 +155,7 @@ export function SeasonRecordsTab({ seasonRecords }: SeasonRecordsTabProps) {
         {/* Season Records List */}
         <div className="mt-6 space-y-3">
           {seasonRecords.map((record, index) => {
-            const seasonColor =
-              SEASON_COLORS[record.season] || SEASON_COLORS["S35"];
+            const seasonColor = getSeasonColor(record.season);
             return (
               <motion.div
                 key={record.season}
@@ -114,7 +169,7 @@ export function SeasonRecordsTab({ seasonRecords }: SeasonRecordsTabProps) {
                 }}
                 className={`flex items-center justify-between rounded-lg border-2 p-4 ${seasonColor.border} ${seasonColor.bg} cursor-pointer transition-shadow duration-200 hover:shadow-lg`}
                 onClick={() => {
-                  router.push(`/result/${record.season}`);
+                  router.push(`/result/${record.recordId}`);
                 }}
               >
                 <div className="flex items-center gap-3">
@@ -125,9 +180,6 @@ export function SeasonRecordsTab({ seasonRecords }: SeasonRecordsTabProps) {
                     {record.season}
                   </Badge>
                   <TierBadge tier={record.tier} size="sm" />
-                  <span className="text-muted-foreground text-sm">
-                    2025-10-25 14:30
-                  </span>
                 </div>
                 <div
                   className={`h-2 w-2 rounded-full ${TIERS[record.tier].color}`}

@@ -6,24 +6,21 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TierBadge } from "@/components/tier-badge";
-import { TIERS } from "@/lib/types";
+import { TIERS, TierType } from "@/lib/types";
 import { useAuth } from "@/hooks/use-auth";
+import { useMypageData } from "@/hooks/use-mypage";
+import { useRouter } from "next/navigation";
 
 interface ProfileSummaryCardProps {
   onEditProfile: () => void;
 }
 
 export function ProfileSummaryCard({ onEditProfile }: ProfileSummaryCardProps) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
+  const { latestRecord, isLoading: dataLoading } = useMypageData(user?._id);
+  const router = useRouter();
 
-  // 최근 측정 정보 (더미 데이터)
-  const latestMeasurement = {
-    season: "S35",
-    date: "2025-10-25",
-    time: "14:30",
-  };
-
-  if (isLoading || !user) {
+  if (authLoading || !user) {
     return null;
   }
 
@@ -71,20 +68,46 @@ export function ProfileSummaryCard({ onEditProfile }: ProfileSummaryCardProps) {
                 {user.name}
               </h2>
 
-              <div className="mb-2 flex items-start gap-3">
-                <div className="flex gap-1.5">
-                  <Badge variant="outline" className="w-fit">
-                    {user.license && TIERS[userTier] && TIERS[userTier].nameKo}
-                  </Badge>
-                  <Badge variant="secondary" className="w-fit font-mono">
-                    {latestMeasurement.season}
-                  </Badge>
-                </div>
-              </div>
+              {dataLoading ? (
+                <div className="text-muted-foreground text-sm">로딩 중...</div>
+              ) : latestRecord ? (
+                <>
+                  <div className="mb-2 flex items-start gap-3">
+                    <div className="flex gap-1.5">
+                      <Badge variant="outline" className="w-fit">
+                        {latestRecord.tier}
+                      </Badge>
+                      <Badge variant="secondary" className="w-fit font-mono">
+                        S{latestRecord.season}
+                      </Badge>
+                    </div>
+                  </div>
 
-              <p className="text-muted-foreground text-sm">
-                최근 측정: {latestMeasurement.date} {latestMeasurement.time}
-              </p>
+                  <p className="text-muted-foreground text-sm">
+                    최근 측정:{" "}
+                    {new Date(latestRecord.createdAt).toLocaleString("ko-KR", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-muted-foreground mb-2 text-sm">
+                    최근에 측정한 기록이 없습니다.
+                  </p>
+                  <Button
+                    size="sm"
+                    onClick={() => router.push("/measure")}
+                    className="mt-2"
+                  >
+                    지금 바로 기록 측정하기
+                  </Button>
+                </>
+              )}
             </div>
 
             {/* Edit Button */}
