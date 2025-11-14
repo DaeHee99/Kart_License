@@ -13,10 +13,10 @@ export function PostList({ posts, onPostClick }: PostListProps) {
     <div className="space-y-4">
       {posts.map((post, index) => (
         <PostCard
-          key={post.id}
+          key={post._id}
           post={post}
           index={index}
-          onClick={() => onPostClick?.(post.id)}
+          onClick={() => onPostClick?.(post._id)}
         />
       ))}
     </div>

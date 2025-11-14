@@ -5,10 +5,14 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Comment, TIERS } from "@/lib/types";
-import { formatRelativeTime } from "@/lib/utils-calc";
+import {
+  formatRelativeTime,
+  convertKoreanTierToEnglish,
+  getTierRingClass,
+} from "@/lib/utils-calc";
 import { motion } from "motion/react";
 import {
   MessageCircle,
@@ -18,6 +22,7 @@ import {
   Trash2,
   Check,
   X,
+  LogIn,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -25,10 +30,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LoginRequiredDialog } from "../../_components/login-required-dialog";
 
 interface CommentsSectionProps {
   comments: Comment[];
-  currentUserId: string;
+  currentUserId?: string | null;
+  isAuthenticated: boolean;
   onAddComment: (content: string) => void;
   onEditComment: (commentId: string, content: string) => void;
   onDeleteComment: (commentId: string) => void;
@@ -37,6 +44,7 @@ interface CommentsSectionProps {
 export function CommentsSection({
   comments,
   currentUserId,
+  isAuthenticated,
   onAddComment,
   onEditComment,
   onDeleteComment,
@@ -44,6 +52,7 @@ export function CommentsSection({
   const [newComment, setNewComment] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingCommentContent, setEditingCommentContent] = useState("");
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
 
   const handleAddComment = () => {
     if (!newComment.trim()) return;
@@ -71,7 +80,7 @@ export function CommentsSection({
   return (
     <Card className="border-primary/10 hover:border-primary/20 relative overflow-hidden border-2 p-6 transition-all">
       {/* Background gradient */}
-      <div className="bg-primary/5 pointer-events-none absolute top-0 right-0 h-40 w-40 rounded-full blur-3xl hidden md:block" />
+      <div className="bg-primary/5 pointer-events-none absolute top-0 right-0 hidden h-40 w-40 rounded-full blur-3xl md:block" />
 
       <div className="relative">
         <h3 className="mb-4 flex items-center gap-2 font-bold">
@@ -88,9 +97,20 @@ export function CommentsSection({
             </div>
           ) : (
             comments.map((comment, idx) => {
-              const commentTierColor = comment.userTier
-                ? TIERS[comment.userTier]?.color || "#6B7280"
-                : "#6B7280";
+              // 티어 변환 (한국어 -> 영어)
+              const tierEnglish = comment.userTier
+                ? convertKoreanTierToEnglish(comment.userTier)
+                : null;
+
+              // TIERS에 존재하는 유효한 티어인지 확인
+              const isValidTier =
+                tierEnglish && TIERS[tierEnglish as keyof typeof TIERS];
+              const commentTierColor = isValidTier
+                ? TIERS[tierEnglish as keyof typeof TIERS].color
+                : "bg-gray-500";
+              const commentTierRingClass = isValidTier
+                ? getTierRingClass(tierEnglish as keyof typeof TIERS)
+                : "ring-gray-500";
               const isCommentAuthor = comment.userId === currentUserId;
 
               return (
@@ -102,20 +122,20 @@ export function CommentsSection({
                   className="hover:bg-muted/50 flex gap-3 rounded-lg p-3 transition-colors"
                 >
                   <Avatar
-                    className="ring-2"
-                    style={
-                      {
-                        borderColor: commentTierColor,
-                      } as React.CSSProperties
+                    className={
+                      isValidTier
+                        ? `ring-2 ring-offset-1 ${commentTierRingClass}`
+                        : "ring-2 ring-gray-300"
                     }
                   >
-                    <AvatarFallback
-                      style={{
-                        backgroundColor: `${commentTierColor}20`,
-                        color: commentTierColor,
-                      }}
-                    >
-                      {comment.userNickname[0]}
+                    {comment.userProfileImage && (
+                      <AvatarImage
+                        src={comment.userProfileImage}
+                        alt={comment.userNickname}
+                      />
+                    )}
+                    <AvatarFallback>
+                      {comment.userNickname?.[0] || "?"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
@@ -123,12 +143,12 @@ export function CommentsSection({
                       <span className="text-sm font-medium">
                         {comment.userNickname}
                       </span>
-                      {comment.userTier && (
-                        <Badge variant="outline" className="gap-1">
+                      {isValidTier && (
+                        <Badge variant="outline" className="gap-1 text-xs">
                           <div
-                            className={`h-2 w-2 rounded-full ${commentTierColor}`}
+                            className={`h-1.5 w-1.5 rounded-full ${commentTierColor}`}
                           />
-                          {TIERS[comment.userTier].nameKo}
+                          {TIERS[tierEnglish as keyof typeof TIERS].nameKo}
                         </Badge>
                       )}
                       <span className="text-muted-foreground text-xs">
@@ -166,7 +186,9 @@ export function CommentsSection({
                         </div>
                       </div>
                     ) : (
-                      <p className="text-sm">{comment.content}</p>
+                      <p className="text-sm whitespace-pre-wrap">
+                        {comment.content}
+                      </p>
                     )}
                   </div>
                   {isCommentAuthor && editingCommentId !== comment.id && (
@@ -180,7 +202,10 @@ export function CommentsSection({
                           <MoreVertical className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="min-w-[120px]">
+                      <DropdownMenuContent
+                        align="end"
+                        className="min-w-[120px]"
+                      >
                         <DropdownMenuItem
                           className="cursor-pointer"
                           onSelect={() =>
@@ -211,19 +236,45 @@ export function CommentsSection({
         </div>
 
         {/* Comment Input */}
-        <div className="border-border flex gap-2 border-t pt-4">
-          <Input
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="댓글을 입력하세요..."
-            onKeyPress={(e) => e.key === "Enter" && handleAddComment()}
-            className="flex-1"
-          />
-          <Button onClick={handleAddComment} size="icon">
-            <Send className="h-4 w-4" />
-          </Button>
+        <div className="border-border border-t pt-4">
+          {isAuthenticated ? (
+            <div className="flex gap-2">
+              <Input
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="댓글을 입력하세요..."
+                onKeyPress={(e) => e.key === "Enter" && handleAddComment()}
+                className="flex-1"
+              />
+              <Button onClick={handleAddComment} size="icon">
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <div className="bg-muted/50 flex flex-col items-center justify-center gap-3 rounded-lg py-6">
+              <p className="text-muted-foreground text-sm">
+                댓글을 작성하려면 로그인이 필요합니다.
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => setShowLoginDialog(true)}
+              >
+                <LogIn className="h-4 w-4" />
+                로그인하기
+              </Button>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* 로그인 필요 다이얼로그 */}
+      <LoginRequiredDialog
+        open={showLoginDialog}
+        onOpenChange={setShowLoginDialog}
+        message="댓글을 작성하려면 로그인이 필요합니다."
+      />
     </Card>
   );
 }

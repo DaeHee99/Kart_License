@@ -204,3 +204,18 @@ export function convertKoreanTierToEnglish(koreanTier: string): TierType {
 
   return tierMap[koreanTier] || "bronze";
 }
+
+// Get tier ring color class (for avatar borders)
+export function getTierRingClass(tier: TierType): string {
+  const ringClasses: Record<TierType, string> = {
+    elite: "ring-[var(--tier-elite)]",
+    master: "ring-[var(--tier-master)]",
+    diamond: "ring-[var(--tier-diamond)]",
+    platinum: "ring-[var(--tier-platinum)]",
+    gold: "ring-[var(--tier-gold)]",
+    silver: "ring-[var(--tier-silver)]",
+    bronze: "ring-[var(--tier-bronze)]",
+  };
+
+  return ringClasses[tier];
+}

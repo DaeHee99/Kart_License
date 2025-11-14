@@ -2,10 +2,10 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Post, TIERS } from "@/lib/types";
-import { formatRelativeTime } from "@/lib/utils-calc";
+import { formatRelativeTime, convertKoreanTierToEnglish, getTierRingClass } from "@/lib/utils-calc";
 import { Share2, MessageCircle, MoreVertical, Edit2, Trash2 } from "lucide-react";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import {
@@ -25,6 +25,19 @@ interface PostContentProps {
   onDelete: () => void;
 }
 
+// 카테고리 뱃지 색상 매핑
+const CATEGORY_COLORS = {
+  notice: "bg-red-500/10 text-red-600 border-red-500/30",
+  general: "bg-blue-500/10 text-blue-600 border-blue-500/30",
+  question: "bg-green-500/10 text-green-600 border-green-500/30",
+};
+
+const CATEGORY_LABELS = {
+  notice: "공지",
+  general: "일반",
+  question: "질문",
+};
+
 export function PostContent({
   post,
   commentsCount,
@@ -33,9 +46,19 @@ export function PostContent({
   onEdit,
   onDelete,
 }: PostContentProps) {
-  const tierColor = post.userTier
-    ? TIERS[post.userTier]?.color || "#6B7280"
-    : "#6B7280";
+  // 티어 변환 (한국어 -> 영어)
+  const tierEnglish = post.userTier
+    ? convertKoreanTierToEnglish(post.userTier)
+    : null;
+
+  // TIERS에 존재하는 유효한 티어인지 확인
+  const isValidTier = tierEnglish && TIERS[tierEnglish as keyof typeof TIERS];
+  const tierColor = isValidTier
+    ? TIERS[tierEnglish as keyof typeof TIERS].color
+    : "bg-gray-500";
+  const tierRingClass = isValidTier
+    ? getTierRingClass(tierEnglish as keyof typeof TIERS)
+    : "ring-gray-500";
 
   return (
     <Card className="border-primary/10 hover:border-primary/20 relative overflow-hidden border-2 p-6 transition-all">
@@ -46,26 +69,29 @@ export function PostContent({
       {/* Header */}
       <div className="mb-4 flex items-start justify-between">
         <div className="flex flex-1 items-center gap-3">
-          <Avatar
-            className="ring-2"
-            style={{ borderColor: tierColor } as React.CSSProperties}
-          >
-            <AvatarFallback
-              style={{
-                backgroundColor: `${tierColor}20`,
-                color: tierColor,
-              }}
-            >
-              {post.userNickname[0]}
+          <Avatar className={isValidTier ? `ring-2 ring-offset-2 ${tierRingClass}` : "ring-2 ring-gray-300"}>
+            {post.userProfileImage && (
+              <AvatarImage src={post.userProfileImage} alt={post.userNickname} />
+            )}
+            <AvatarFallback>
+              {post.userNickname?.[0] || "?"}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="font-medium">{post.userNickname}</span>
-              {post.userTier && (
-                <Badge variant="outline" className="gap-1">
-                  <div className={`h-2 w-2 rounded-full ${tierColor}`} />
-                  {TIERS[post.userTier].nameKo}
+              {isValidTier && (
+                <Badge variant="outline" className="gap-1 text-xs">
+                  <div className={`h-1.5 w-1.5 rounded-full ${tierColor}`} />
+                  {TIERS[tierEnglish as keyof typeof TIERS].nameKo}
+                </Badge>
+              )}
+              {post.category && (
+                <Badge
+                  variant="outline"
+                  className={`text-xs font-semibold ${CATEGORY_COLORS[post.category as keyof typeof CATEGORY_COLORS]}`}
+                >
+                  {CATEGORY_LABELS[post.category as keyof typeof CATEGORY_LABELS]}
                 </Badge>
               )}
             </div>

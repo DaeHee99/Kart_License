@@ -7,9 +7,10 @@ import { Search, X } from "lucide-react";
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
+  onClear?: () => void;
 }
 
-export function SearchBar({ value, onChange }: SearchBarProps) {
+export function SearchBar({ value, onChange, onClear }: SearchBarProps) {
   return (
     <div className="relative flex-1">
       <Input
@@ -24,7 +25,10 @@ export function SearchBar({ value, onChange }: SearchBarProps) {
           variant="ghost"
           size="icon"
           className="absolute top-1/2 right-1 h-8 w-8 -translate-y-1/2 transform"
-          onClick={() => onChange("")}
+          onClick={() => {
+            onChange("");
+            onClear?.();
+          }}
         >
           <X className="h-4 w-4" />
         </Button>

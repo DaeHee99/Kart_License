@@ -3,21 +3,54 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Post } from "@/lib/types";
-import { Download, Check, Copy, Share2 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Post, TIERS } from "@/lib/types";
+import { Download, Check, Copy, Share2, User } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toPng } from "html-to-image";
 import { toast } from "sonner";
+import { convertKoreanTierToEnglish } from "@/lib/utils-calc";
 
 interface ShareContentProps {
   post: Post;
   onClose: () => void;
 }
 
+// 카테고리 뱃지 색상 매핑
+const CATEGORY_COLORS = {
+  notice: "bg-red-500/10 text-red-600 border-red-500/30",
+  general: "bg-blue-500/10 text-blue-600 border-blue-500/30",
+  question: "bg-green-500/10 text-green-600 border-green-500/30",
+};
+
+const CATEGORY_LABELS = {
+  notice: "공지",
+  general: "일반",
+  question: "질문",
+};
+
 export function ShareContent({ post, onClose }: ShareContentProps) {
   const [copySuccess, setCopySuccess] = useState(false);
   const qrCardRef = useRef<HTMLDivElement>(null);
   const currentUrl = window.location.href;
+
+  const userName = post.userNickname || "익명";
+  const userImage = post.userProfileImage || "/profile/gyool_dizini.png";
+
+  // 티어 변환 (한국어 -> 영어)
+  const tierEnglish = post.userTier
+    ? convertKoreanTierToEnglish(post.userTier)
+    : null;
+  const isValidTier = tierEnglish && TIERS[tierEnglish as keyof typeof TIERS];
+
+  const formatDateTime = (date: Date) => {
+    return date.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   const handleCopyLink = async () => {
     try {
@@ -43,7 +76,7 @@ export function ShareContent({ post, onClose }: ShareContentProps) {
 
       const link = document.createElement("a");
       link.href = dataUrl;
-      link.download = `kartrush-${post.title}.png`;
+      link.download = `${userName} - ${post.title} - ${formatDateTime(post.createdAt)}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -84,16 +117,54 @@ export function ShareContent({ post, onClose }: ShareContentProps) {
           ref={qrCardRef}
           className="from-background to-muted border-border flex flex-col items-center gap-4 rounded-2xl border-2 bg-linear-to-br p-8"
         >
-          <h2 className="text-primary text-4xl font-bold">
-            {post.title.length > 20
-              ? post.title.substring(0, 20) + "..."
-              : post.title}
-          </h2>
+          {/* 게시글 제목 */}
+          <div className="space-y-2 text-center">
+            <h2 className="text-primary text-2xl font-bold">
+              {post.title.length > 30
+                ? post.title.substring(0, 30) + "..."
+                : post.title}
+            </h2>
+            {post.category && (
+              <Badge
+                variant="outline"
+                className={`text-xs font-semibold ${CATEGORY_COLORS[post.category as keyof typeof CATEGORY_COLORS]}`}
+              >
+                {CATEGORY_LABELS[post.category as keyof typeof CATEGORY_LABELS]}
+              </Badge>
+            )}
+          </div>
 
+          {/* 작성자 정보 */}
+          <div className="flex items-center gap-3">
+            <Avatar className="border-border h-12 w-12 border-2">
+              <AvatarImage src={userImage} alt={userName} />
+              <AvatarFallback className="bg-muted">
+                <User className="h-6 w-6" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="text-left">
+              <div className="flex items-center gap-2">
+                <p className="font-semibold">{userName}</p>
+                {isValidTier && (
+                  <Badge variant="outline" className="gap-1 text-xs">
+                    <div
+                      className={`h-1.5 w-1.5 rounded-full ${TIERS[tierEnglish as keyof typeof TIERS].color}`}
+                    />
+                    {TIERS[tierEnglish as keyof typeof TIERS].nameKo}
+                  </Badge>
+                )}
+              </div>
+              <p className="text-muted-foreground pt-1 text-xs">
+                {formatDateTime(post.createdAt)}
+              </p>
+            </div>
+          </div>
+
+          {/* QR 코드 */}
           <div className="rounded-2xl bg-white p-4 shadow-lg">
             <QRCodeSVG
               value={currentUrl}
-              size={200}
+              size={180}
               level="H"
               includeMargin={false}
               fgColor="#000000"

@@ -126,16 +126,20 @@ export interface Comment {
   likes?: number;
 }
 
+export type PostCategory = "notice" | "general" | "question";
+
 export interface Post {
-  id: string;
+  _id: string; // MongoDB ObjectId
   userId: string;
   userNickname: string;
   userProfileImage?: string;
   userTier?: TierType;
+  category?: PostCategory;
   title: string;
   content: string;
   images?: string[]; // 업로드된 이미지들
   comments: Comment[];
+  commentCount?: number; // API 응답에서 오는 댓글 수
   views?: number;
   createdAt: Date;
 }
