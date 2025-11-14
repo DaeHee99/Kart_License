@@ -10,7 +10,10 @@ import { TierDistributionTable } from "./_components/tier-distribution-table";
 import { DetailedRecordsTable } from "./_components/detailed-records-table";
 import { ActionButtons } from "./_components/action-buttons";
 import { BottomActionButtons } from "./_components/bottom-action-buttons";
+import { FeedbackDialog } from "../_components/feedback-dialog";
 import { recordsAPI } from "@/lib/api/records";
+import { useAuth } from "@/hooks/use-auth";
+import { useUserFeedback } from "@/hooks/use-feedback";
 import type { RecordDetailResponse } from "@/lib/api/types";
 
 export default function ResultDetailPage() {
@@ -21,6 +24,16 @@ export default function ResultDetailPage() {
   const [recordData, setRecordData] = useState<RecordDetailResponse["data"] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
+
+  // 유저 인증 정보
+  const { user, isAuthenticated } = useAuth();
+
+  // 유저의 피드백 제출 여부 확인
+  const { feedback, isLoading: feedbackLoading } = useUserFeedback(
+    user?._id,
+    recordData?.season
+  );
 
   useEffect(() => {
     const fetchRecord = async () => {
@@ -47,6 +60,21 @@ export default function ResultDetailPage() {
       fetchRecord();
     }
   }, [recordId, router]);
+
+  // 피드백 다이얼로그 자동 표시 로직
+  useEffect(() => {
+    if (
+      isAuthenticated &&
+      recordData &&
+      !feedbackLoading &&
+      !feedback &&
+      recordData.season > 0
+    ) {
+      // 유저가 로그인했고, 기록이 로드되었고, 피드백 로딩이 완료되었고,
+      // 아직 피드백을 제출하지 않았으면 다이얼로그 표시
+      setShowFeedbackDialog(true);
+    }
+  }, [isAuthenticated, recordData, feedbackLoading, feedback]);
 
   if (isLoading || !recordData) {
     return null; // Loading state
@@ -99,6 +127,18 @@ export default function ResultDetailPage() {
           <BottomActionButtons />
         </div>
       </div>
+
+      {/* 피드백 다이얼로그 */}
+      {isAuthenticated && user && recordData && (
+        <FeedbackDialog
+          open={showFeedbackDialog}
+          onOpenChange={setShowFeedbackDialog}
+          season={recordData.season}
+          recordId={recordId}
+          userId={user._id}
+          userLicense={recordData.finalTier}
+        />
+      )}
     </div>
   );
 }

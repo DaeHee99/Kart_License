@@ -2,15 +2,30 @@
 
 import { motion } from "motion/react";
 import { Card } from "@/components/ui/card";
-import { Users, Activity, TrendingUp } from "lucide-react";
-import { MOCK_STATISTICS } from "@/lib/mock-data";
+import { Users, Activity, TrendingUp, Loader2 } from "lucide-react";
+import { useStatisticsSummary } from "@/hooks/use-statistics";
+import { useLatestMaps } from "@/hooks/use-records";
 
 export function OverviewStats() {
-  const stats = MOCK_STATISTICS;
+  // 최신 맵 데이터에서 시즌 정보 가져오기
+  const { season } = useLatestMaps();
 
-  const totalUsers = stats.totalUsers;
-  const totalMeasurements = stats.totalMeasurements;
-  const avgMeasurements = (totalMeasurements / totalUsers).toFixed(1);
+  // 통계 요약 정보 조회
+  const { totalUsers, totalRecords, seasonRecords, isLoading } =
+    useStatisticsSummary(season);
+
+  if (isLoading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, delay: 0.05 }}
+        className="flex justify-center py-12"
+      >
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -51,7 +66,7 @@ export function OverviewStats() {
           <div>
             <p className="text-muted-foreground text-sm">누적 측정 횟수</p>
             <p className="text-2xl font-bold">
-              {totalMeasurements.toLocaleString()}
+              {totalRecords.toLocaleString()}
             </p>
           </div>
         </div>
@@ -68,8 +83,12 @@ export function OverviewStats() {
             <TrendingUp className="text-primary h-6 w-6" />
           </div>
           <div>
-            <p className="text-muted-foreground text-sm">평균 측정 횟수</p>
-            <p className="text-2xl font-bold">{avgMeasurements}</p>
+            <p className="text-muted-foreground text-sm">
+              이번 시즌 측정 횟수
+            </p>
+            <p className="text-2xl font-bold">
+              {seasonRecords.toLocaleString()}
+            </p>
           </div>
         </div>
       </Card>

@@ -2,30 +2,39 @@
 
 import { motion } from "motion/react";
 import { Card } from "@/components/ui/card";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, Loader2 } from "lucide-react";
 import { TierType } from "@/lib/types";
 import { TierStatsTable } from "./tier-stats-table";
+import {
+  useRecordStatistics,
+  useUserLicenseStatistics,
+} from "@/hooks/use-statistics";
 
 export function StatisticsTab() {
-  // Mock data for full statistics
+  const { recordData, isLoading: recordLoading } = useRecordStatistics();
+  const { licenseData, isLoading: licenseLoading } = useUserLicenseStatistics();
+
+  const isLoading = recordLoading || licenseLoading;
+
+  // 데이터를 객체 형태로 변환 (recordData는 배열: [강주력, 주력, 1군, 2군, 3군, 4군, 일반])
   const cumulativeStats = {
-    elite: 4047,
-    master: 15955,
-    diamond: 24740,
-    platinum: 27030,
-    gold: 22866,
-    silver: 12070,
-    bronze: 12989,
+    elite: recordData[0],
+    master: recordData[1],
+    diamond: recordData[2],
+    platinum: recordData[3],
+    gold: recordData[4],
+    silver: recordData[5],
+    bronze: recordData[6],
   };
 
   const userDistributionStats = {
-    elite: 178,
-    master: 384,
-    diamond: 733,
-    platinum: 931,
-    gold: 1002,
-    silver: 768,
-    bronze: 3447,
+    elite: licenseData[0],
+    master: licenseData[1],
+    diamond: licenseData[2],
+    platinum: licenseData[3],
+    gold: licenseData[4],
+    silver: licenseData[5],
+    bronze: licenseData[6],
   };
 
   // Helper function to get tier color hex
@@ -41,6 +50,16 @@ export function StatisticsTab() {
     };
     return colorMap[tier];
   };
+
+  if (isLoading) {
+    return (
+      <Card className="border-border/50 relative overflow-hidden border-2 p-6">
+        <div className="flex justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="border-border/50 relative overflow-hidden border-2 p-6">

@@ -3,31 +3,58 @@
 import { motion } from "motion/react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Loader2 } from "lucide-react";
 import { FeedbackTable } from "./feedback-table";
+import { useFeedbackStatistics } from "@/hooks/use-feedback";
+import { useLatestMaps } from "@/hooks/use-records";
 
 export function FeedbackTab() {
-  // Feedback data
+  // 최신 맵 데이터에서 시즌 정보 가져오기
+  const { season } = useLatestMaps();
+
+  // 피드백 통계 조회
+  const { levelStats, balanceStats, totalCount, latestUpdate, isLoading } =
+    useFeedbackStatistics(season);
+
+  if (isLoading) {
+    return (
+      <Card className="border-border/50 relative overflow-hidden border-2 p-6">
+        <div className="flex justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      </Card>
+    );
+  }
+
+  // 난이도 피드백 데이터
   const difficultyFeedback = [
-    { label: "매우 쉬움", value: 13, color: "#a855f7" },
-    { label: "쉬움", value: 9, color: "#3b82f6" },
-    { label: "보통", value: 107, color: "#94a3b8" },
-    { label: "어려움", value: 56, color: "#f59e0b" },
-    { label: "매우 어려움", value: 28, color: "#ef4444" },
+    { label: "매우 쉬움", value: levelStats[1], color: "#a855f7" },
+    { label: "쉬움", value: levelStats[2], color: "#3b82f6" },
+    { label: "보통", value: levelStats[3], color: "#94a3b8" },
+    { label: "어려움", value: levelStats[4], color: "#f59e0b" },
+    { label: "매우 어려움", value: levelStats[5], color: "#ef4444" },
   ];
 
+  // 밸런스 피드백 데이터
   const balanceFeedback = [
-    { label: "매우 좋음", value: 10, color: "#a855f7" },
-    { label: "좋음", value: 26, color: "#3b82f6" },
-    { label: "보통", value: 126, color: "#94a3b8" },
-    { label: "나쁨", value: 23, color: "#f59e0b" },
-    { label: "매우 나쁨", value: 28, color: "#ef4444" },
+    { label: "매우 좋음", value: balanceStats[1], color: "#a855f7" },
+    { label: "좋음", value: balanceStats[2], color: "#3b82f6" },
+    { label: "보통", value: balanceStats[3], color: "#94a3b8" },
+    { label: "나쁨", value: balanceStats[4], color: "#f59e0b" },
+    { label: "매우 나쁨", value: balanceStats[5], color: "#ef4444" },
   ];
 
-  const totalDifficultyFeedback = difficultyFeedback.reduce(
-    (sum, item) => sum + item.value,
-    0,
-  );
+  // 최근 업데이트 시간 포맷팅
+  const formattedLatestUpdate = latestUpdate
+    ? new Date(latestUpdate).toLocaleString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })
+    : null;
 
   return (
     <Card className="border-border/50 relative overflow-hidden border-2 p-6">
@@ -45,18 +72,22 @@ export function FeedbackTab() {
         <div>
           <div className="mb-2 flex items-center gap-2">
             <MessageCircle className="text-secondary h-5 w-5" />
-            <h3 className="text-xl font-bold">S35 군표 피드백</h3>
+            <h3 className="text-xl font-bold">S{season} 군표 피드백</h3>
           </div>
           <div className="text-muted-foreground flex flex-wrap gap-2 text-sm">
+            {formattedLatestUpdate && (
+              <Badge variant="secondary" className="font-normal">
+                {formattedLatestUpdate} 기준
+              </Badge>
+            )}
             <Badge variant="secondary" className="font-normal">
-              2025/10/26 07:34:17 기준
-            </Badge>
-            <Badge variant="secondary" className="font-normal">
-              총 {totalDifficultyFeedback.toLocaleString()}개의 피드백
+              총 {totalCount.toLocaleString()}개의 피드백
             </Badge>
           </div>
           <p className="text-muted-foreground mt-2 text-sm">
-            이번 시즌에 유저분들이 작성해주신 결과입니다.
+            {totalCount > 0
+              ? "이번 시즌에 유저분들이 작성해주신 결과입니다."
+              : "아직 작성된 피드백이 없습니다."}
           </p>
         </div>
 

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LoadingScreen } from "./_components/loading-screen";
 
-export default function ResultPage() {
+function ResultContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const recordId = searchParams.get("id");
@@ -46,4 +46,12 @@ export default function ResultPage() {
   }, [isComplete, recordId, router]);
 
   return <LoadingScreen loadingProgress={loadingProgress} />;
+}
+
+export default function ResultPage() {
+  return (
+    <Suspense fallback={<LoadingScreen loadingProgress={0} />}>
+      <ResultContent />
+    </Suspense>
+  );
 }

@@ -263,3 +263,92 @@ export interface MypageDataResponse {
   message?: string;
   error?: string;
 }
+// Statistics 관련 타입
+export interface StatisticsSummaryResponse {
+  success: boolean;
+  data?: {
+    totalUsers: number;
+    totalRecords: number;
+    seasonRecords: number;
+  };
+  message?: string;
+  error?: string;
+}
+
+export interface RecordStatisticsResponse {
+  success: boolean;
+  data?: {
+    recordData: number[];
+    recordSum: number;
+  };
+  message?: string;
+  error?: string;
+}
+
+export interface UserLicenseStatisticsResponse {
+  success: boolean;
+  data?: {
+    licenseData: number[];
+  };
+  message?: string;
+  error?: string;
+}
+
+// Feedback 관련 타입
+export interface FeedbackStatisticsResponse {
+  success: boolean;
+  data?: {
+    levelStats: {
+      1: number;
+      2: number;
+      3: number;
+      4: number;
+      5: number;
+    };
+    balanceStats: {
+      1: number;
+      2: number;
+      3: number;
+      4: number;
+      5: number;
+    };
+    totalCount: number;
+    latestUpdate: string | null;
+  };
+  message?: string;
+  error?: string;
+}
+
+export interface SaveFeedbackRequest {
+  userId: string;
+  license: string;
+  level: number;
+  balance: number;
+  review: string;
+  season: number;
+  recordId: string;
+}
+
+export interface SaveFeedbackResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+}
+
+export interface UserFeedbackResponse {
+  success: boolean;
+  data?: {
+    _id: string;
+    user: string;
+    license: string;
+    level: number;
+    balance: number;
+    review: string;
+    season: number;
+    recordId: string;
+    createdAt: string;
+    updatedAt: string;
+  } | null;
+  message?: string;
+  error?: string;
+}

@@ -3,16 +3,41 @@
 import { motion } from "motion/react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TierBadge } from "@/components/tier-badge";
-import { Sparkles } from "lucide-react";
-import { MOCK_RECENT_MEASUREMENTS, getUserNickname } from "@/lib/mock-data";
+import { Sparkles, Loader2 } from "lucide-react";
 import { TIERS, TierType } from "@/lib/types";
-import { formatRelativeTime } from "@/lib/utils-calc";
+import { formatRelativeTime, convertKoreanTierToEnglish } from "@/lib/utils-calc";
 import { useRouter } from "next/navigation";
+import { useRecentRecords } from "@/hooks/use-records";
 
 export function RealtimeTab() {
   const router = useRouter();
+  const { records, isLoading } = useRecentRecords(10);
+
+  if (isLoading) {
+    return (
+      <Card className="border-border/50 relative overflow-hidden border-2 p-6">
+        <div className="flex justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      </Card>
+    );
+  }
+
+  if (records.length === 0) {
+    return (
+      <Card className="border-border/50 relative overflow-hidden border-2 p-6">
+        <div className="mb-4 flex items-center gap-2">
+          <Sparkles className="text-primary h-5 w-5" />
+          <h3 className="text-xl font-bold">최근 측정 기록</h3>
+        </div>
+        <div className="text-muted-foreground flex justify-center py-12 text-center">
+          <p>아직 측정 기록이 없습니다.</p>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="border-border/50 relative overflow-hidden border-2 p-6">
@@ -33,17 +58,20 @@ export function RealtimeTab() {
         </div>
 
         <div className="space-y-3">
-          {MOCK_RECENT_MEASUREMENTS.map((measurement, index) => {
-            const tierColor =
-              TIERS[measurement.tier as keyof typeof TIERS].color;
+          {records.map((record, index) => {
+            const tierEnglish = convertKoreanTierToEnglish(record.finalTier);
+            const tierColor = TIERS[tierEnglish]?.color || "tier-bronze";
+            const userName = record.user?.name || "익명";
+            const userImage = record.user?.image;
+
             return (
               <motion.div
-                key={measurement.id}
+                key={record._id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.15, delay: index * 0.03 }}
                 className="hover:bg-primary/5 hover:border-primary/10 group relative flex cursor-pointer items-center gap-4 overflow-hidden rounded-lg border border-transparent p-4 transition-all"
-                onClick={() => router.push(`/result/${measurement.id}`)}
+                onClick={() => router.push(`/result/${record._id}`)}
               >
                 <motion.div
                   className={`absolute top-0 bottom-0 left-0 w-1 ${tierColor}`}
@@ -56,20 +84,23 @@ export function RealtimeTab() {
                 />
 
                 <Avatar className="ring-background group-hover:ring-primary/20 h-12 w-12 ring-2 transition-all">
+                  {userImage ? (
+                    <AvatarImage src={userImage} alt={userName} />
+                  ) : null}
                   <AvatarFallback
                     style={{
                       backgroundColor: `${tierColor}20`,
                       color: `var(--foreground)`,
                     }}
                   >
-                    {getUserNickname(measurement.userId)[0]}
+                    {userName[0]}
                   </AvatarFallback>
                 </Avatar>
 
                 <div className="min-w-0 flex-1">
                   <div className="mb-1 flex items-center gap-2">
                     <span className="truncate font-medium">
-                      {getUserNickname(measurement.userId)}
+                      {userName}
                     </span>
                     <Badge
                       variant="outline"
@@ -81,17 +112,17 @@ export function RealtimeTab() {
                       }}
                     >
                       <div className={`h-2 w-2 rounded-full ${tierColor}`} />
-                      {TIERS[measurement.tier as keyof typeof TIERS].nameKo}
+                      {TIERS[tierEnglish]?.nameKo || record.finalTier}
                     </Badge>
                   </div>
                   <p className="text-muted-foreground text-sm">
-                    {formatRelativeTime(measurement.timestamp)} •{" "}
-                    {measurement.totalMaps}개 맵 측정
+                    {formatRelativeTime(new Date(record.createdAt))} •{" "}
+                    {record.records?.length || 0}개 맵 측정
                   </p>
                 </div>
 
                 <TierBadge
-                  tier={measurement.tier as TierType}
+                  tier={tierEnglish}
                   size="md"
                   showLabel={false}
                 />

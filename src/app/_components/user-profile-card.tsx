@@ -9,11 +9,16 @@ import { TIERS } from "@/lib/types";
 import { Users, LogIn, User, LogOut, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth, useLogout } from "@/hooks/use-auth";
+import { useLatestRecord } from "@/hooks/use-records";
+import { convertKoreanTierToEnglish } from "@/lib/utils-calc";
 
 export function UserProfileCard() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading } = useAuth();
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
+
+  // 최근 측정 기록 조회
+  const { record: latestRecord } = useLatestRecord(user?._id);
 
   const handleLogout = () => {
     logout();
@@ -51,8 +56,12 @@ export function UserProfileCard() {
     );
   }
 
-  // 유저 라이센스를 티어로 변환
-  const userTier = user.license as keyof typeof TIERS;
+  // 최근 측정 기록의 티어를 사용, 없으면 유저 라이센스 사용
+  const displayTier = latestRecord?.finalTier
+    ? convertKoreanTierToEnglish(latestRecord.finalTier)
+    : (user.license as keyof typeof TIERS);
+
+  const hasTierInfo = latestRecord?.finalTier || user.license;
 
   return (
     <Card className="border-primary/30 from-primary/10 via-card/95 to-secondary/10 sticky top-20 border-2 bg-linear-to-br p-6 backdrop-blur-sm">
@@ -68,12 +77,12 @@ export function UserProfileCard() {
               {user.name[0]}
             </AvatarFallback>
           </Avatar>
-          {user.license && TIERS[userTier] && (
+          {hasTierInfo && TIERS[displayTier] && (
             <div className="absolute -right-1 -bottom-1">
               <div
-                className={`h-8 w-8 rounded-full ${TIERS[userTier].color} flex items-center justify-center shadow-lg`}
+                className={`h-8 w-8 rounded-full ${TIERS[displayTier].color} flex items-center justify-center shadow-lg`}
               >
-                <TierBadge tier={userTier} size="sm" showLabel={false} />
+                <TierBadge tier={displayTier} size="sm" showLabel={false} />
               </div>
             </div>
           )}
@@ -81,13 +90,28 @@ export function UserProfileCard() {
 
         <div className="w-full">
           <h3 className="mb-2 text-xl">{user.name}</h3>
-          {user.license && TIERS[userTier] && (
+          {hasTierInfo && TIERS[displayTier] && (
             <Badge className="mb-3 gap-2 px-4 py-1.5">
               <div
-                className={`h-2.5 w-2.5 rounded-full ${TIERS[userTier].color}`}
+                className={`h-2.5 w-2.5 rounded-full ${TIERS[displayTier].color}`}
               />
-              {TIERS[userTier].nameKo}
+              {TIERS[displayTier].nameKo}
             </Badge>
+          )}
+          {latestRecord && (
+            <p className="text-muted-foreground text-xs">
+              최근 기록: S{latestRecord.season}
+              <br />
+              {new Date(latestRecord.createdAt).toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}{" "}
+              {new Date(latestRecord.createdAt).toLocaleTimeString("ko-KR", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </p>
           )}
         </div>
 
