@@ -1,16 +1,30 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Post, TIERS } from "@/lib/types";
-import { Download, Check, Copy, Share2, User } from "lucide-react";
+import {
+  Download,
+  Check,
+  Copy,
+  Share2,
+  User,
+  MessageCircle,
+} from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toPng } from "html-to-image";
 import { toast } from "sonner";
 import { convertKoreanTierToEnglish } from "@/lib/utils-calc";
+
+// Kakao SDK 타입 선언
+declare global {
+  interface Window {
+    Kakao: any;
+  }
+}
 
 interface ShareContentProps {
   post: Post;
@@ -33,9 +47,10 @@ const CATEGORY_LABELS = {
 export function ShareContent({ post, onClose }: ShareContentProps) {
   const [copySuccess, setCopySuccess] = useState(false);
   const qrCardRef = useRef<HTMLDivElement>(null);
-  const currentUrl = window.location.href;
+  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
 
-  const userName = post.userNickname || "익명";
+  const userId = post.userId || "0";
+  const userName = post.userNickname || "비로그인 유저";
   const userImage = post.userProfileImage || "/profile/gyool_dizini.png";
 
   // 티어 변환 (한국어 -> 영어)
@@ -51,6 +66,39 @@ export function ShareContent({ post, onClose }: ShareContentProps) {
       day: "numeric",
     });
   };
+
+  // Kakao SDK 초기화
+  useEffect(() => {
+    const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_SDK_KEY;
+    const kakaoIntegrity = process.env.NEXT_PUBLIC_KAKAO_INTEGRITY;
+
+    if (!kakaoKey) {
+      console.error("Kakao JS SDK Key is not defined in environment variables");
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.min.js";
+    if (kakaoIntegrity) {
+      script.integrity = kakaoIntegrity;
+    }
+    script.crossOrigin = "anonymous";
+    script.async = true;
+
+    script.onload = () => {
+      if (window.Kakao && !window.Kakao.isInitialized()) {
+        window.Kakao.init(kakaoKey);
+      }
+    };
+
+    document.body.appendChild(script);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
 
   const handleCopyLink = async () => {
     try {
@@ -85,6 +133,55 @@ export function ShareContent({ post, onClose }: ShareContentProps) {
     } catch (err) {
       console.error("QR Card download failed:", err);
       toast.error("QR 카드 다운로드에 실패했습니다.");
+    }
+  };
+
+  const handleKakaoShare = () => {
+    if (typeof window === "undefined" || !window.Kakao) {
+      toast.error("카카오톡 공유 기능을 사용할 수 없습니다.");
+      return;
+    }
+
+    const Kakao = window.Kakao;
+    const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_SDK_KEY;
+
+    if (!kakaoKey) {
+      toast.error("카카오톡 API 키가 설정되지 않았습니다.");
+      return;
+    }
+
+    if (!Kakao.isInitialized()) {
+      Kakao.init(kakaoKey);
+    }
+
+    try {
+      // 프로필 이미지를 절대 URL로 변환
+      const absoluteImageUrl = userImage.startsWith("http")
+        ? userImage
+        : `${window.location.origin}${userImage}`;
+
+      // 게시글 내용을 HTML 태그 제거하고 최대 100자로 제한
+      const contentText = post.content.replace(/<[^>]*>/g, "").substring(0, 20);
+
+      Kakao.Share.sendCustom({
+        templateId: 125960,
+        templateArgs: {
+          Title: post.title,
+          Description: contentText,
+          UserId: userId,
+          Name: userName,
+          PostId: post._id.toString(),
+          ProfileImage: absoluteImageUrl,
+          Comment: post.commentCount?.toString() || "0",
+          Views: post.views?.toString() || "0",
+        },
+      });
+
+      toast.success("카카오톡 공유가 완료되었습니다!");
+      onClose();
+    } catch (err) {
+      console.error("Kakao share failed:", err);
+      toast.error("카카오톡 공유에 실패했습니다.");
     }
   };
 
@@ -154,7 +251,7 @@ export function ShareContent({ post, onClose }: ShareContentProps) {
                   </Badge>
                 )}
               </div>
-              <p className="text-muted-foreground pt-1 text-xs">
+              <p className="text-muted-foreground text-xs">
                 {formatDateTime(post.createdAt)}
               </p>
             </div>
@@ -182,25 +279,33 @@ export function ShareContent({ post, onClose }: ShareContentProps) {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-2">
+      <div className="space-y-2">
         <Button
           variant="outline"
           onClick={downloadQRCard}
-          className="flex-1 gap-2"
+          className="w-full gap-2"
         >
           <Download className="h-4 w-4" />
           QR 카드 다운로드
         </Button>
 
+        <Button
+          onClick={handleKakaoShare}
+          className="w-full gap-2 border-0 bg-[#FEE500] text-[#3C1E1E] hover:bg-[#FDD800]"
+        >
+          <MessageCircle className="h-4 w-4" />
+          카카오톡으로 공유하기
+        </Button>
+
         {/* Share via Web Share API (if supported) */}
-        {navigator.share && (
+        {typeof navigator !== "undefined" && navigator.share && (
           <Button
             onClick={async () => {
               try {
                 await navigator.share({
                   title: post.title,
                   text:
-                    post.content.replace(/<[^>]*>/g, "").substring(0, 100) +
+                    post.content.replace(/<[^>]*>/g, "").substring(0, 20) +
                     "...",
                   url: currentUrl,
                 });
@@ -213,7 +318,8 @@ export function ShareContent({ post, onClose }: ShareContentProps) {
                 }
               }
             }}
-            className="flex-1 gap-2"
+            variant="outline"
+            className="w-full gap-2"
           >
             <Share2 className="h-4 w-4" />
             다른 앱으로 공유

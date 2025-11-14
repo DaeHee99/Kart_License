@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -17,10 +17,19 @@ import { TierType, TIERS } from "@/lib/types";
 import { QRCodeSVG } from "qrcode.react";
 import { toPng } from "html-to-image";
 import { toast } from "sonner";
+import { useParams } from "next/navigation";
+
+// Kakao SDK 타입 선언
+declare global {
+  interface Window {
+    Kakao: any;
+  }
+}
 
 interface ShareContentProps {
   finalTier: TierType;
   user?: {
+    _id: string;
     name: string;
     image?: string;
   } | null;
@@ -39,9 +48,15 @@ export function ShareContent({
   const [copySuccess, setCopySuccess] = useState(false);
   const qrCardRef = useRef<HTMLDivElement>(null);
 
-  const currentUrl = window.location.href;
+  const params = useParams();
+  const recordId = params.id as string;
+  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
+  const userId = user?._id || "0";
   const userName = user?.name || "비로그인 유저";
   const userImage = user?.image || "/profile/gyool_dizini.png";
+  const description = user?.name
+    ? `${userName}님이 카러플 군 계산기 결과를 공유했습니다!`
+    : "츄르 클럽에서 제작한 카러플 군 계산기 결과를 공유했습니다!";
 
   const formatDateTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -51,6 +66,39 @@ export function ShareContent({
       day: "numeric",
     });
   };
+
+  // Kakao SDK 초기화
+  useEffect(() => {
+    const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_SDK_KEY;
+    const kakaoIntegrity = process.env.NEXT_PUBLIC_KAKAO_INTEGRITY;
+
+    if (!kakaoKey) {
+      console.error("Kakao JS SDK Key is not defined in environment variables");
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.min.js";
+    if (kakaoIntegrity) {
+      script.integrity = kakaoIntegrity;
+    }
+    script.crossOrigin = "anonymous";
+    script.async = true;
+
+    script.onload = () => {
+      if (window.Kakao && !window.Kakao.isInitialized()) {
+        window.Kakao.init(kakaoKey);
+      }
+    };
+
+    document.body.appendChild(script);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
 
   const handleCopyLink = async () => {
     try {
@@ -89,39 +137,45 @@ export function ShareContent({
   };
 
   const handleKakaoShare = () => {
-    // Kakao Share (requires Kakao SDK)
-    // @ts-ignore
-    if (typeof window !== "undefined" && window.Kakao) {
-      // @ts-ignore
-      if (!window.Kakao.isInitialized()) {
-        // @ts-ignore
-        window.Kakao.init("YOUR_KAKAO_APP_KEY"); // Replace with actual key
-      }
-
-      // @ts-ignore
-      window.Kakao.Share.sendDefault({
-        objectType: "feed",
-        content: {
-          title: `카러플 군 계산기 - ${TIERS[finalTier].nameKo}!`,
-          description: `나의 카트라이더 러쉬 플러스 실력은 ${TIERS[finalTier].nameKo}! ${TIERS[finalTier].description}`,
-          imageUrl: "https://example.com/tier-badge.png", // Replace with actual image
-          link: {
-            mobileWebUrl: currentUrl,
-            webUrl: currentUrl,
-          },
-        },
-        buttons: [
-          {
-            title: "내 군 결과도 확인하기",
-            link: {
-              mobileWebUrl: window.location.origin,
-              webUrl: window.location.origin,
-            },
-          },
-        ],
-      });
-    } else {
+    if (typeof window === "undefined" || !window.Kakao) {
       toast.error("카카오톡 공유 기능을 사용할 수 없습니다.");
+      return;
+    }
+
+    const Kakao = window.Kakao;
+    const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_SDK_KEY;
+
+    if (!kakaoKey) {
+      toast.error("카카오톡 API 키가 설정되지 않았습니다.");
+      return;
+    }
+
+    if (!Kakao.isInitialized()) {
+      Kakao.init(kakaoKey);
+    }
+
+    try {
+      // 프로필 이미지를 절대 URL로 변환
+      const absoluteImageUrl = userImage.startsWith("http")
+        ? userImage
+        : `${window.location.origin}${userImage}`;
+
+      Kakao.Share.sendCustom({
+        templateId: 90173,
+        templateArgs: {
+          RecordId: recordId,
+          Name: userName,
+          Description: description,
+          ProfileImage: absoluteImageUrl,
+          UserId: userId,
+        },
+      });
+
+      toast.success("카카오톡 공유가 완료되었습니다!");
+      onDialogClose();
+    } catch (err) {
+      console.error("Kakao share failed:", err);
+      toast.error("카카오톡 공유에 실패했습니다.");
     }
   };
 
@@ -230,13 +284,13 @@ export function ShareContent({
         </Button>
 
         {/* Share via Web Share API (if supported) */}
-        {navigator.share && (
+        {typeof navigator !== "undefined" && navigator.share && (
           <Button
             onClick={async () => {
               try {
                 await navigator.share({
-                  title: `카러플 군 계산기 - ${TIERS[finalTier].nameKo}`,
-                  text: `나의 카트라이더 러쉬 플러스 실력은 ${TIERS[finalTier].nameKo}!`,
+                  title: "카러플 군 계산기",
+                  text: description,
                   url: currentUrl,
                 });
                 onDialogClose();

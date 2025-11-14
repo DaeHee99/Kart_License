@@ -11,6 +11,7 @@ import Link from "next/link";
 interface ActionButtonsProps {
   finalTier: TierType;
   user?: {
+    _id: string;
     name: string;
     image?: string;
   } | null;

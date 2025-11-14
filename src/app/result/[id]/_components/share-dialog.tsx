@@ -24,6 +24,7 @@ interface ShareDialogProps {
   onOpenChange: (open: boolean) => void;
   finalTier: TierType;
   user?: {
+    _id: string;
     name: string;
     image?: string;
   } | null;
