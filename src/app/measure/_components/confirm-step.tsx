@@ -14,6 +14,14 @@ import { useRouter } from "next/navigation";
 import Portal from "@/components/portal";
 import { useSaveRecord } from "@/hooks/use-records";
 
+// Difficulty 뱃지 색상 매핑
+const DIFFICULTY_COLORS = {
+  루키: "bg-yellow-500/10 text-yellow-600 border-yellow-500/30",
+  L3: "bg-green-500/10 text-green-600 border-green-500/30",
+  L2: "bg-blue-500/10 text-blue-600 border-blue-500/30",
+  L1: "bg-red-500/10 text-red-600 border-red-500/30",
+};
+
 interface ConfirmStepProps {
   records: UserMapRecord[];
   maps: Array<APIMapRecord & { id: string }>;
@@ -128,7 +136,17 @@ export function ConfirmStep({
                     onClick={() => onEditMap(index)}
                     className="border-border/50 hover:bg-primary/5 hover:border-primary/30 flex cursor-pointer items-center justify-between rounded-lg border px-4 py-3 transition-all duration-200"
                   >
-                    <span>{map?.name}</span>
+                    <div className="flex min-w-0 items-center gap-2">
+                      {map?.difficulty && (
+                        <Badge
+                          variant="outline"
+                          className={`shrink-0 text-xs font-semibold ${DIFFICULTY_COLORS[map.difficulty as keyof typeof DIFFICULTY_COLORS]}`}
+                        >
+                          {map.difficulty}
+                        </Badge>
+                      )}
+                      <span className="truncate">{map?.name}</span>
+                    </div>
                     <div className="flex items-center gap-2">
                       {record.tier && (
                         <Badge variant="outline" className="gap-1.5">

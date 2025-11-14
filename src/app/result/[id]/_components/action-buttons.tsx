@@ -8,7 +8,22 @@ import { ShareDialog } from "./share-dialog";
 import { TierType } from "@/lib/types";
 import Link from "next/link";
 
-export function ActionButtons({ finalTier }: { finalTier: TierType }) {
+interface ActionButtonsProps {
+  finalTier: TierType;
+  user?: {
+    name: string;
+    image?: string;
+  } | null;
+  season: number;
+  createdAt: string;
+}
+
+export function ActionButtons({
+  finalTier,
+  user,
+  season,
+  createdAt,
+}: ActionButtonsProps) {
   const [showShareDialog, setShowShareDialog] = useState(false);
 
   return (
@@ -38,6 +53,9 @@ export function ActionButtons({ finalTier }: { finalTier: TierType }) {
         open={showShareDialog}
         onOpenChange={setShowShareDialog}
         finalTier={finalTier}
+        user={user}
+        season={season}
+        createdAt={createdAt}
       />
     </>
   );

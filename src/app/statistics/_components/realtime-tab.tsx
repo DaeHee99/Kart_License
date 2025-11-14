@@ -61,8 +61,8 @@ export function RealtimeTab() {
           {records.map((record, index) => {
             const tierEnglish = convertKoreanTierToEnglish(record.finalTier);
             const tierColor = TIERS[tierEnglish]?.color || "tier-bronze";
-            const userName = record.user?.name || "익명";
-            const userImage = record.user?.image;
+            const userName = record.user?.name || "비로그인 유저";
+            const userImage = record.user?.image || "/profile/gyool_dizini.png";
 
             return (
               <motion.div
@@ -84,9 +84,7 @@ export function RealtimeTab() {
                 />
 
                 <Avatar className="ring-background group-hover:ring-primary/20 h-12 w-12 ring-2 transition-all">
-                  {userImage ? (
-                    <AvatarImage src={userImage} alt={userName} />
-                  ) : null}
+                  <AvatarImage src={userImage} alt={userName} />
                   <AvatarFallback
                     style={{
                       backgroundColor: `${tierColor}20`,

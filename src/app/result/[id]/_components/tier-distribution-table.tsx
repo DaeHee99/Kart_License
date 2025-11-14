@@ -17,6 +17,20 @@ export function TierDistributionTable({
   finalTier,
   totalMaps,
 }: TierDistributionTableProps) {
+  // Helper function to get tier color hex (same as statistics page)
+  const getTierColorHex = (tier: TierType): string => {
+    const colorMap: Record<TierType, string> = {
+      elite: "#ef4444", // 루비/레드 색상
+      master: "#a855f7",
+      diamond: "#3b82f6",
+      platinum: "#06b6d4",
+      gold: "#eab308",
+      silver: "#94a3b8",
+      bronze: "#d97706",
+    };
+    return colorMap[tier];
+  };
+
   return (
     <motion.div
       initial={{ y: 20, opacity: 0 }}
@@ -67,6 +81,7 @@ export function TierDistributionTable({
               const count = tierDistribution[tierId];
               const percentage =
                 totalMaps > 0 ? Math.round((count / totalMaps) * 100) : 0;
+              const tierColorHex = getTierColorHex(tierId);
 
               return (
                 <motion.div
@@ -77,13 +92,15 @@ export function TierDistributionTable({
                     delay: 0.45 + index * 0.03,
                     duration: 0.15,
                   }}
-                  className={`border-border/50 hover:bg-primary/5 relative grid grid-cols-3 border-b transition-colors last:border-b-0 ${
-                    finalTier === tierId ? "bg-primary/10" : ""
-                  }`}
+                  className="border-border/50 hover:bg-primary/5 relative grid grid-cols-3 border-b transition-colors last:border-b-0"
+                  style={{
+                    backgroundColor: `${tierColorHex}10`,
+                  }}
                 >
                   {/* Progress bar background */}
                   <motion.div
-                    className={`absolute top-0 bottom-0 left-0 ${tier.color.replace("text-", "bg-").replace("bg-tier-", "bg-")}/10`}
+                    className="absolute top-0 bottom-0 left-0 opacity-20"
+                    style={{ backgroundColor: tierColorHex }}
                     initial={{ width: 0 }}
                     animate={{ width: `${percentage}%` }}
                     transition={{
@@ -93,7 +110,10 @@ export function TierDistributionTable({
                   />
 
                   <div className="relative z-10 flex items-center gap-2 px-4 py-3">
-                    <div className={`h-3 w-3 rounded-full ${tier.color}`} />
+                    <div
+                      className="h-3 w-3 rounded-full"
+                      style={{ backgroundColor: tierColorHex }}
+                    />
                     <span className="text-sm font-medium">{tier.nameKo}</span>
                     {finalTier === tierId && (
                       <motion.div
@@ -109,12 +129,18 @@ export function TierDistributionTable({
                     )}
                   </div>
                   <div className="relative z-10 px-4 py-3 text-center">
-                    <span className="font-mono text-sm font-medium">
+                    <span
+                      className="font-mono text-sm font-bold"
+                      style={{ color: "var(--foreground)" }}
+                    >
                       {count}
                     </span>
                   </div>
                   <div className="relative z-10 px-4 py-3 text-right">
-                    <span className="font-mono text-sm font-medium">
+                    <span
+                      className="font-mono text-sm font-bold"
+                      style={{ color: "var(--foreground)" }}
+                    >
                       {percentage}%
                     </span>
                   </div>

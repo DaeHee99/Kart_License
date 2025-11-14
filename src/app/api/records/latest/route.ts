@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
         success: true,
         data: {
           _id: record._id.toString(),
-          user: record.user.toString(),
+          user: record.user?.toString() || null,
           season: record.season,
           records: record.records,
           tierDistribution: record.tierDistribution,

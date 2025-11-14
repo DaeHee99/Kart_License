@@ -5,6 +5,7 @@ import { TierType } from "@/lib/types";
 import { getTierInsights, convertKoreanTierToEnglish } from "@/lib/utils-calc";
 import { useRouter, useParams } from "next/navigation";
 import { AnimatedBackground } from "./_components/animated-background";
+import { UserInfoCard } from "./_components/user-info-card";
 import { TierRevealCard } from "./_components/tier-reveal-card";
 import { TierDistributionTable } from "./_components/tier-distribution-table";
 import { DetailedRecordsTable } from "./_components/detailed-records-table";
@@ -14,6 +15,7 @@ import { FeedbackDialog } from "../_components/feedback-dialog";
 import { recordsAPI } from "@/lib/api/records";
 import { useAuth } from "@/hooks/use-auth";
 import { useUserFeedback } from "@/hooks/use-feedback";
+import { useLatestMaps } from "@/hooks/use-records";
 import type { RecordDetailResponse } from "@/lib/api/types";
 
 export default function ResultDetailPage() {
@@ -21,7 +23,9 @@ export default function ResultDetailPage() {
   const params = useParams();
   const recordId = params.id as string;
 
-  const [recordData, setRecordData] = useState<RecordDetailResponse["data"] | null>(null);
+  const [recordData, setRecordData] = useState<
+    RecordDetailResponse["data"] | null
+  >(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
@@ -29,10 +33,13 @@ export default function ResultDetailPage() {
   // 유저 인증 정보
   const { user, isAuthenticated } = useAuth();
 
+  // 현재 시즌 정보 가져오기
+  const { season: currentSeason } = useLatestMaps();
+
   // 유저의 피드백 제출 여부 확인
   const { feedback, isLoading: feedbackLoading } = useUserFeedback(
     user?._id,
-    recordData?.season
+    recordData?.season,
   );
 
   useEffect(() => {
@@ -65,16 +72,28 @@ export default function ResultDetailPage() {
   useEffect(() => {
     if (
       isAuthenticated &&
+      user &&
       recordData &&
       !feedbackLoading &&
       !feedback &&
-      recordData.season > 0
+      recordData.season > 0 &&
+      currentSeason > 0
     ) {
-      // 유저가 로그인했고, 기록이 로드되었고, 피드백 로딩이 완료되었고,
-      // 아직 피드백을 제출하지 않았으면 다이얼로그 표시
-      setShowFeedbackDialog(true);
+      // 조건:
+      // 1. 유저가 로그인되어 있어야 함
+      // 2. 기록이 로드되었어야 함
+      // 3. 피드백 로딩이 완료되어야 함
+      // 4. 현재 시즌에 대한 피드백을 아직 제출하지 않았어야 함
+      // 5. 해당 기록이 현재 로그인한 유저의 것이어야 함
+      // 6. 해당 기록의 시즌이 현재 시즌과 일치해야 함
+      const isOwnRecord = recordData.user?._id === user._id;
+      const isCurrentSeasonRecord = recordData.season === currentSeason;
+
+      if (isOwnRecord && isCurrentSeasonRecord) {
+        setShowFeedbackDialog(true);
+      }
     }
-  }, [isAuthenticated, recordData, feedbackLoading, feedback]);
+  }, [isAuthenticated, user, recordData, feedbackLoading, feedback, currentSeason]);
 
   if (isLoading || !recordData) {
     return null; // Loading state
@@ -114,7 +133,17 @@ export default function ResultDetailPage() {
       <div className="relative z-10 px-4 py-8">
         <div className="mx-auto max-w-2xl space-y-6">
           <TierRevealCard finalTier={finalTier} insights={insights} />
-          <ActionButtons finalTier={finalTier} />
+          <UserInfoCard
+            user={recordData.user}
+            season={recordData.season}
+            createdAt={recordData.createdAt}
+          />
+          <ActionButtons
+            finalTier={finalTier}
+            user={recordData.user}
+            season={recordData.season}
+            createdAt={recordData.createdAt}
+          />
           <TierDistributionTable
             tierDistribution={tierDistribution}
             finalTier={finalTier}

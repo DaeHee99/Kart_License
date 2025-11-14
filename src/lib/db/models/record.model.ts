@@ -15,7 +15,7 @@ export interface IUserMapRecord {
  */
 export interface IRecord {
   _id: Types.ObjectId;
-  user: Types.ObjectId; // User 참조
+  user?: Types.ObjectId | null; // User 참조 (비로그인 유저의 경우 null)
   season: number; // 시즌 정보
   records: IUserMapRecord[]; // 유저 맵 기록 배열
   tierDistribution: {
@@ -71,7 +71,8 @@ const recordSchema = new Schema<IRecord, IRecordModel>(
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false, // 비로그인 유저도 기록 가능
+      default: null,
       index: true,
     },
     season: {
@@ -158,11 +159,14 @@ recordSchema.pre("save", function (next) {
   next();
 });
 
-// 저장 후 유저의 license 업데이트
+// 저장 후 유저의 license 업데이트 (로그인 유저인 경우에만)
 recordSchema.post("save", async function (doc) {
   try {
-    const User = mongoose.model("User");
-    await User.findByIdAndUpdate(doc.user, { license: doc.finalTier });
+    // 비로그인 유저의 경우 user가 null이므로 업데이트 스킵
+    if (doc.user) {
+      const User = mongoose.model("User");
+      await User.findByIdAndUpdate(doc.user, { license: doc.finalTier });
+    }
   } catch (err) {
     console.error("Failed to update user license:", err);
   }

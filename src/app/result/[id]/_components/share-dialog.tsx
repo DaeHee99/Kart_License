@@ -23,12 +23,21 @@ interface ShareDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   finalTier: TierType;
+  user?: {
+    name: string;
+    image?: string;
+  } | null;
+  season: number;
+  createdAt: string;
 }
 
 export function ShareDialog({
   open,
   onOpenChange,
   finalTier,
+  user,
+  season,
+  createdAt,
 }: ShareDialogProps) {
   const isMobile = useIsMobile();
 
@@ -46,6 +55,9 @@ export function ShareDialog({
           <ScrollArea className="max-h-[90vh] overflow-y-auto px-1">
             <ShareContent
               finalTier={finalTier}
+              user={user}
+              season={season}
+              createdAt={createdAt}
               onDialogClose={() => onOpenChange(false)}
             />
           </ScrollArea>
@@ -67,6 +79,9 @@ export function ShareDialog({
         <ScrollArea className="max-h-[70vh] overflow-y-auto pr-4 pl-6">
           <ShareContent
             finalTier={finalTier}
+            user={user}
+            season={season}
+            createdAt={createdAt}
             onDialogClose={() => onOpenChange(false)}
           />
         </ScrollArea>

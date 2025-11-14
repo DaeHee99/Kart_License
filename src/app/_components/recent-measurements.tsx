@@ -78,8 +78,8 @@ export function RecentMeasurements() {
         <Card className="divide-border gap-0 divide-y overflow-hidden py-0">
           {records.map((record, index) => {
             const tierType = getTierTypeFromFinalTier(record.finalTier);
-            const userName = record.user?.name || "익명";
-            const userImage = record.user?.image;
+            const userName = record.user?.name || "비로그인 유저";
+            const userImage = record.user?.image || "/profile/gyool_dizini.png";
 
             return (
               <motion.div
@@ -92,7 +92,7 @@ export function RecentMeasurements() {
                 onClick={() => router.push(`/result/${record._id}`)}
               >
                 <Avatar className="h-12 w-12 shrink-0">
-                  {userImage && <AvatarImage src={userImage} alt={userName} />}
+                  <AvatarImage src={userImage} alt={userName} />
                   <AvatarFallback>{userName[0]}</AvatarFallback>
                 </Avatar>
 

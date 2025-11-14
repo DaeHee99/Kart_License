@@ -3,8 +3,16 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TierBadge } from "@/components/tier-badge";
-import { Download, Copy, Check, MessageCircle, Share2 } from "lucide-react";
+import {
+  Download,
+  Copy,
+  Check,
+  MessageCircle,
+  Share2,
+  User,
+} from "lucide-react";
 import { TierType, TIERS } from "@/lib/types";
 import { QRCodeSVG } from "qrcode.react";
 import { toPng } from "html-to-image";
@@ -12,14 +20,37 @@ import { toast } from "sonner";
 
 interface ShareContentProps {
   finalTier: TierType;
+  user?: {
+    name: string;
+    image?: string;
+  } | null;
+  season: number;
+  createdAt: string;
   onDialogClose: () => void;
 }
 
-export function ShareContent({ finalTier, onDialogClose }: ShareContentProps) {
+export function ShareContent({
+  finalTier,
+  user,
+  season,
+  createdAt,
+  onDialogClose,
+}: ShareContentProps) {
   const [copySuccess, setCopySuccess] = useState(false);
   const qrCardRef = useRef<HTMLDivElement>(null);
 
   const currentUrl = window.location.href;
+  const userName = user?.name || "비로그인 유저";
+  const userImage = user?.image || "/profile/gyool_dizini.png";
+
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   const handleCopyLink = async () => {
     try {
@@ -45,7 +76,7 @@ export function ShareContent({ finalTier, onDialogClose }: ShareContentProps) {
 
       const link = document.createElement("a");
       link.href = dataUrl;
-      link.download = `${TIERS[finalTier].nameKo} 달성!.png`;
+      link.download = `${userName} - S${season} - ${TIERS[finalTier].nameKo} - ${formatDateTime(createdAt)}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -95,11 +126,7 @@ export function ShareContent({ finalTier, onDialogClose }: ShareContentProps) {
   };
 
   return (
-    <div className="space-y-6 p-4">
-      <p className="text-muted-foreground text-center text-sm">
-        QR 카드를 이용하여 결과 전용 웹 페이지로 쉽게 이동할 수 있어요.
-      </p>
-
+    <div className="space-y-6 p-2">
       {/* Link Copy */}
       <div className="space-y-2">
         <label className="text-sm font-medium">결과 웹 페이지 주소</label>
@@ -127,13 +154,40 @@ export function ShareContent({ finalTier, onDialogClose }: ShareContentProps) {
           ref={qrCardRef}
           className="from-background to-muted border-border flex flex-col items-center gap-4 rounded-2xl border-2 bg-linear-to-br p-8"
         >
+          {/* Tier Badge */}
           <div className="space-y-2 text-center">
             <div className="relative inline-block">
               <TierBadge tier={finalTier} size="lg" showLabel={false} />
             </div>
-            <h2 className="text-2xl font-bold">
-              {TIERS[finalTier].nameKo} 달성!
+            <h2 className="text-3xl font-bold">
+              당신은{" "}
+              <span
+                className="font-bold"
+                style={{ color: `var(--${TIERS[finalTier].color})` }}
+              >
+                {TIERS[finalTier].nameKo}
+              </span>
+              입니다!
             </h2>
+            <p className="text-muted-foreground text-sm">
+              {TIERS[finalTier].description}
+            </p>
+          </div>
+
+          {/* User Info */}
+          <div className="flex items-center gap-3">
+            <Avatar className="border-border h-12 w-12 border-2">
+              <AvatarImage src={userImage} alt={userName} />
+              <AvatarFallback className="bg-muted">
+                <User className="h-6 w-6" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="text-left">
+              <p className="font-semibold">{userName}</p>
+              <p className="text-muted-foreground text-xs">
+                S{season} · {formatDateTime(createdAt)}
+              </p>
+            </div>
           </div>
 
           <div className="rounded-2xl bg-white p-4 shadow-lg">

@@ -3,6 +3,14 @@
 import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 
+// Difficulty 뱃지 색상 매핑
+const DIFFICULTY_COLORS = {
+  루키: "bg-yellow-500/10 text-yellow-600 border-yellow-500/30",
+  L3: "bg-green-500/10 text-green-600 border-green-500/30",
+  L2: "bg-blue-500/10 text-blue-600 border-blue-500/30",
+  L1: "bg-red-500/10 text-red-600 border-red-500/30",
+};
+
 interface MapInfoCardProps {
   map: {
     id: string;
@@ -70,7 +78,7 @@ export function MapInfoCard({ map }: MapInfoCardProps) {
           <div className="flex items-center gap-2">
             <Badge
               variant="outline"
-              className="from-primary/20 to-secondary/20 border-primary/20 bg-linear-to-r text-xs"
+              className={`text-xs font-semibold ${DIFFICULTY_COLORS[map.difficulty]}`}
             >
               {map.difficulty}
             </Badge>

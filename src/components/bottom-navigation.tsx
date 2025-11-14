@@ -10,7 +10,7 @@ export function BottomNavigation() {
   const navItems = [
     { id: "/", label: "홈", icon: Home },
     { id: "/community", label: "커뮤니티", icon: Users },
-    { id: "/measure", label: "측정", icon: BarChart3 },
+    { id: "/statistics", label: "통계", icon: BarChart3 },
     { id: "/records", label: "기록표", icon: FileText },
     { id: "/mypage", label: "마이", icon: User },
   ];
