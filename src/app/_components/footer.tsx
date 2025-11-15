@@ -1,9 +1,10 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
-import { Zap, Award, Trophy, Star, Sparkles, ChevronRight } from "lucide-react";
+import { Award, Trophy, Star, Sparkles, ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   return (
@@ -46,9 +47,13 @@ export function Footer() {
             className="space-y-4"
           >
             <div className="flex items-center gap-2">
-              <div className="from-primary to-secondary flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-br">
-                <Zap className="text-primary-foreground h-6 w-6" />
-              </div>
+              <Image
+                src="/logo.jpg"
+                alt="logo"
+                width={40}
+                height={40}
+                className="rounded-lg"
+              />
               <h3 className="text-xl font-bold">카러플 군 계산기</h3>
             </div>
             <p className="text-muted-foreground text-sm">
