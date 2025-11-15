@@ -5,8 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Post, TIERS } from "@/lib/types";
-import { formatRelativeTime, convertKoreanTierToEnglish, getTierRingClass } from "@/lib/utils-calc";
-import { Share2, MessageCircle, MoreVertical, Edit2, Trash2 } from "lucide-react";
+import {
+  formatRelativeTime,
+  convertKoreanTierToEnglish,
+  getTierRingClass,
+} from "@/lib/utils-calc";
+import {
+  Share2,
+  MessageCircle,
+  MoreVertical,
+  Edit2,
+  Trash2,
+} from "lucide-react";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import {
   DropdownMenu,
@@ -15,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface PostContentProps {
   post: Post;
@@ -46,6 +57,8 @@ export function PostContent({
   onEdit,
   onDelete,
 }: PostContentProps) {
+  const router = useRouter();
+
   // 티어 변환 (한국어 -> 영어)
   const tierEnglish = post.userTier
     ? convertKoreanTierToEnglish(post.userTier)
@@ -60,26 +73,42 @@ export function PostContent({
     ? getTierRingClass(tierEnglish as keyof typeof TIERS)
     : "ring-gray-500";
 
+  // 유저 프로필 페이지로 이동
+  const handleUserClick = () => {
+    if (post.userId) {
+      router.push(`/userpage/${post.userId}`);
+    }
+  };
+
   return (
     <Card className="border-primary/10 hover:border-primary/20 relative overflow-hidden border-2 p-6 transition-all">
       {/* Background gradient */}
-      <div className="bg-primary/5 pointer-events-none absolute top-0 right-0 h-40 w-40 rounded-full blur-3xl hidden md:block" />
-      <div className="bg-primary/5 pointer-events-none absolute bottom-0 left-0 h-32 w-32 rounded-full blur-3xl hidden md:block" />
+      <div className="bg-primary/5 pointer-events-none absolute top-0 right-0 hidden h-40 w-40 rounded-full blur-3xl md:block" />
+      <div className="bg-primary/5 pointer-events-none absolute bottom-0 left-0 hidden h-32 w-32 rounded-full blur-3xl md:block" />
 
       {/* Header */}
       <div className="mb-4 flex items-start justify-between">
         <div className="flex flex-1 items-center gap-3">
-          <Avatar className={isValidTier ? `ring-2 ring-offset-2 ${tierRingClass}` : "ring-2 ring-gray-300"}>
+          <Avatar
+            className={`cursor-pointer transition-opacity hover:opacity-80 ${isValidTier ? `ring-2 ring-offset-2 ${tierRingClass}` : "ring-2 ring-gray-300"}`}
+            onClick={handleUserClick}
+          >
             {post.userProfileImage && (
-              <AvatarImage src={post.userProfileImage} alt={post.userNickname} />
+              <AvatarImage
+                src={post.userProfileImage}
+                alt={post.userNickname}
+              />
             )}
-            <AvatarFallback>
-              {post.userNickname?.[0] || "?"}
-            </AvatarFallback>
+            <AvatarFallback>{post.userNickname?.[0] || "?"}</AvatarFallback>
           </Avatar>
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-medium">{post.userNickname}</span>
+              <span
+                className="hover:text-primary cursor-pointer font-medium transition-colors"
+                onClick={handleUserClick}
+              >
+                {post.userNickname}
+              </span>
               {isValidTier && (
                 <Badge variant="outline" className="gap-1 text-xs">
                   <div className={`h-1.5 w-1.5 rounded-full ${tierColor}`} />
@@ -91,7 +120,11 @@ export function PostContent({
                   variant="outline"
                   className={`text-xs font-semibold ${CATEGORY_COLORS[post.category as keyof typeof CATEGORY_COLORS]}`}
                 >
-                  {CATEGORY_LABELS[post.category as keyof typeof CATEGORY_LABELS]}
+                  {
+                    CATEGORY_LABELS[
+                      post.category as keyof typeof CATEGORY_LABELS
+                    ]
+                  }
                 </Badge>
               )}
             </div>
@@ -157,23 +190,7 @@ export function PostContent({
 
       {/* Content */}
       <div
-        className="prose prose-sm dark:prose-invert mb-4 max-w-none
-          [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-2 [&_h1]:mt-4
-          [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-2 [&_h2]:mt-4
-          [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-1.5 [&_h3]:mt-3
-          [&_p]:mb-2 [&_p]:leading-6
-          [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-2
-          [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:mb-2
-          [&_li]:mb-0.5
-          [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:my-3
-          [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm
-          [&_pre]:bg-muted [&_pre]:rounded-lg [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre]:my-3
-          [&_img]:rounded-lg [&_img]:my-3
-          [&_hr]:my-4 [&_hr]:border-border
-          [&_a]:text-primary [&_a]:underline [&_a]:cursor-pointer
-          [&_table]:border-collapse [&_table]:table-auto [&_table]:w-full [&_table]:my-3
-          [&_th]:border [&_th]:border-border [&_th]:bg-muted [&_th]:font-bold [&_th]:p-2
-          [&_td]:border [&_td]:border-border [&_td]:p-2"
+        className="prose prose-sm dark:prose-invert [&_blockquote]:border-primary [&_code]:bg-muted [&_pre]:bg-muted [&_hr]:border-border [&_a]:text-primary [&_th]:border-border [&_th]:bg-muted [&_td]:border-border mb-4 max-w-none [&_a]:cursor-pointer [&_a]:underline [&_blockquote]:my-3 [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_blockquote]:italic [&_code]:rounded [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-sm [&_h1]:mt-4 [&_h1]:mb-2 [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:mt-4 [&_h2]:mb-2 [&_h2]:text-xl [&_h2]:font-bold [&_h3]:mt-3 [&_h3]:mb-1.5 [&_h3]:text-lg [&_h3]:font-bold [&_hr]:my-4 [&_img]:my-3 [&_img]:rounded-lg [&_li]:mb-0.5 [&_ol]:mb-2 [&_ol]:ml-6 [&_ol]:list-decimal [&_p]:mb-2 [&_p]:leading-6 [&_pre]:my-3 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:p-4 [&_table]:my-3 [&_table]:w-full [&_table]:table-auto [&_table]:border-collapse [&_td]:border [&_td]:p-2 [&_th]:border [&_th]:p-2 [&_th]:font-bold [&_ul]:mb-2 [&_ul]:ml-6 [&_ul]:list-disc"
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
 

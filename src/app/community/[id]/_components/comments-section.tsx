@@ -31,6 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LoginRequiredDialog } from "../../_components/login-required-dialog";
+import { useRouter } from "next/navigation";
 
 interface CommentsSectionProps {
   comments: Comment[];
@@ -49,10 +50,18 @@ export function CommentsSection({
   onEditComment,
   onDeleteComment,
 }: CommentsSectionProps) {
+  const router = useRouter();
   const [newComment, setNewComment] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingCommentContent, setEditingCommentContent] = useState("");
   const [showLoginDialog, setShowLoginDialog] = useState(false);
+
+  // 유저 프로필 페이지로 이동
+  const handleUserClick = (userId: string) => {
+    if (userId) {
+      router.push(`/userpage/${userId}`);
+    }
+  };
 
   const handleAddComment = () => {
     if (!newComment.trim()) return;
@@ -122,11 +131,12 @@ export function CommentsSection({
                   className="hover:bg-muted/50 flex gap-3 rounded-lg p-3 transition-colors"
                 >
                   <Avatar
-                    className={
+                    className={`cursor-pointer hover:opacity-80 transition-opacity ${
                       isValidTier
                         ? `ring-2 ring-offset-1 ${commentTierRingClass}`
                         : "ring-2 ring-gray-300"
-                    }
+                    }`}
+                    onClick={() => handleUserClick(comment.userId)}
                   >
                     {comment.userProfileImage && (
                       <AvatarImage
@@ -140,7 +150,10 @@ export function CommentsSection({
                   </Avatar>
                   <div className="flex-1">
                     <div className="mb-1 flex items-center gap-2">
-                      <span className="text-sm font-medium">
+                      <span
+                        className="text-sm font-medium cursor-pointer hover:text-primary transition-colors"
+                        onClick={() => handleUserClick(comment.userId)}
+                      >
                         {comment.userNickname}
                       </span>
                       {isValidTier && (

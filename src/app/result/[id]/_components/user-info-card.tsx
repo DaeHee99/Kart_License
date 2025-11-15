@@ -5,19 +5,24 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, User as UserIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface UserInfoCardProps {
   user?: {
     name: string;
     image?: string;
+    _id: string;
   } | null;
   season: number;
   createdAt: string;
 }
 
 export function UserInfoCard({ user, season, createdAt }: UserInfoCardProps) {
+  const router = useRouter();
+
   const userName = user?.name || "비로그인 유저";
   const userImage = user?.image || "/profile/gyool_dizini.png";
+  const userId = user?._id || "";
 
   const formatDateTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -36,6 +41,13 @@ export function UserInfoCard({ user, season, createdAt }: UserInfoCardProps) {
 
   const { date, time } = formatDateTime(createdAt);
 
+  // 유저 프로필 페이지로 이동
+  const handleUserClick = () => {
+    if (userId) {
+      router.push(`/userpage/${userId}`);
+    }
+  };
+
   return (
     <motion.div
       initial={{ y: 20, opacity: 0 }}
@@ -44,7 +56,10 @@ export function UserInfoCard({ user, season, createdAt }: UserInfoCardProps) {
     >
       <Card className="border-border/50 bg-card/50 overflow-hidden border py-0 backdrop-blur-sm">
         <div className="flex items-center gap-4 p-4">
-          <Avatar className="border-border h-16 w-16 border-2">
+          <Avatar
+            className="border-border h-16 w-16 cursor-pointer border-2"
+            onClick={handleUserClick}
+          >
             <AvatarImage src={userImage} alt={userName} />
             <AvatarFallback className="bg-muted">
               <UserIcon className="h-8 w-8" />
@@ -53,7 +68,12 @@ export function UserInfoCard({ user, season, createdAt }: UserInfoCardProps) {
 
           <div className="flex-1 space-y-1">
             <div className="flex items-center gap-2">
-              <h3 className="text-lg font-semibold">{userName}</h3>
+              <h3
+                className="cursor-pointer text-lg font-semibold"
+                onClick={handleUserClick}
+              >
+                {userName}
+              </h3>
               <Badge variant="outline" className="text-xs">
                 S{season}
               </Badge>
