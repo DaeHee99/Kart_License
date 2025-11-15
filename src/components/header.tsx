@@ -23,6 +23,7 @@ export function Header({ showMenu, onMenuClick }: HeaderProps) {
   const handleLogoClick = () => {
     router.push("/");
   };
+
   return (
     <header className="bg-card/80 border-border fixed top-0 right-0 left-0 z-50 h-14 border-b backdrop-blur-md">
       <div className="mx-auto flex h-full max-w-screen-xl items-center justify-between px-4">
@@ -38,7 +39,7 @@ export function Header({ showMenu, onMenuClick }: HeaderProps) {
             </Button>
           )}
           <motion.h1
-            className="from-primary to-secondary cursor-pointer bg-linear-to-r bg-clip-text font-bold text-transparent"
+            className="from-primary to-secondary cursor-pointer bg-linear-to-r bg-clip-text font-bold text-transparent select-none"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             onClick={handleLogoClick}

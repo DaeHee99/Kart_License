@@ -136,6 +136,18 @@
     @apply bg-background text-foreground;
   }
 
+  /* Cursor pointer for interactive elements */
+  button,
+  a,
+  [role="button"],
+  [type="button"],
+  [type="submit"],
+  [type="reset"],
+  .cursor-pointer,
+  select {
+    cursor: pointer;
+  }
+
   /* Performance optimization for animations on mobile */
   @media (max-width: 768px) {
     motion-div[style*="blur"],
