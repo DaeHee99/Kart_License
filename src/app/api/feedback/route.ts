@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongodb";
 import { feedbackService } from "@/lib/services/feedback.service";
+import { logService, LogActionType } from "@/lib/services/log.service";
 
 /**
  * 피드백 저장 API
@@ -43,6 +44,24 @@ export async function POST(request: NextRequest) {
       review: review || "",
       season,
       recordId,
+    });
+
+    // 피드백 제출 로그 생성
+    await logService.createLog({
+      userId,
+      actionType: LogActionType.FEEDBACK_SUBMIT,
+      content: `피드백 제출 - 시즌 ${season} (난이도: ${level}, 밸런스: ${balance})`,
+      metadata: {
+        season,
+        recordId,
+        level,
+        balance,
+        ip:
+          request.headers.get("x-forwarded-for") ||
+          request.headers.get("x-real-ip") ||
+          "unknown",
+        userAgent: request.headers.get("user-agent") || "unknown",
+      },
     });
 
     return NextResponse.json(

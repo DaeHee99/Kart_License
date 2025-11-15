@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongodb";
 import { commentService } from "@/lib/services/comment.service";
 import { authenticateUser } from "@/lib/middleware/auth";
+import { logService, LogActionType } from "@/lib/services/log.service";
 
 /**
  * 게시글의 댓글 목록 조회 API
@@ -83,6 +84,22 @@ export async function POST(
       postId,
       userId,
       content: body.content,
+    });
+
+    // 댓글 작성 로그 생성
+    await logService.createLog({
+      userId,
+      actionType: LogActionType.COMMENT_CREATE,
+      content: `댓글 작성 - 게시글 ${postId}`,
+      metadata: {
+        commentId: comment._id.toString(),
+        postId,
+        ip:
+          request.headers.get("x-forwarded-for") ||
+          request.headers.get("x-real-ip") ||
+          "unknown",
+        userAgent: request.headers.get("user-agent") || "unknown",
+      },
     });
 
     return NextResponse.json(

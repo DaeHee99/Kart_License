@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongodb";
 import { postService } from "@/lib/services/post.service";
 import { authenticateUser } from "@/lib/middleware/auth";
+import { logService, LogActionType } from "@/lib/services/log.service";
 
 /**
  * 게시글 상세 조회 API
@@ -91,6 +92,21 @@ export async function PUT(
       );
     }
 
+    // 게시글 수정 로그 생성
+    await logService.createLog({
+      userId,
+      actionType: LogActionType.POST_EDIT,
+      content: `게시글 수정 - ${postId}`,
+      metadata: {
+        postId,
+        ip:
+          request.headers.get("x-forwarded-for") ||
+          request.headers.get("x-real-ip") ||
+          "unknown",
+        userAgent: request.headers.get("user-agent") || "unknown",
+      },
+    });
+
     return NextResponse.json(
       {
         success: true,
@@ -164,6 +180,21 @@ export async function DELETE(
         { status: 404 }
       );
     }
+
+    // 게시글 삭제 로그 생성
+    await logService.createLog({
+      userId,
+      actionType: LogActionType.POST_DELETE,
+      content: `게시글 삭제 - ${postId}`,
+      metadata: {
+        postId,
+        ip:
+          request.headers.get("x-forwarded-for") ||
+          request.headers.get("x-real-ip") ||
+          "unknown",
+        userAgent: request.headers.get("user-agent") || "unknown",
+      },
+    });
 
     return NextResponse.json(
       {

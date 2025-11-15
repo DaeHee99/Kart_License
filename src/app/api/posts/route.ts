@@ -3,6 +3,7 @@ import connectDB from "@/lib/db/mongodb";
 import { postService } from "@/lib/services/post.service";
 import { PostCategory } from "@/lib/db/models/post.model";
 import { authenticateUser } from "@/lib/middleware/auth";
+import { logService, LogActionType } from "@/lib/services/log.service";
 
 /**
  * 게시글 목록 조회 API
@@ -110,6 +111,22 @@ export async function POST(request: NextRequest) {
       title: body.title,
       content: body.content,
       images: body.images || [],
+    });
+
+    // 게시글 작성 로그 생성
+    await logService.createLog({
+      userId,
+      actionType: LogActionType.POST_CREATE,
+      content: `게시글 작성 - ${body.title} (카테고리: ${body.category || "general"})`,
+      metadata: {
+        postId: post._id.toString(),
+        category: body.category || "general",
+        ip:
+          request.headers.get("x-forwarded-for") ||
+          request.headers.get("x-real-ip") ||
+          "unknown",
+        userAgent: request.headers.get("user-agent") || "unknown",
+      },
     });
 
     return NextResponse.json(

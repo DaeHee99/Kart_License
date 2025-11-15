@@ -8,6 +8,7 @@ import { Download } from "lucide-react";
 import { toPng } from "html-to-image";
 import { toast } from "sonner";
 import Image from "next/image";
+import { createLog, LogActionType } from "@/lib/api/logs";
 
 export function ImageTab() {
   const recordTableRef = useRef<HTMLDivElement>(null);
@@ -30,6 +31,15 @@ export function ImageTab() {
       document.body.removeChild(link);
 
       toast.success("기록표 이미지가 다운로드되었습니다!");
+
+      // 기록표 이미지 다운로드 로그 생성
+      createLog({
+        actionType: LogActionType.IMAGE_DOWNLOAD,
+        content: "기록표 이미지 다운로드 - S35",
+        metadata: {
+          season: 35,
+        },
+      });
     } catch (err) {
       console.error("Record table download failed:", err);
       toast.error("기록표 다운로드에 실패했습니다.");

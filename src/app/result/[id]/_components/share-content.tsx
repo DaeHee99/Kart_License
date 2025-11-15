@@ -18,6 +18,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { toPng } from "html-to-image";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
+import { createLog, LogActionType } from "@/lib/api/logs";
 
 // Kakao SDK 타입 선언
 declare global {
@@ -106,6 +107,17 @@ export function ShareContent({
       setCopySuccess(true);
       toast.success("링크가 복사되었습니다!");
       setTimeout(() => setCopySuccess(false), 2000);
+
+      // 링크 복사 로그 생성
+      createLog({
+        actionType: LogActionType.LINK_COPY_RESULT,
+        content: `결과 링크 복사 - ${recordId}`,
+        metadata: {
+          recordId,
+          season,
+          tier: finalTier,
+        },
+      });
     } catch (err) {
       console.error("Failed to copy:", err);
       toast.error("링크 복사에 실패했습니다.");
@@ -130,6 +142,17 @@ export function ShareContent({
       document.body.removeChild(link);
 
       toast.success("QR 카드가 다운로드되었습니다!");
+
+      // QR 카드 다운로드 로그 생성
+      createLog({
+        actionType: LogActionType.QR_DOWNLOAD_RESULT,
+        content: `QR 카드 다운로드 - ${recordId}`,
+        metadata: {
+          recordId,
+          season,
+          tier: finalTier,
+        },
+      });
     } catch (err) {
       console.error("QR Card download failed:", err);
       toast.error("QR 카드 다운로드에 실패했습니다.");
@@ -172,6 +195,18 @@ export function ShareContent({
       });
 
       toast.success("카카오톡 공유가 완료되었습니다!");
+
+      // 카카오톡 공유 로그 생성
+      createLog({
+        actionType: LogActionType.KAKAO_SHARE_RESULT,
+        content: `카카오톡 공유 - ${recordId}`,
+        metadata: {
+          recordId,
+          season,
+          tier: finalTier,
+        },
+      });
+
       onDialogClose();
     } catch (err) {
       console.error("Kakao share failed:", err);

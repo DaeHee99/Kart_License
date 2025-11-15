@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongodb";
 import { commentService } from "@/lib/services/comment.service";
 import { authenticateUser } from "@/lib/middleware/auth";
+import { logService, LogActionType } from "@/lib/services/log.service";
 
 /**
  * 댓글 수정 API
@@ -60,6 +61,21 @@ export async function PUT(
         { status: 404 }
       );
     }
+
+    // 댓글 수정 로그 생성
+    await logService.createLog({
+      userId,
+      actionType: LogActionType.COMMENT_EDIT,
+      content: `댓글 수정 - ${commentId}`,
+      metadata: {
+        commentId,
+        ip:
+          request.headers.get("x-forwarded-for") ||
+          request.headers.get("x-real-ip") ||
+          "unknown",
+        userAgent: request.headers.get("user-agent") || "unknown",
+      },
+    });
 
     return NextResponse.json(
       {
@@ -134,6 +150,21 @@ export async function DELETE(
         { status: 404 }
       );
     }
+
+    // 댓글 삭제 로그 생성
+    await logService.createLog({
+      userId,
+      actionType: LogActionType.COMMENT_DELETE,
+      content: `댓글 삭제 - ${commentId}`,
+      metadata: {
+        commentId,
+        ip:
+          request.headers.get("x-forwarded-for") ||
+          request.headers.get("x-real-ip") ||
+          "unknown",
+        userAgent: request.headers.get("user-agent") || "unknown",
+      },
+    });
 
     return NextResponse.json(
       {

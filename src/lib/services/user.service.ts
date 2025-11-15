@@ -1,5 +1,5 @@
 import User, { UserDocument } from "@/lib/db/models/user.model";
-import Log from "@/lib/db/models/log.model";
+import { logService, LogActionType } from "./log.service";
 
 export interface RegisterData {
   name: string;
@@ -43,8 +43,11 @@ export class UserService {
       const savedUser = await user.save();
 
       // 로그 생성
-      const log = new Log({ user: savedUser._id, content: "회원가입 완료" });
-      await log.save();
+      await logService.createLog({
+        userId: savedUser._id,
+        actionType: LogActionType.REGISTER,
+        content: "회원가입 완료",
+      });
 
       return { success: true };
     } catch (error) {
@@ -151,12 +154,37 @@ export class UserService {
       // 변경사항 저장
       await user.save();
 
-      // 로그 생성
-      const log = new Log({
-        user: userId,
-        content: updates.join(", "),
-      });
-      await log.save();
+      // 로그 생성 - 변경 유형에 따라 적절한 actionType 설정
+      let actionType = LogActionType.NICKNAME_UPDATE;
+      if (data.password) {
+        actionType = LogActionType.PASSWORD_UPDATE;
+      }
+      if (data.image !== undefined) {
+        actionType = LogActionType.PROFILE_PICTURE_UPDATE;
+      }
+      // 여러 변경이 있는 경우, 가장 마지막 변경 타입을 사용하거나 모두 로깅
+      // 각각 따로 로깅하는 것이 더 나을 수 있음
+      if (data.name && data.name !== user.name) {
+        await logService.createLog({
+          userId,
+          actionType: LogActionType.NICKNAME_UPDATE,
+          content: `닉네임 변경 (${updates.find(u => u.includes('닉네임'))})`,
+        });
+      }
+      if (data.password) {
+        await logService.createLog({
+          userId,
+          actionType: LogActionType.PASSWORD_UPDATE,
+          content: "비밀번호 변경",
+        });
+      }
+      if (data.image !== undefined && data.image !== user.image) {
+        await logService.createLog({
+          userId,
+          actionType: LogActionType.PROFILE_PICTURE_UPDATE,
+          content: "프로필 사진 변경",
+        });
+      }
 
       return { success: true };
     } catch (error) {

@@ -3,6 +3,7 @@ import connectDB from "@/lib/db/mongodb";
 import { recordService } from "@/lib/services/record.service";
 import { SaveRecordRequest } from "@/lib/api/types";
 import { Types } from "mongoose";
+import { logService, LogActionType } from "@/lib/services/log.service";
 
 /**
  * 유저 기록 저장 API
@@ -41,6 +42,23 @@ export async function POST(request: NextRequest) {
       userId: body.userId,
       season: body.season,
       records: body.records,
+    });
+
+    // 측정 완료 로그 생성
+    await logService.createLog({
+      userId: body.userId,
+      actionType: LogActionType.MEASUREMENT_COMPLETE,
+      content: `시즌 ${body.season} 측정 완료 - 최종 군: ${result.finalTier}`,
+      metadata: {
+        recordId: result.recordId,
+        season: body.season,
+        tier: result.finalTier,
+        ip:
+          request.headers.get("x-forwarded-for") ||
+          request.headers.get("x-real-ip") ||
+          "unknown",
+        userAgent: request.headers.get("user-agent") || "unknown",
+      },
     });
 
     return NextResponse.json(

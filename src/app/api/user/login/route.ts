@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { UserService } from "@/lib/services/user.service";
 import connectDB from "@/lib/db/mongodb";
+import { logService, LogActionType } from "@/lib/services/log.service";
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,6 +44,20 @@ export async function POST(request: NextRequest) {
       maxAge: 60 * 60 * 24 * 30, // 30일
       path: "/",
       sameSite: "lax",
+    });
+
+    // 로그인 로그 생성
+    await logService.createLog({
+      userId: result.user?._id,
+      actionType: LogActionType.LOGIN,
+      content: "로그인",
+      metadata: {
+        ip:
+          request.headers.get("x-forwarded-for") ||
+          request.headers.get("x-real-ip") ||
+          "unknown",
+        userAgent: request.headers.get("user-agent") || "unknown",
+      },
     });
 
     return response;
