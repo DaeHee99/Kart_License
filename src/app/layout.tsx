@@ -6,6 +6,8 @@ import { QueryProvider } from "@/providers/query-provider";
 import { Header } from "@/components/header";
 import { BottomNavigation } from "@/components/bottom-navigation";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@/components/analytics";
+import { PageViewTracker } from "@/components/page-view-tracker";
 
 export const metadata: Metadata = {
   title: {
@@ -71,6 +73,7 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <body className="antialiased">
+        <Analytics />
         <QueryProvider>
           <ThemeProvider
             attribute="class"
@@ -78,6 +81,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <PageViewTracker />
             <div className="bg-background text-foreground min-h-screen">
               <Header />
               <main className="pt-14 pb-16">{children}</main>
