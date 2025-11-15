@@ -12,11 +12,12 @@ import {
 } from "@/lib/mock-data";
 import { formatRelativeTime } from "@/lib/utils-calc";
 import { motion } from "motion/react";
-import { Users, Activity, MessageSquare, FileText, Shield, Database, Loader2 } from "lucide-react";
+import { Users, Activity, MessageSquare, FileText, Shield, Database, Loader2, Megaphone } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { convertedMapData } from "@/lib/converted-map-data";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AnnouncementForm } from "./_components/announcement-form";
 
 export default function AdminPage() {
   const stats = MOCK_STATISTICS;
@@ -254,11 +255,15 @@ export default function AdminPage() {
 
           {/* Tabs */}
           <Tabs defaultValue="users" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="users">유저 정보</TabsTrigger>
               <TabsTrigger value="measurements">측정 정보</TabsTrigger>
               <TabsTrigger value="feedback">피드백</TabsTrigger>
               <TabsTrigger value="logs">로그</TabsTrigger>
+              <TabsTrigger value="announcement">
+                <Megaphone className="mr-2 h-4 w-4" />
+                공지사항
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="users" className="space-y-4">
@@ -444,6 +449,10 @@ export default function AdminPage() {
                   ))}
                 </div>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="announcement" className="space-y-4">
+              <AnnouncementForm />
             </TabsContent>
           </Tabs>
         </div>

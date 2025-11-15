@@ -352,3 +352,34 @@ export interface UserFeedbackResponse {
   message?: string;
   error?: string;
 }
+
+// Announcement 관련 타입
+export interface Announcement {
+  _id: string;
+  user: string;
+  title: string;
+  content: string;
+  show: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AnnouncementsResponse {
+  success: boolean;
+  data?: Announcement[];
+  message?: string;
+  error?: string;
+}
+
+export interface CreateAnnouncementRequest {
+  title: string;
+  content: string;
+  show?: boolean;
+}
+
+export interface CreateAnnouncementResponse {
+  success: boolean;
+  data?: Announcement;
+  message?: string;
+  error?: string;
+}

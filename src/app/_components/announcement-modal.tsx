@@ -17,90 +17,57 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
-import { MOCK_ANNOUNCEMENTS } from "@/lib/mock-data";
+import { useAnnouncements } from "@/hooks/use-announcements";
 
 export function AnnouncementModal() {
   const isMobile = useIsMobile();
+  const { announcements, isLoading } = useAnnouncements();
 
   const [showAnnouncement, setShowAnnouncement] = useState(false);
-  const [currentAnnouncementIndex, setCurrentAnnouncementIndex] = useState(0);
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
-  // Get all active announcements that haven't been dismissed
-  const getDismissedAnnouncements = (): string[] => {
+  // 로컬스토리지에서 숨긴 공지사항 ID 가져오기
+  const getDismissedAnnouncementId = (): string | null => {
     try {
-      const dismissed = localStorage.getItem("dismissed-announcements");
-      return dismissed ? JSON.parse(dismissed) : [];
+      return localStorage.getItem("dismissed-announcement-id");
     } catch {
-      return [];
+      return null;
     }
   };
 
-  const activeAnnouncements = MOCK_ANNOUNCEMENTS.filter((a) => {
-    const dismissedIds = getDismissedAnnouncements();
-    return a.isActive && !dismissedIds.includes(a.id);
-  });
-
-  const currentAnnouncement = activeAnnouncements[currentAnnouncementIndex];
-
-  const totalCount = activeAnnouncements.length;
+  // 가장 최근 공지사항 1개만 가져오기 (이미 숨긴 공지사항 제외)
+  const latestAnnouncement =
+    announcements.length > 0 &&
+    announcements[0]._id !== getDismissedAnnouncementId()
+      ? announcements[0]
+      : null;
 
   useEffect(() => {
-    // Show announcement on first mount only
-    if (activeAnnouncements.length > 0) {
+    // 공지사항이 있고, 아직 표시되지 않았으면 500ms 후에 표시
+    if (latestAnnouncement && !isLoading) {
       setTimeout(() => {
         setShowAnnouncement(true);
       }, 500);
     }
-  }, []);
+  }, [latestAnnouncement, isLoading]);
 
   const handleCloseAnnouncement = () => {
-    if (currentAnnouncement && dontShowAgain) {
-      const dismissedIds = getDismissedAnnouncements();
-      dismissedIds.push(currentAnnouncement.id);
+    if (latestAnnouncement && dontShowAgain) {
+      // 이 공지사항 ID를 로컬스토리지에 저장
       localStorage.setItem(
-        "dismissed-announcements",
-        JSON.stringify(dismissedIds),
+        "dismissed-announcement-id",
+        latestAnnouncement._id
       );
     }
 
-    // 다음 공지사항이 있으면 표시, 없으면 닫기
-    if (currentAnnouncementIndex < activeAnnouncements.length - 1) {
-      setCurrentAnnouncementIndex(currentAnnouncementIndex + 1);
-      setDontShowAgain(false);
-    } else {
-      setShowAnnouncement(false);
-      setCurrentAnnouncementIndex(0);
-      setDontShowAgain(false);
-    }
+    setShowAnnouncement(false);
+    setDontShowAgain(false);
   };
 
-  const handlePreviousAnnouncement = () => {
-    if (currentAnnouncementIndex > 0) {
-      setCurrentAnnouncementIndex(currentAnnouncementIndex - 1);
-      setDontShowAgain(false);
-    }
-  };
-
-  const handleNextAnnouncement = () => {
-    if (currentAnnouncementIndex < activeAnnouncements.length - 1) {
-      if (dontShowAgain && currentAnnouncement) {
-        const dismissedIds = getDismissedAnnouncements();
-        dismissedIds.push(currentAnnouncement.id);
-        localStorage.setItem(
-          "dismissed-announcements",
-          JSON.stringify(dismissedIds),
-        );
-      }
-      setCurrentAnnouncementIndex(currentAnnouncementIndex + 1);
-      setDontShowAgain(false);
-    }
-  };
-
-  if (!currentAnnouncement) return null;
+  if (!latestAnnouncement || isLoading) return null;
 
   const content = (
     <div className="space-y-4">
@@ -109,28 +76,12 @@ export function AnnouncementModal() {
           <Sparkles className="text-primary h-6 w-6" />
         </div>
         <div className="min-w-0 flex-1">
-          <h4 className="mb-1 font-bold">{currentAnnouncement.title}</h4>
-          <p className="text-muted-foreground text-sm whitespace-pre-wrap">
-            {currentAnnouncement.content}
+          <h4 className="mb-1 font-bold">{latestAnnouncement.title}</h4>
+          <p className="text-muted-foreground whitespace-pre-wrap text-sm">
+            {latestAnnouncement.content}
           </p>
         </div>
       </div>
-
-      {/* 페이지네이션 인디케이터 */}
-      {totalCount > 1 && (
-        <div className="flex items-center justify-center gap-2 py-2">
-          {Array.from({ length: totalCount }).map((_, index) => (
-            <div
-              key={index}
-              className={`h-1.5 rounded-full transition-all ${
-                index === currentAnnouncementIndex
-                  ? "bg-primary w-8"
-                  : "bg-muted-foreground/30 w-1.5"
-              }`}
-            />
-          ))}
-        </div>
-      )}
 
       {/* 다시 보지 않기 체크박스 */}
       <div className="flex items-center gap-2 px-1">
@@ -147,29 +98,10 @@ export function AnnouncementModal() {
         </Label>
       </div>
 
-      {/* 액션 버튼 */}
-      <div className="flex gap-2">
-        {totalCount > 1 && currentAnnouncementIndex > 0 && (
-          <Button
-            variant="outline"
-            onClick={handlePreviousAnnouncement}
-            className="flex-1"
-          >
-            <ChevronLeft className="mr-1 h-4 w-4" />
-            이전
-          </Button>
-        )}
-        <Button onClick={handleCloseAnnouncement} className="flex-1">
-          {currentAnnouncementIndex < totalCount - 1 ? (
-            <>
-              다음
-              <ChevronRight className="ml-1 h-4 w-4" />
-            </>
-          ) : (
-            "확인"
-          )}
-        </Button>
-      </div>
+      {/* 확인 버튼 */}
+      <Button onClick={handleCloseAnnouncement} className="w-full">
+        확인
+      </Button>
     </div>
   );
 
