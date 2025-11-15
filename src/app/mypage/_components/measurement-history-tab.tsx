@@ -7,7 +7,7 @@ import { TierBadge } from "@/components/tier-badge";
 import { TIERS, TierType } from "@/lib/types";
 import { SEASON_COLORS } from "../../../lib/mypage-constants";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { FileChartColumnIncreasing, Loader2 } from "lucide-react";
 
 interface MeasurementHistoryItem {
   id: string;
@@ -63,7 +63,10 @@ export function MeasurementHistoryTab({
     return (
       <div className="space-y-4">
         <Card className="border-primary/20 p-6">
-          <h3 className="mb-4 font-bold">나의 측정 기록</h3>
+          <div className="mb-4 flex items-center gap-2">
+            <FileChartColumnIncreasing className="text-primary h-5 w-5" />
+            <h3 className="font-bold">나의 측정 기록</h3>
+          </div>
           <div className="text-muted-foreground flex h-[300px] items-center justify-center text-center">
             <p>측정 기록이 없습니다. 기록 측정을 해보세요!</p>
           </div>
@@ -75,7 +78,10 @@ export function MeasurementHistoryTab({
   return (
     <div className="space-y-4">
       <Card className="border-primary/20 p-6">
-        <h3 className="mb-4 font-bold">나의 측정 기록</h3>
+        <div className="mb-4 flex items-center gap-2">
+          <FileChartColumnIncreasing className="text-primary h-5 w-5" />
+          <h3 className="font-bold">나의 측정 기록</h3>
+        </div>
         <div className="space-y-3">
           {measurements.map((measurement, index) => {
             const seasonColor = getSeasonColor(measurement.season);

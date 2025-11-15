@@ -1,10 +1,30 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, animate } from "motion/react";
 import { Card } from "@/components/ui/card";
 import { Users, Activity, TrendingUp, Loader2 } from "lucide-react";
 import { useStatisticsSummary } from "@/hooks/use-statistics";
 import { useLatestMaps } from "@/hooks/use-records";
+import { useEffect, useState } from "react";
+
+// 숫자 카운트업 애니메이션 컴포넌트
+function AnimatedNumber({ value }: { value: number }) {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    const controls = animate(0, value, {
+      duration: 1,
+      ease: "easeOut",
+      onUpdate: (latest) => {
+        setDisplayValue(Math.floor(latest));
+      },
+    });
+
+    return () => controls.stop();
+  }, [value]);
+
+  return <span>{displayValue.toLocaleString()}</span>;
+}
 
 export function OverviewStats() {
   // 최신 맵 데이터에서 시즌 정보 가져오기
@@ -48,7 +68,9 @@ export function OverviewStats() {
             <p className="text-muted-foreground text-sm">
               총 사용자 (로그인 유저)
             </p>
-            <p className="text-2xl font-bold">{totalUsers.toLocaleString()}</p>
+            <p className="text-2xl font-bold">
+              <AnimatedNumber value={totalUsers} />
+            </p>
           </div>
         </div>
       </Card>
@@ -66,7 +88,7 @@ export function OverviewStats() {
           <div>
             <p className="text-muted-foreground text-sm">누적 측정 횟수</p>
             <p className="text-2xl font-bold">
-              {totalRecords.toLocaleString()}
+              <AnimatedNumber value={totalRecords} />
             </p>
           </div>
         </div>
@@ -83,11 +105,9 @@ export function OverviewStats() {
             <TrendingUp className="text-primary h-6 w-6" />
           </div>
           <div>
-            <p className="text-muted-foreground text-sm">
-              이번 시즌 측정 횟수
-            </p>
+            <p className="text-muted-foreground text-sm">이번 시즌 측정 횟수</p>
             <p className="text-2xl font-bold">
-              {seasonRecords.toLocaleString()}
+              <AnimatedNumber value={seasonRecords} />
             </p>
           </div>
         </div>

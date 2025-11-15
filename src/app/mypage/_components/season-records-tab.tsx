@@ -16,13 +16,14 @@ import {
 import { TIERS, TierType } from "@/lib/types";
 import { SEASON_COLORS } from "../../../lib/mypage-constants";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Crown, Loader2 } from "lucide-react";
 
 interface SeasonRecord {
   season: string;
   tier: TierType;
   value: number;
   recordId: string;
+  createdAt: string;
 }
 
 interface SeasonRecordsTabProps {
@@ -71,7 +72,10 @@ export function SeasonRecordsTab({
     return (
       <div className="space-y-4">
         <Card className="border-primary/20 p-6">
-          <h3 className="mb-4 font-bold">시즌별 최고 기록 그래프</h3>
+          <div className="mb-4 flex items-center gap-2">
+            <Crown className="text-primary h-5 w-5" />
+            <h3 className="font-bold">시즌별 최고 기록 그래프</h3>
+          </div>
           <div className="text-muted-foreground flex h-[300px] items-center justify-center text-center">
             <p>측정 기록이 없습니다. 기록 측정을 해보세요!</p>
           </div>
@@ -83,7 +87,10 @@ export function SeasonRecordsTab({
   return (
     <div className="space-y-4">
       <Card className="border-primary/20 p-6">
-        <h3 className="mb-4 font-bold">시즌별 최고 기록 그래프</h3>
+        <div className="mb-4 flex items-center gap-2">
+          <Crown className="text-primary h-5 w-5" />
+          <h3 className="font-bold">시즌별 최고 기록 그래프</h3>
+        </div>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={seasonRecords}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -172,14 +179,19 @@ export function SeasonRecordsTab({
                   router.push(`/result/${record.recordId}`);
                 }}
               >
-                <div className="flex items-center gap-3">
-                  <Badge
-                    variant="secondary"
-                    className="px-3 py-1 font-mono text-base"
-                  >
-                    {record.season}
-                  </Badge>
-                  <TierBadge tier={record.tier} size="sm" />
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-3">
+                    <Badge
+                      variant="secondary"
+                      className="px-3 py-1 font-mono text-base"
+                    >
+                      {record.season}
+                    </Badge>
+                    <TierBadge tier={record.tier} size="sm" />
+                  </div>
+                  <div className="text-muted-foreground text-xs">
+                    측정일: {record.createdAt}
+                  </div>
                 </div>
                 <div
                   className={`h-2 w-2 rounded-full ${TIERS[record.tier].color}`}

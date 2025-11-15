@@ -37,6 +37,13 @@ export default function UserTabs({ userId }: UserTabsProps) {
     tier: item.tierEn as TierType,
     value: item.value,
     recordId: item.recordId,
+    createdAt: new Date(item.createdAt).toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
   }));
 
   const transformedMeasurements = measurementHistory.map((item) => ({
@@ -77,6 +84,7 @@ export default function UserTabs({ userId }: UserTabsProps) {
           {/* Tier Progress Tab */}
           <TabsContent value="progress" className="mt-6">
             <TierProgressTab
+              key={activeTab === "progress" ? "progress" : ""}
               tierHistory={transformedTierHistory}
               isLoading={isLoading}
             />
@@ -85,6 +93,7 @@ export default function UserTabs({ userId }: UserTabsProps) {
           {/* Season Best Records Tab */}
           <TabsContent value="seasons" className="mt-6">
             <SeasonRecordsTab
+              key={activeTab === "seasons" ? "seasons" : ""}
               seasonRecords={transformedSeasonRecords}
               isLoading={isLoading}
             />
@@ -93,6 +102,7 @@ export default function UserTabs({ userId }: UserTabsProps) {
           {/* Measurement History Tab */}
           <TabsContent value="history" className="mt-6">
             <MeasurementHistoryTab
+              key={activeTab === "history" ? "history" : ""}
               measurements={transformedMeasurements}
               isLoading={isLoading}
             />

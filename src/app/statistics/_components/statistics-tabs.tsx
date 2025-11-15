@@ -41,17 +41,19 @@ export function StatisticsTabs() {
         <TabsContents>
           {/* Realtime Tab */}
           <TabsContent value="realtime" className="mt-6">
-            <RealtimeTab />
+            <RealtimeTab key={activeTab === "realtime" ? "realtime" : ""} />
           </TabsContent>
 
           {/* Statistics Tab */}
           <TabsContent value="statistics" className="mt-6">
-            <StatisticsTab />
+            <StatisticsTab
+              key={activeTab === "statistics" ? "statistics" : ""}
+            />
           </TabsContent>
 
           {/* Feedback Tab */}
           <TabsContent value="feedback" className="mt-6">
-            <FeedbackTab />
+            <FeedbackTab key={activeTab === "feedback" ? "feedback" : ""} />
           </TabsContent>
         </TabsContents>
       </Tabs>

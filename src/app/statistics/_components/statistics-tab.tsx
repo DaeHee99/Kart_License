@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Loader2 } from "lucide-react";
 import { TierType } from "@/lib/types";
 import { TierStatsTable } from "./tier-stats-table";
@@ -15,6 +16,18 @@ export function StatisticsTab() {
   const { licenseData, isLoading: licenseLoading } = useUserLicenseStatistics();
 
   const isLoading = recordLoading || licenseLoading;
+
+  // 현재 시간 포맷팅
+  const formattedLatestUpdate = new Date().toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  // 총 기록 개수 계산
+  const totalCount = recordData.reduce((sum, count) => sum + count, 0);
 
   // 데이터를 객체 형태로 변환 (recordData는 배열: [강주력, 주력, 1군, 2군, 3군, 4군, 일반])
   const cumulativeStats = {
@@ -79,6 +92,19 @@ export function StatisticsTab() {
             <TrendingUp className="text-secondary h-5 w-5" />
             <h3 className="text-xl font-bold">전체 유저 기록 통계</h3>
           </div>
+          <div className="text-muted-foreground flex flex-wrap gap-2 text-sm">
+            {formattedLatestUpdate && (
+              <Badge variant="secondary" className="font-normal">
+                {formattedLatestUpdate} 기준
+              </Badge>
+            )}
+            <Badge variant="secondary" className="font-normal">
+              총 {totalCount.toLocaleString()}개의 기록
+            </Badge>
+          </div>
+          <p className="text-muted-foreground mt-2 text-sm">
+            전체 유저의 기록을 통해 분석된 결과입니다.
+          </p>
         </div>
 
         {/* Tables */}
