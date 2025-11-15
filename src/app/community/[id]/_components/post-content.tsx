@@ -16,6 +16,7 @@ import {
   MoreVertical,
   Edit2,
   Trash2,
+  Crown,
 } from "lucide-react";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import {
@@ -109,6 +110,18 @@ export function PostContent({
               >
                 {post.userNickname}
               </span>
+              {post.userRole === 1 && (
+                <Badge className="gap-1 bg-yellow-500/10 text-yellow-700 border-yellow-500/30 text-xs">
+                  <Crown className="h-3 w-3" />
+                  관리자
+                </Badge>
+              )}
+              {post.userRole === 2 && (
+                <Badge className="gap-1 bg-purple-500/10 text-purple-700 border-purple-500/30 text-xs">
+                  <Crown className="h-3 w-3" />
+                  운영진
+                </Badge>
+              )}
               {isValidTier && (
                 <Badge variant="outline" className="gap-1 text-xs">
                   <div className={`h-1.5 w-1.5 rounded-full ${tierColor}`} />

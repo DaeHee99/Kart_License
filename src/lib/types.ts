@@ -121,6 +121,7 @@ export interface Comment {
   userNickname: string;
   userProfileImage?: string;
   userTier?: TierType;
+  userRole?: number; // 0: 일반, 1: 관리자, 2: 운영진
   content: string;
   createdAt: Date;
   likes?: number;
@@ -134,6 +135,7 @@ export interface Post {
   userNickname: string;
   userProfileImage?: string;
   userTier?: TierType;
+  userRole?: number; // 0: 일반, 1: 관리자, 2: 운영진
   category?: PostCategory;
   title: string;
   content: string;

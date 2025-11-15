@@ -23,6 +23,7 @@ import {
   Check,
   X,
   LogIn,
+  Crown,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -36,6 +37,7 @@ import { useRouter } from "next/navigation";
 interface CommentsSectionProps {
   comments: Comment[];
   currentUserId?: string | null;
+  currentUserRole?: number;
   isAuthenticated: boolean;
   onAddComment: (content: string) => void;
   onEditComment: (commentId: string, content: string) => void;
@@ -45,6 +47,7 @@ interface CommentsSectionProps {
 export function CommentsSection({
   comments,
   currentUserId,
+  currentUserRole = 0,
   isAuthenticated,
   onAddComment,
   onEditComment,
@@ -121,6 +124,7 @@ export function CommentsSection({
                 ? getTierRingClass(tierEnglish as keyof typeof TIERS)
                 : "ring-gray-500";
               const isCommentAuthor = comment.userId === currentUserId;
+              const canModifyComment = isCommentAuthor || currentUserRole === 1 || currentUserRole === 2; // 작성자 or 관리자 or 운영진
 
               return (
                 <motion.div
@@ -156,6 +160,18 @@ export function CommentsSection({
                       >
                         {comment.userNickname}
                       </span>
+                      {comment.userRole === 1 && (
+                        <Badge className="gap-1 bg-yellow-500/10 text-yellow-700 border-yellow-500/30 text-xs">
+                          <Crown className="h-3 w-3" />
+                          관리자
+                        </Badge>
+                      )}
+                      {comment.userRole === 2 && (
+                        <Badge className="gap-1 bg-purple-500/10 text-purple-700 border-purple-500/30 text-xs">
+                          <Crown className="h-3 w-3" />
+                          운영진
+                        </Badge>
+                      )}
                       {isValidTier && (
                         <Badge variant="outline" className="gap-1 text-xs">
                           <div
@@ -204,7 +220,7 @@ export function CommentsSection({
                       </p>
                     )}
                   </div>
-                  {isCommentAuthor && editingCommentId !== comment.id && (
+                  {canModifyComment && editingCommentId !== comment.id && (
                     <DropdownMenu modal={false}>
                       <DropdownMenuTrigger asChild>
                         <Button

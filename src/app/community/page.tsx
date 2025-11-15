@@ -67,6 +67,7 @@ export default function CommunityPage() {
       userNickname: post.user.name,
       userProfileImage: post.user.image,
       userTier: post.user.license,
+      userRole: post.user.role || 0,
       category: post.category,
       title: post.title,
       content: post.content,

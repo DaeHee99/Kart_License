@@ -31,6 +31,7 @@ export async function PUT(
     }
 
     const userId = authResult.user._id.toString();
+    const userRole = authResult.user.role || 0;
 
     // 입력 검증
     if (!body.content || !body.content.trim()) {
@@ -46,7 +47,8 @@ export async function PUT(
     const updatedComment = await commentService.updateComment(
       commentId,
       userId,
-      { content: body.content }
+      { content: body.content },
+      userRole
     );
 
     if (!updatedComment) {
@@ -119,9 +121,9 @@ export async function DELETE(
     }
 
     const userId = authResult.user._id.toString();
-    const isAdmin = authResult.user.role === 1;
+    const userRole = authResult.user.role || 0;
 
-    const success = await commentService.deleteComment(commentId, userId, isAdmin);
+    const success = await commentService.deleteComment(commentId, userId, userRole);
 
     if (!success) {
       return NextResponse.json(

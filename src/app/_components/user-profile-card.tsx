@@ -6,7 +6,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { TierBadge } from "@/components/tier-badge";
 import { TIERS } from "@/lib/types";
-import { Users, LogIn, User, LogOut, Loader2 } from "lucide-react";
+import {
+  Users,
+  LogIn,
+  User,
+  LogOut,
+  Loader2,
+  Crown,
+  Shield,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth, useLogout } from "@/hooks/use-auth";
 import { useLatestRecord } from "@/hooks/use-records";
@@ -90,14 +98,28 @@ export function UserProfileCard() {
 
         <div className="w-full">
           <h3 className="mb-2 text-xl">{user.name}</h3>
-          {hasTierInfo && TIERS[displayTier] && (
-            <Badge className="mb-3 gap-2 px-4 py-1.5">
-              <div
-                className={`h-2.5 w-2.5 rounded-full ${TIERS[displayTier].color}`}
-              />
-              {TIERS[displayTier].nameKo}
-            </Badge>
-          )}
+          <div className="mb-3 flex flex-wrap items-center justify-center gap-2">
+            {hasTierInfo && TIERS[displayTier] && (
+              <Badge className="gap-2 px-4 py-1.5">
+                <div
+                  className={`h-2.5 w-2.5 rounded-full ${TIERS[displayTier].color}`}
+                />
+                {TIERS[displayTier].nameKo}
+              </Badge>
+            )}
+            {user.role === 1 && (
+              <Badge className="gap-1.5 border-yellow-500/30 bg-yellow-500/10 px-3 py-1.5 text-yellow-700">
+                <Crown className="h-3.5 w-3.5" />
+                관리자
+              </Badge>
+            )}
+            {user.role === 2 && (
+              <Badge className="gap-1.5 border-purple-500/30 bg-purple-500/10 px-3 py-1.5 text-purple-700">
+                <Crown className="h-3.5 w-3.5" />
+                운영진
+              </Badge>
+            )}
+          </div>
           {latestRecord && (
             <p className="text-muted-foreground text-xs">
               최근 기록: S{latestRecord.season}
@@ -123,6 +145,16 @@ export function UserProfileCard() {
           >
             <User className="mr-2 h-4 w-4" />내 정보
           </Button>
+          {user.role === 1 && (
+            <Button
+              variant="secondary"
+              className="w-full gap-2 border-yellow-500/30 bg-yellow-500/10 text-yellow-700 hover:bg-yellow-500/20"
+              onClick={() => router.push("/admin")}
+            >
+              <Shield className="h-4 w-4" />
+              관리자 페이지
+            </Button>
+          )}
           <Button
             variant="outline"
             className="w-full"

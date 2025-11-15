@@ -10,7 +10,7 @@ import {
   getTierRingClass,
 } from "@/lib/utils-calc";
 import { motion } from "motion/react";
-import { MessageCircle, Eye, Image as ImageIcon } from "lucide-react";
+import { MessageCircle, Eye, Image as ImageIcon, Crown } from "lucide-react";
 
 interface PostCardProps {
   post: Post;
@@ -79,6 +79,18 @@ export function PostCard({ post, index, onClick }: PostCardProps) {
             {/* 유저 정보 및 날짜 */}
             <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
               <span className="text-sm font-medium">{post.userNickname}</span>
+              {post.userRole === 1 && (
+                <Badge className="gap-1 bg-yellow-500/10 text-yellow-700 border-yellow-500/30 text-xs">
+                  <Crown className="h-3 w-3" />
+                  관리자
+                </Badge>
+              )}
+              {post.userRole === 2 && (
+                <Badge className="gap-1 bg-purple-500/10 text-purple-700 border-purple-500/30 text-xs">
+                  <Crown className="h-3 w-3" />
+                  운영진
+                </Badge>
+              )}
               {isValidTier && (
                 <Badge variant="outline" className="gap-1 text-xs">
                   <div className={`h-1.5 w-1.5 rounded-full ${tierColor}`} />

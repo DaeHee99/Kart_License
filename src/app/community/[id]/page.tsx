@@ -76,6 +76,7 @@ export default function CommunityDetailPage() {
       userNickname: (data as any).user.name,
       userProfileImage: (data as any).user.image,
       userTier: (data as any).user.license,
+      userRole: (data as any).user.role || 0,
       category: data.category,
       title: data.title,
       content: data.content,
@@ -95,13 +96,16 @@ export default function CommunityDetailPage() {
       userNickname: comment.user.name,
       userProfileImage: comment.user.image,
       userTier: comment.user.license,
+      userRole: comment.user.role || 0,
       content: comment.content,
       createdAt: new Date(comment.createdAt),
     }));
   }, [commentsResponse]);
 
   const currentUserId = user?._id || "";
+  const currentUserRole = user?.role || 0;
   const isPostAuthor = currentPost?.userId === currentUserId;
+  const canModifyPost = isPostAuthor || currentUserRole === 1 || currentUserRole === 2; // 작성자 or 관리자 or 운영진
 
   // Loading state
   if (isLoadingPost) {
@@ -226,7 +230,7 @@ export default function CommunityDetailPage() {
           <PostContent
             post={currentPost}
             commentsCount={comments.length}
-            isPostAuthor={isPostAuthor}
+            isPostAuthor={canModifyPost}
             onShare={handleShare}
             onEdit={onEditPost}
             onDelete={() => setDeletingPost(true)}
@@ -241,6 +245,7 @@ export default function CommunityDetailPage() {
           <CommentsSection
             comments={comments}
             currentUserId={currentUserId}
+            currentUserRole={currentUserRole}
             isAuthenticated={isAuthenticated}
             onAddComment={handleAddComment}
             onEditComment={handleEditComment}

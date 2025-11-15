@@ -77,8 +77,9 @@ export async function PUT(
     }
 
     const userId = authResult.user._id.toString();
+    const userRole = authResult.user.role || 0;
 
-    const updatedPost = await postService.updatePost(postId, userId, body);
+    const updatedPost = await postService.updatePost(postId, userId, body, userRole);
 
     if (!updatedPost) {
       return NextResponse.json(
@@ -150,9 +151,9 @@ export async function DELETE(
     }
 
     const userId = authResult.user._id.toString();
-    const isAdmin = authResult.user.role === 1;
+    const userRole = authResult.user.role || 0;
 
-    const success = await postService.deletePost(postId, userId, isAdmin);
+    const success = await postService.deletePost(postId, userId, userRole);
 
     if (!success) {
       return NextResponse.json(

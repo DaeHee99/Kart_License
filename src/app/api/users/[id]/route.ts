@@ -12,6 +12,7 @@ import { Types } from "mongoose";
  * - name: 유저 닉네임
  * - image: 프로필 이미지
  * - license: 면허 등급
+ * - role: 권한 등급 (0: 일반, 1: 관리자, 2: 운영진)
  */
 export async function GET(
   request: NextRequest,
@@ -34,7 +35,7 @@ export async function GET(
 
     // 유저 정보 조회 (비밀번호 제외)
     const user = await User.findById(id)
-      .select("_id name image license createdAt")
+      .select("_id name image license role createdAt")
       .lean();
 
     if (!user) {

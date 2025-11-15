@@ -29,6 +29,7 @@ export interface PostListItem {
     name: string;
     image?: string;
     license?: string;
+    role?: number;
   };
   category: PostCategory;
   title: string;
@@ -48,6 +49,7 @@ export interface PostDetail extends PostListItem {
       name: string;
       image?: string;
       license?: string;
+      role?: number;
     };
     content: string;
     createdAt: Date;
@@ -107,7 +109,7 @@ export class PostService {
     // 게시글 목록 조회
     const [posts, totalCount] = await Promise.all([
       Post.find(query)
-        .populate("user", "name image license")
+        .populate("user", "name image license role")
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -129,6 +131,7 @@ export class PostService {
             name: post.user.name,
             image: post.user.image,
             license: post.user.license,
+            role: post.user.role || 0,
           },
           category: post.category,
           title: post.title,
@@ -159,7 +162,7 @@ export class PostService {
     }
 
     const post = await Post.findById(postId)
-      .populate("user", "name image license")
+      .populate("user", "name image license role")
       .lean();
 
     if (!post) {
@@ -171,7 +174,7 @@ export class PostService {
 
     // 댓글 조회
     const comments = await Comment.find({ post: new Types.ObjectId(postId) })
-      .populate("user", "name image license")
+      .populate("user", "name image license role")
       .sort({ createdAt: 1 })
       .lean();
 
@@ -182,6 +185,7 @@ export class PostService {
         name: (post.user as any).name,
         image: (post.user as any).image,
         license: (post.user as any).license,
+        role: (post.user as any).role || 0,
       },
       category: post.category,
       title: post.title,
@@ -198,6 +202,7 @@ export class PostService {
           name: comment.user.name,
           image: comment.user.image,
           license: comment.user.license,
+          role: comment.user.role || 0,
         },
         content: comment.content,
         createdAt: comment.createdAt,
@@ -212,7 +217,8 @@ export class PostService {
   async updatePost(
     postId: string,
     userId: string,
-    input: UpdatePostInput
+    input: UpdatePostInput,
+    userRole: number = 0
   ): Promise<IPost | null> {
     if (!Types.ObjectId.isValid(postId)) {
       return null;
@@ -224,7 +230,11 @@ export class PostService {
       return null;
     }
 
-    if (post.user.toString() !== userId) {
+    // 작성자가 아니고, 관리자(1)도 운영진(2)도 아니면 수정 불가
+    const isAuthor = post.user.toString() === userId;
+    const isAdminOrModerator = userRole === 1 || userRole === 2;
+
+    if (!isAuthor && !isAdminOrModerator) {
       throw new Error("게시글 수정 권한이 없습니다.");
     }
 
@@ -241,7 +251,7 @@ export class PostService {
   /**
    * 게시글 삭제
    */
-  async deletePost(postId: string, userId: string, isAdmin: boolean = false): Promise<boolean> {
+  async deletePost(postId: string, userId: string, userRole: number = 0): Promise<boolean> {
     if (!Types.ObjectId.isValid(postId)) {
       return false;
     }
@@ -252,8 +262,11 @@ export class PostService {
       return false;
     }
 
-    // 관리자가 아니고 작성자가 아니면 삭제 불가
-    if (!isAdmin && post.user.toString() !== userId) {
+    // 작성자가 아니고, 관리자(1)도 운영진(2)도 아니면 삭제 불가
+    const isAuthor = post.user.toString() === userId;
+    const isAdminOrModerator = userRole === 1 || userRole === 2;
+
+    if (!isAuthor && !isAdminOrModerator) {
       throw new Error("게시글 삭제 권한이 없습니다.");
     }
 

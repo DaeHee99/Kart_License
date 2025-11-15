@@ -47,7 +47,8 @@ export class CommentService {
   async updateComment(
     commentId: string,
     userId: string,
-    input: UpdateCommentInput
+    input: UpdateCommentInput,
+    userRole: number = 0
   ): Promise<IComment | null> {
     if (!Types.ObjectId.isValid(commentId)) {
       return null;
@@ -59,7 +60,11 @@ export class CommentService {
       return null;
     }
 
-    if (comment.user.toString() !== userId) {
+    // 작성자가 아니고, 관리자(1)도 운영진(2)도 아니면 수정 불가
+    const isAuthor = comment.user.toString() === userId;
+    const isAdminOrModerator = userRole === 1 || userRole === 2;
+
+    if (!isAuthor && !isAdminOrModerator) {
       throw new Error("댓글 수정 권한이 없습니다.");
     }
 
@@ -79,7 +84,7 @@ export class CommentService {
   async deleteComment(
     commentId: string,
     userId: string,
-    isAdmin: boolean = false
+    userRole: number = 0
   ): Promise<boolean> {
     if (!Types.ObjectId.isValid(commentId)) {
       return false;
@@ -91,8 +96,11 @@ export class CommentService {
       return false;
     }
 
-    // 관리자가 아니고 작성자가 아니면 삭제 불가
-    if (!isAdmin && comment.user.toString() !== userId) {
+    // 작성자가 아니고, 관리자(1)도 운영진(2)도 아니면 삭제 불가
+    const isAuthor = comment.user.toString() === userId;
+    const isAdminOrModerator = userRole === 1 || userRole === 2;
+
+    if (!isAuthor && !isAdminOrModerator) {
       throw new Error("댓글 삭제 권한이 없습니다.");
     }
 
@@ -111,7 +119,7 @@ export class CommentService {
     }
 
     const comments = await Comment.find({ post: new Types.ObjectId(postId) })
-      .populate("user", "name image license")
+      .populate("user", "name image license role")
       .sort({ createdAt: 1 })
       .lean();
 
@@ -122,6 +130,7 @@ export class CommentService {
         name: comment.user.name,
         image: comment.user.image,
         license: comment.user.license,
+        role: comment.user.role || 0,
       },
       content: comment.content,
       createdAt: comment.createdAt,

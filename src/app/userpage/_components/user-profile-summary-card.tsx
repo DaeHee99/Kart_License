@@ -9,6 +9,7 @@ import { TierBadge } from "@/components/tier-badge";
 import { TIERS, TierType } from "@/lib/types";
 import { useMypageData } from "@/hooks/use-mypage";
 import { useRouter } from "next/navigation";
+import { Crown } from "lucide-react";
 
 interface UserProfileSummaryCardProps {
   user: {
@@ -16,6 +17,7 @@ interface UserProfileSummaryCardProps {
     name: string;
     image?: string;
     license: string;
+    role?: number;
   };
 }
 
@@ -63,9 +65,23 @@ export function UserProfileSummaryCard({ user }: UserProfileSummaryCardProps) {
 
             {/* Info */}
             <div className="min-w-0 flex-1">
-              <h2 className="mb-3 truncate text-2xl font-bold">
-                {user.name}
-              </h2>
+              <div className="mb-3 flex items-center gap-2">
+                <h2 className="truncate text-2xl font-bold">
+                  {user.name}
+                </h2>
+                {user.role === 1 && (
+                  <Badge className="gap-1.5 bg-yellow-500/10 text-yellow-700 border-yellow-500/30">
+                    <Crown className="h-3.5 w-3.5" />
+                    관리자
+                  </Badge>
+                )}
+                {user.role === 2 && (
+                  <Badge className="gap-1.5 bg-purple-500/10 text-purple-700 border-purple-500/30">
+                    <Crown className="h-3.5 w-3.5" />
+                    운영진
+                  </Badge>
+                )}
+              </div>
 
               {dataLoading ? (
                 <div className="text-muted-foreground text-sm">로딩 중...</div>
