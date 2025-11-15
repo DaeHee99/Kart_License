@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     // Only allow admin to view logs
     const authResult = await authenticateUser();
 
-    if (!authResult.isAuth || authResult.user?.role !== 2) {
+    if (!authResult.isAuth || authResult.user?.role !== 1) {
       return NextResponse.json({ error: "권한이 없습니다." }, { status: 403 });
     }
 

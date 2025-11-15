@@ -38,8 +38,10 @@ export function useCreateAnnouncement() {
     mutationFn: (data: CreateAnnouncementRequest) =>
       announcementAPI.createAnnouncement(data),
     onSuccess: () => {
-      // 공지사항 목록 다시 불러오기
+      // 사용자 공지사항 모달 쿼리 무효화
       queryClient.invalidateQueries({ queryKey: ANNOUNCEMENTS_QUERY_KEY });
+      // 관리자 공지사항 쿼리 무효화
+      queryClient.invalidateQueries({ queryKey: ["admin", "announcements"] });
     },
   });
 }
