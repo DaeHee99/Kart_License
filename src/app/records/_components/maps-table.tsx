@@ -13,6 +13,21 @@ interface MapsTableProps {
   selectedTier: TierType | "all";
 }
 
+// Difficulty별 행 배경색 매핑
+const DIFFICULTY_ROW_COLORS = {
+  루키: "bg-yellow-500/5",
+  L3: "bg-green-500/5",
+  L2: "bg-blue-500/5",
+  L1: "bg-red-500/5",
+};
+
+const DIFFICULTY_ROW_HOVER_COLORS = {
+  루키: "hover:bg-yellow-500/10",
+  L3: "hover:bg-green-500/10",
+  L2: "hover:bg-blue-500/10",
+  L1: "hover:bg-red-500/10",
+};
+
 export function MapsTable({ filteredMaps, selectedTier }: MapsTableProps) {
   return (
     <>
@@ -22,11 +37,11 @@ export function MapsTable({ filteredMaps, selectedTier }: MapsTableProps) {
         transition={{ delay: 0.2 }}
       >
         <Card className="border-primary/20 overflow-hidden border-2 py-0">
-          <div className="overflow-x-auto">
+          <div className="max-h-[600px] overflow-x-auto overflow-y-auto">
             <table className="w-full">
-              <thead className="border-primary/20 bg-primary/5 border-b-2">
+              <thead className="border-primary/20 bg-background sticky top-0 z-20 border-b-2">
                 <tr className="text-sm">
-                  <th className="sticky left-0 z-10 bg-background p-4 text-left font-medium shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                  <th className="bg-background sticky left-0 z-30 p-4 text-left font-medium shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                     <div className="bg-primary pointer-events-none absolute inset-0 opacity-[0.05]" />
                     <span className="relative">맵 이름</span>
                   </th>
@@ -39,7 +54,7 @@ export function MapsTable({ filteredMaps, selectedTier }: MapsTableProps) {
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className="min-w-[100px] p-4 text-center font-medium"
+                      className="bg-background min-w-[100px] p-4 text-center font-medium"
                     >
                       <div className="flex flex-col items-center gap-1">
                         <motion.div
@@ -58,12 +73,16 @@ export function MapsTable({ filteredMaps, selectedTier }: MapsTableProps) {
               </thead>
               <tbody>
                 <AnimatePresence>
-                  {filteredMaps.map((map, index) => (
-                    <motion.tr
-                      key={`${map.name}-${index}`}
-                      className={`${index === filteredMaps.length - 1 ? "" : "border-border border-b"} group hover:bg-accent cursor-pointer transition-colors duration-200`}
-                    >
-                      <td className="bg-background group-hover:bg-accent sticky left-0 z-10 p-4 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                  {filteredMaps.map((map, index) => {
+                    const difficultyBgColor = DIFFICULTY_ROW_COLORS[map.difficulty] || "";
+                    const difficultyHoverColor = DIFFICULTY_ROW_HOVER_COLORS[map.difficulty] || "hover:bg-accent";
+
+                    return (
+                      <motion.tr
+                        key={`${map.name}-${index}`}
+                        className={`${index === filteredMaps.length - 1 ? "" : "border-border border-b"} ${difficultyBgColor} ${difficultyHoverColor} group cursor-pointer transition-colors duration-200`}
+                      >
+                        <td className={`sticky left-0 z-10 p-4 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] ${difficultyBgColor} ${difficultyHoverColor}`}>
                         <div className="flex items-center gap-3">
                           {map.imageUrl ? (
                             <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg shadow-sm">
@@ -99,7 +118,8 @@ export function MapsTable({ filteredMaps, selectedTier }: MapsTableProps) {
                         </td>
                       ))}
                     </motion.tr>
-                  ))}
+                    );
+                  })}
                 </AnimatePresence>
               </tbody>
             </table>
