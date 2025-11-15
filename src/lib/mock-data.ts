@@ -164,7 +164,7 @@ export const MOCK_CURRENT_USER: User = {
 // Mock Posts
 export const MOCK_POSTS: Post[] = [
   {
-    id: "post-1",
+    _id: "post-1",
     userId: "current-user",
     userNickname: "현재유저",
     userTier: "elite",
@@ -190,7 +190,7 @@ export const MOCK_POSTS: Post[] = [
     createdAt: new Date("2025-10-24T09:15:00"),
   },
   {
-    id: "post-2",
+    _id: "post-2",
     userId: "user-4",
     userNickname: "드리프트왕",
     userTier: "master",
@@ -205,7 +205,7 @@ export const MOCK_POSTS: Post[] = [
     createdAt: new Date("2025-10-23T14:20:00"),
   },
   {
-    id: "post-3",
+    _id: "post-3",
     userId: "user-5",
     userNickname: "초보드라이버",
     userTier: "gold",

@@ -68,7 +68,7 @@ export function NewPostDialogButton({
     const imageUrls = newPostImages.map((file) => URL.createObjectURL(file));
 
     const newPost: Post = {
-      id: `post-${Date.now()}`,
+      _id: `post-${Date.now()}`,
       userId: "user-1",
       userNickname: "카트라이더Pro",
       userTier: "diamond",

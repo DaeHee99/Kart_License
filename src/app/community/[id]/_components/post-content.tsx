@@ -157,7 +157,23 @@ export function PostContent({
 
       {/* Content */}
       <div
-        className="prose prose-sm dark:prose-invert mb-4 max-w-none"
+        className="prose prose-sm dark:prose-invert mb-4 max-w-none
+          [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-2 [&_h1]:mt-4
+          [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-2 [&_h2]:mt-4
+          [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-1.5 [&_h3]:mt-3
+          [&_p]:mb-2 [&_p]:leading-6
+          [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-2
+          [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:mb-2
+          [&_li]:mb-0.5
+          [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:my-3
+          [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm
+          [&_pre]:bg-muted [&_pre]:rounded-lg [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre]:my-3
+          [&_img]:rounded-lg [&_img]:my-3
+          [&_hr]:my-4 [&_hr]:border-border
+          [&_a]:text-primary [&_a]:underline [&_a]:cursor-pointer
+          [&_table]:border-collapse [&_table]:table-auto [&_table]:w-full [&_table]:my-3
+          [&_th]:border [&_th]:border-border [&_th]:bg-muted [&_th]:font-bold [&_th]:p-2
+          [&_td]:border [&_td]:border-border [&_td]:p-2"
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
 

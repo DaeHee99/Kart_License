@@ -145,7 +145,7 @@ export function FloatingWriteButton() {
               onTitleChange={setTitle}
               onContentChange={setContent}
               onImagesChange={setImages}
-              onCategoryChange={setCategory}
+              onCategoryChange={(cat) => setCategory(cat as PostCategory)}
             />
             <Button
               onClick={handleCreatePost}
@@ -183,7 +183,7 @@ export function FloatingWriteButton() {
                   onTitleChange={setTitle}
                   onContentChange={setContent}
                   onImagesChange={setImages}
-                  onCategoryChange={setCategory}
+                  onCategoryChange={(cat) => setCategory(cat as PostCategory)}
                 />
                 <Button
                   onClick={handleCreatePost}
