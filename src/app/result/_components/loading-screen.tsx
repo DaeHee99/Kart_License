@@ -3,12 +3,26 @@
 import { motion } from "motion/react";
 import { Sparkles } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { useEffect } from "react";
 
 interface LoadingScreenProps {
   loadingProgress: number;
 }
 
 export function LoadingScreen({ loadingProgress }: LoadingScreenProps) {
+  useEffect(() => {
+    // 진동 지원 기기에서 주기적으로 짧은 진동 (600ms마다 30ms 진동)
+    if (typeof window !== "undefined" && "vibrate" in navigator) {
+      const vibrateInterval = setInterval(() => {
+        navigator.vibrate(30);
+      }, 600);
+
+      return () => {
+        clearInterval(vibrateInterval);
+      };
+    }
+  }, []);
+
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden pb-24">
       {/* Animated Background */}
