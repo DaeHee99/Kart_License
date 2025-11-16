@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:prod": "NODE_OPTIONS='--max-old-space-size=4096' next build",
     "start": "next start",
     "lint": "eslint",
     "migrate:v1-to-v2": "ts-node --project scripts/tsconfig.json scripts/migrate-v1-to-v2.ts"

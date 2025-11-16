@@ -30,8 +30,10 @@ export async function middleware(request: NextRequest) {
 
     try {
       // /api/user/auth를 호출해서 사용자 role 확인
-      const authUrl = new URL("/api/user/auth", request.url);
-      const authResponse = await fetch(authUrl, {
+      // 프로덕션에서는 실제 도메인 사용, 개발환경에서는 request.url 사용
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || request.url;
+      const authUrl = new URL("/api/user/auth", baseUrl);
+      const authResponse = await fetch(authUrl.toString(), {
         headers: {
           cookie: `token=${token}`,
         },
