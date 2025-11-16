@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "migrate:v1-to-v2": "ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/migrate-v1-to-v2.ts"
+    "migrate:v1-to-v2": "ts-node --project scripts/tsconfig.json scripts/migrate-v1-to-v2.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
