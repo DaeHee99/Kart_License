@@ -7,7 +7,14 @@ export interface IUserMapRecord {
   mapName: string; // 맵 이름
   difficulty: "루키" | "L3" | "L2" | "L1"; // 맵 난이도
   record: string; // 유저 기록 (MM:SS:mm 형식, 이상 기록의 경우 'MM:SS:mm +' 형식)
-  tier: "elite" | "master" | "diamond" | "platinum" | "gold" | "silver" | "bronze"; // 선택한 티어
+  tier:
+    | "elite"
+    | "master"
+    | "diamond"
+    | "platinum"
+    | "gold"
+    | "silver"
+    | "bronze"; // 선택한 티어
 }
 
 /**
@@ -59,11 +66,19 @@ const userMapRecordSchema = new Schema<IUserMapRecord>(
     },
     tier: {
       type: String,
-      enum: ["elite", "master", "diamond", "platinum", "gold", "silver", "bronze"],
+      enum: [
+        "elite",
+        "master",
+        "diamond",
+        "platinum",
+        "gold",
+        "silver",
+        "bronze",
+      ],
       required: true,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const recordSchema = new Schema<IRecord, IRecordModel>(
@@ -106,7 +121,7 @@ const recordSchema = new Schema<IRecord, IRecordModel>(
       default: "일반",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // 인덱스 설정: 유저별 최신 기록 조회 최적화
@@ -136,7 +151,14 @@ recordSchema.pre("save", function (next) {
 
   // 최종 군 계산 (as-is 로직과 동일)
   // 누적 합계가 20개 이상이 되는 첫 번째 티어를 최종 군으로 결정
-  const tierOrder = ["elite", "master", "diamond", "platinum", "gold", "silver"] as const;
+  const tierOrder = [
+    "elite",
+    "master",
+    "diamond",
+    "platinum",
+    "gold",
+    "silver",
+  ] as const;
   let cumulativeCount = 0;
   let finalTier = "일반";
 
@@ -144,7 +166,7 @@ recordSchema.pre("save", function (next) {
     const tierKey = tierOrder[i];
     cumulativeCount += tierCounts[tierKey];
 
-    if (cumulativeCount >= 20) {
+    if (cumulativeCount >= 15) {
       if (i === 0) finalTier = "강주력";
       else if (i === 1) finalTier = "주력";
       else if (i === 2) finalTier = "1군";
@@ -185,7 +207,7 @@ recordSchema.statics.getLatestRecordByUser = async function (userId: string) {
 // 유저의 기록 목록 조회 (시즌별 필터링 가능)
 recordSchema.statics.getRecordsByUser = async function (
   userId: string,
-  season?: number
+  season?: number,
 ) {
   const query: any = {
     user: new Types.ObjectId(userId),
