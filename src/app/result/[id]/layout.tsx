@@ -22,6 +22,17 @@ export async function generateMetadata({
       const data = await response.json();
       const record = data.data;
 
+      if (!record.user) {
+        return {
+          title: `S${record.season} 측정 결과 | 카러플 군 계산기`,
+          description: `${record.finalTier} - ${record.records.length}개 맵 측정 완료`,
+          openGraph: {
+            title: `S${record.season} 측정 결과 | 카러플 군 계산기`,
+            description: `${record.finalTier} - ${record.records.length}개 맵 측정 완료`,
+          },
+        };
+      }
+
       return {
         title: `${record.user.name}님의 S${record.season} 측정 결과 | 카러플 군 계산기`,
         description: `${record.finalTier} - ${record.records.length}개 맵 측정 완료`,

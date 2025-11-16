@@ -6,9 +6,12 @@ import { findMatchingTier } from "@/lib/utils-calc";
 import { MethodSelectStep } from "./_components/method-select-step";
 import { ConfirmStep } from "./_components/confirm-step";
 import { InputStep } from "./_components/input-step";
+import { LoginPromptModal } from "./_components/login-prompt-modal";
 import { useLatestMaps, useLatestRecord } from "@/hooks/use-records";
 import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
+import { loadGuestMeasurement } from "@/lib/guest-storage";
+import { toast } from "sonner";
 
 export default function MeasurePage() {
   const [step, setStep] = useState<"select-method" | "input" | "confirm">(
@@ -20,13 +23,56 @@ export default function MeasurePage() {
   const [currentInput, setCurrentInput] = useState("");
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [hasShownLoginPrompt, setHasShownLoginPrompt] = useState(false);
+  const [hasShownPreviousRecordToast, setHasShownPreviousRecordToast] =
+    useState(false);
 
   // API 데이터 불러오기
   const { maps, season, isLoading: mapsLoading } = useLatestMaps();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const { record: latestRecord, isLoading: recordLoading } = useLatestRecord(
     user?._id,
   );
+
+  // 비로그인 유저를 위한 localStorage 기반 이전 기록
+  const guestRecord = useMemo(() => {
+    if (isAuthenticated || authLoading) return null;
+    return loadGuestMeasurement();
+  }, [isAuthenticated, authLoading]);
+
+  // 이전 기록 존재 여부 확인
+  const hasPreviousRecords = useMemo(() => {
+    if (isAuthenticated && latestRecord?.records?.length) {
+      return true;
+    }
+    if (!isAuthenticated && guestRecord?.records?.length) {
+      return true;
+    }
+    return false;
+  }, [isAuthenticated, latestRecord, guestRecord]);
+
+  // 비로그인 유저에게 로그인 유도 모달 표시
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated && !hasShownLoginPrompt) {
+      setShowLoginPrompt(true);
+      setHasShownLoginPrompt(true);
+    }
+  }, [authLoading, isAuthenticated, hasShownLoginPrompt]);
+
+  // 이전 기록이 있으면 input step에서 토스트 표시
+  useEffect(() => {
+    if (
+      step === "input" &&
+      hasPreviousRecords &&
+      !hasShownPreviousRecordToast
+    ) {
+      toast.info("이전에 측정한 기록으로 기본 선택됩니다.", {
+        duration: 4000,
+      });
+      setHasShownPreviousRecordToast(true);
+    }
+  }, [step, hasPreviousRecords, hasShownPreviousRecordToast]);
 
   // 맵 데이터를 프론트엔드 형식으로 변환 (id 추가)
   const mapsWithId = useMemo(() => {
@@ -39,16 +85,28 @@ export default function MeasurePage() {
   const currentMap = mapsWithId[currentMapIndex];
 
   // 현재 맵의 최근 기록 찾기 (맵 이름으로 매칭)
+  // 로그인 유저는 서버에서, 비로그인 유저는 localStorage에서
   const previousRecordForCurrentMap = useMemo(() => {
-    if (!latestRecord || !latestRecord.records || !currentMap) {
-      return null;
+    if (!currentMap) return null;
+
+    // 로그인 유저: 서버에서 가져온 기록 사용
+    if (isAuthenticated && latestRecord?.records) {
+      const matchedRecord = latestRecord.records.find(
+        (r) => r.mapName === currentMap.name,
+      );
+      return matchedRecord || null;
     }
-    // 현재 맵과 이름이 같은 기록 찾기
-    const matchedRecord = latestRecord.records.find(
-      (r) => r.mapName === currentMap.name,
-    );
-    return matchedRecord || null;
-  }, [latestRecord, currentMap]);
+
+    // 비로그인 유저: localStorage에서 가져온 기록 사용
+    if (!isAuthenticated && guestRecord?.records) {
+      const matchedRecord = guestRecord.records.find(
+        (r) => r.mapName === currentMap.name,
+      );
+      return matchedRecord || null;
+    }
+
+    return null;
+  }, [latestRecord, currentMap, isAuthenticated, guestRecord]);
 
   // '+' 문자가 있는 기록을 처리하여 0.01초를 더한 값으로 변환
   const processRecordWithPlus = (record: string): string => {
@@ -264,8 +322,48 @@ export default function MeasurePage() {
     setRecords([]);
   };
 
+  // 이전 기록으로 즉시 결과 확인
+  const handleUsePreviousRecords = () => {
+    const previousRecords = isAuthenticated
+      ? latestRecord?.records
+      : guestRecord?.records;
+
+    if (!previousRecords || !mapsWithId.length) return;
+
+    // 모든 맵에 대해 이전 기록을 사용하여 records 배열 생성
+    const newRecords: UserMapRecord[] = mapsWithId.map((map) => {
+      const prevRecord = previousRecords.find((r) => r.mapName === map.name);
+
+      if (prevRecord) {
+        return {
+          mapId: map.id,
+          record: prevRecord.record,
+          tier: prevRecord.tier,
+        };
+      }
+
+      // 이전 기록이 없는 맵은 bronze로 스킵 처리
+      return {
+        mapId: map.id,
+        record: "99:99:99",
+        tier: "bronze" as const,
+      };
+    });
+
+    setRecords(newRecords);
+    setStep("confirm");
+  };
+
   if (step === "select-method") {
-    return <MethodSelectStep onMethodSelect={handleMethodSelect} />;
+    return (
+      <>
+        <MethodSelectStep onMethodSelect={handleMethodSelect} />
+        <LoginPromptModal
+          open={showLoginPrompt}
+          onClose={() => setShowLoginPrompt(false)}
+        />
+      </>
+    );
   }
 
   if (step === "confirm") {
@@ -275,6 +373,7 @@ export default function MeasurePage() {
         maps={mapsWithId}
         season={season}
         userId={user?._id}
+        isAuthenticated={isAuthenticated}
         onEditMap={handleEditMap}
         onRestart={handleRestart}
       />
@@ -291,11 +390,13 @@ export default function MeasurePage() {
       currentInput={currentInput}
       matchedTier={matchedTier}
       previousRecord={previousRecordForCurrentMap}
+      hasPreviousRecords={hasPreviousRecords}
       onCancel={handleCancel}
       onTierSelect={handleTierSelect}
       onInputChange={handleInputChange}
       onManualInput={handleManualInput}
       onSkip={handleSkip}
+      onUsePreviousRecords={handleUsePreviousRecords}
     />
   );
 }

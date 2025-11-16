@@ -12,6 +12,7 @@ import type {
   RegisterRequest,
   UpdateProfileRequest,
 } from "@/lib/api/types";
+import { clearGuestMeasurement } from "@/lib/guest-storage";
 
 // Query Key
 export const AUTH_QUERY_KEY = ["auth"] as const;
@@ -62,6 +63,9 @@ export function useLogin() {
         toast.success("로그인 성공!");
         // 유저 정보 즉시 refetch
         queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEY });
+
+        // 비로그인 상태에서 저장한 측정 데이터 삭제
+        clearGuestMeasurement();
 
         // redirect 쿼리 파라미터 확인하여 원래 페이지로 이동
         const params = new URLSearchParams(window.location.search);

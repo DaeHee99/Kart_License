@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "motion/react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { InputMethod, TierType, UserMapRecord } from "@/lib/types";
 import { MapRecord as APIMapRecord } from "@/lib/api/types";
 import { AnimatedBackground } from "./animated-background";
@@ -10,6 +11,7 @@ import { MapInfoCard } from "./map-info-card";
 import { TierSelectionInput } from "./tier-selection-input";
 import { ManualRecordInput } from "./manual-record-input";
 import { useRef } from "react";
+import { History } from "lucide-react";
 
 interface InputStepProps {
   inputMethod: InputMethod;
@@ -25,11 +27,13 @@ interface InputStepProps {
     record: string;
     tier: TierType;
   } | null;
+  hasPreviousRecords?: boolean;
   onCancel: () => void;
   onTierSelect: (tier: TierType) => void;
   onInputChange: (value: string) => void;
   onManualInput: () => void;
   onSkip: () => void;
+  onUsePreviousRecords?: () => void;
 }
 
 export function InputStep({
@@ -41,11 +45,13 @@ export function InputStep({
   currentInput,
   matchedTier,
   previousRecord,
+  hasPreviousRecords,
   onCancel,
   onTierSelect,
   onInputChange,
   onManualInput,
   onSkip,
+  onUsePreviousRecords,
 }: InputStepProps) {
   const progress = ((records.length + 1) / totalMaps) * 100;
 
@@ -131,6 +137,37 @@ export function InputStep({
                   />
                 )}
               </Card>
+
+              {/* Quick Result Button - Only shown on first map when previous records exist */}
+              {currentMapIndex === 0 &&
+                hasPreviousRecords &&
+                onUsePreviousRecords && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.2 }}
+                    className="mt-4"
+                  >
+                    <Card className="border-muted-foreground/20 bg-muted/30 p-4">
+                      <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+                        <div className="flex items-center gap-2">
+                          <History className="text-muted-foreground h-5 w-5" />
+                          <span className="text-muted-foreground text-sm">
+                            이전 측정 기록이 있습니다
+                          </span>
+                        </div>
+                        <Button
+                          variant="outline"
+                          onClick={onUsePreviousRecords}
+                          className="w-full sm:w-auto"
+                        >
+                          <History className="mr-2 h-4 w-4" />
+                          이전 기록으로 즉시 결과 확인
+                        </Button>
+                      </div>
+                    </Card>
+                  </motion.div>
+                )}
             </motion.div>
           </AnimatePresence>
         </div>

@@ -13,6 +13,8 @@ import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import Portal from "@/components/portal";
 import { useSaveRecord } from "@/hooks/use-records";
+import { saveGuestMeasurement } from "@/lib/guest-storage";
+import { useInView } from "react-intersection-observer";
 
 // Difficulty 뱃지 색상 매핑
 const DIFFICULTY_COLORS = {
@@ -22,11 +24,66 @@ const DIFFICULTY_COLORS = {
   L1: "bg-red-500/10 text-red-600 border-red-500/30",
 };
 
+// 개별 기록 항목 컴포넌트 (Intersection Observer 적용)
+function RecordItem({
+  record,
+  map,
+  onEdit,
+}: {
+  record: UserMapRecord;
+  map: (APIMapRecord & { id: string }) | undefined;
+  onEdit: () => void;
+}) {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, x: -10 }}
+      animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
+      transition={{ duration: 0.2 }}
+      onClick={onEdit}
+      className="border-border/50 hover:bg-primary/5 hover:border-primary/30 flex cursor-pointer items-center justify-between rounded-lg border px-4 py-3 transition-all duration-200"
+    >
+      <div className="flex min-w-0 items-center gap-2">
+        {map?.difficulty && (
+          <Badge
+            variant="outline"
+            className={`shrink-0 text-xs font-semibold ${DIFFICULTY_COLORS[map.difficulty as keyof typeof DIFFICULTY_COLORS]}`}
+          >
+            {map.difficulty}
+          </Badge>
+        )}
+        <span className="truncate">{map?.name}</span>
+      </div>
+      <div className="flex items-center gap-2">
+        {record.tier && (
+          <Badge variant="outline" className="gap-1.5">
+            <div
+              className={`h-2 w-2 rounded-full ${TIERS[record.tier].color}`}
+            />
+            {TIERS[record.tier].nameKo}
+          </Badge>
+        )}
+        {record.record && (
+          <span className="text-muted-foreground font-mono text-sm">
+            {record.record}
+          </span>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
 interface ConfirmStepProps {
   records: UserMapRecord[];
   maps: Array<APIMapRecord & { id: string }>;
   season: number;
   userId?: string;
+  isAuthenticated: boolean;
   onEditMap: (mapIndex: number) => void;
   onRestart: () => void;
 }
@@ -36,6 +93,7 @@ export function ConfirmStep({
   maps,
   season,
   userId,
+  isAuthenticated,
   onEditMap,
   onRestart,
 }: ConfirmStepProps) {
@@ -74,6 +132,14 @@ export function ConfirmStep({
         tier: record.tier || "bronze",
       };
     });
+
+    // 비로그인 유저의 경우 로컬 스토리지에도 저장
+    if (!isAuthenticated) {
+      saveGuestMeasurement({
+        season,
+        records: recordsToSave,
+      });
+    }
 
     // 서버에 저장
     saveRecord({
@@ -128,41 +194,12 @@ export function ConfirmStep({
               {records.map((record, index) => {
                 const map = maps.find((m) => m.id === record.mapId);
                 return (
-                  <motion.div
+                  <RecordItem
                     key={index}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 + index * 0.05 }}
-                    onClick={() => onEditMap(index)}
-                    className="border-border/50 hover:bg-primary/5 hover:border-primary/30 flex cursor-pointer items-center justify-between rounded-lg border px-4 py-3 transition-all duration-200"
-                  >
-                    <div className="flex min-w-0 items-center gap-2">
-                      {map?.difficulty && (
-                        <Badge
-                          variant="outline"
-                          className={`shrink-0 text-xs font-semibold ${DIFFICULTY_COLORS[map.difficulty as keyof typeof DIFFICULTY_COLORS]}`}
-                        >
-                          {map.difficulty}
-                        </Badge>
-                      )}
-                      <span className="truncate">{map?.name}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {record.tier && (
-                        <Badge variant="outline" className="gap-1.5">
-                          <div
-                            className={`h-2 w-2 rounded-full ${TIERS[record.tier].color}`}
-                          />
-                          {TIERS[record.tier].nameKo}
-                        </Badge>
-                      )}
-                      {record.record && (
-                        <span className="text-muted-foreground font-mono text-sm">
-                          {record.record}
-                        </span>
-                      )}
-                    </div>
-                  </motion.div>
+                    record={record}
+                    map={map}
+                    onEdit={() => onEditMap(index)}
+                  />
                 );
               })}
             </div>
