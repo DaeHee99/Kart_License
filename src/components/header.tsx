@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 interface HeaderProps {
   showMenu?: boolean;
@@ -14,7 +15,14 @@ interface HeaderProps {
 export function Header({ showMenu, onMenuClick }: HeaderProps) {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
-  const isDark = theme === "dark";
+  const [mounted, setMounted] = useState(false);
+
+  // hydration mismatch 방지를 위해 클라이언트에서만 테마 확인
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = mounted && theme === "dark";
 
   const handleToggleTheme = () => {
     setTheme(isDark ? "light" : "dark");
