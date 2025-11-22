@@ -81,7 +81,7 @@ export function TrackSearchModal({
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="트랙 이름 검색..."
           className="border-primary/20 pl-9"
-          autoFocus
+          autoFocus={false}
         />
       </div>
 
