@@ -10,6 +10,7 @@ export interface IComment extends Document {
   post: Types.ObjectId;
   user: Types.ObjectId;
   content: string;
+  likes: Types.ObjectId[]; // 좋아요를 누른 유저 ID 배열
   createdAt: Date;
   updatedAt: Date;
 }
@@ -37,6 +38,11 @@ const commentSchema = new Schema<IComment, ICommentModel>(
       required: true,
       trim: true,
       maxlength: 1000,
+    },
+    likes: {
+      type: [{ type: Schema.Types.ObjectId, ref: "User" }],
+      default: [],
+      index: true,
     },
   },
   {

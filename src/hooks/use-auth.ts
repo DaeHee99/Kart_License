@@ -61,6 +61,10 @@ export function useLogin() {
     onSuccess: (data) => {
       if (data.success) {
         toast.success("로그인 성공!");
+
+        // 이전 사용자의 캐시된 데이터(좋아요 상태 등)를 모두 지우기
+        queryClient.clear();
+
         // 유저 정보 즉시 refetch
         queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEY });
 

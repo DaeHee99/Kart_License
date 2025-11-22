@@ -32,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LoginRequiredDialog } from "../../_components/login-required-dialog";
+import { LikeButton } from "../../_components/like-button";
 import { useRouter } from "next/navigation";
 
 interface CommentsSectionProps {
@@ -42,6 +43,7 @@ interface CommentsSectionProps {
   onAddComment: (content: string) => void;
   onEditComment: (commentId: string, content: string) => void;
   onDeleteComment: (commentId: string) => void;
+  onToggleCommentLike: (commentId: string) => void;
 }
 
 export function CommentsSection({
@@ -52,6 +54,7 @@ export function CommentsSection({
   onAddComment,
   onEditComment,
   onDeleteComment,
+  onToggleCommentLike,
 }: CommentsSectionProps) {
   const router = useRouter();
   const [newComment, setNewComment] = useState("");
@@ -124,7 +127,10 @@ export function CommentsSection({
                 ? getTierRingClass(tierEnglish as keyof typeof TIERS)
                 : "ring-gray-500";
               const isCommentAuthor = comment.userId === currentUserId;
-              const canModifyComment = isCommentAuthor || currentUserRole === 1 || currentUserRole === 2; // 작성자 or 관리자 or 운영진
+              const canModifyComment =
+                isCommentAuthor ||
+                currentUserRole === 1 ||
+                currentUserRole === 2; // 작성자 or 관리자 or 운영진
 
               return (
                 <motion.div
@@ -132,10 +138,10 @@ export function CommentsSection({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="hover:bg-muted/50 flex gap-3 rounded-lg p-3 transition-colors"
+                  className="flex gap-3 rounded-lg p-3 transition-colors"
                 >
                   <Avatar
-                    className={`cursor-pointer hover:opacity-80 transition-opacity ${
+                    className={`cursor-pointer transition-opacity hover:opacity-80 ${
                       isValidTier
                         ? `ring-2 ring-offset-1 ${commentTierRingClass}`
                         : "ring-2 ring-gray-300"
@@ -153,33 +159,35 @@ export function CommentsSection({
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
-                    <div className="mb-1 flex items-center gap-2">
-                      <span
-                        className="text-sm font-medium cursor-pointer hover:text-primary transition-colors"
-                        onClick={() => handleUserClick(comment.userId)}
-                      >
-                        {comment.userNickname}
-                      </span>
-                      {comment.userRole === 1 && (
-                        <Badge className="gap-1 bg-yellow-500/10 text-yellow-700 border-yellow-500/30 text-xs">
-                          <Crown className="h-3 w-3" />
-                          관리자
-                        </Badge>
-                      )}
-                      {comment.userRole === 2 && (
-                        <Badge className="gap-1 bg-purple-500/10 text-purple-700 border-purple-500/30 text-xs">
-                          <Crown className="h-3 w-3" />
-                          운영진
-                        </Badge>
-                      )}
-                      {isValidTier && (
-                        <Badge variant="outline" className="gap-1 text-xs">
-                          <div
-                            className={`h-1.5 w-1.5 rounded-full ${commentTierColor}`}
-                          />
-                          {TIERS[tierEnglish as keyof typeof TIERS].nameKo}
-                        </Badge>
-                      )}
+                    <div className="mb-1 flex flex-col gap-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span
+                          className="hover:text-primary cursor-pointer text-sm font-medium transition-colors"
+                          onClick={() => handleUserClick(comment.userId)}
+                        >
+                          {comment.userNickname}
+                        </span>
+                        {comment.userRole === 1 && (
+                          <Badge className="gap-1 border-yellow-500/30 bg-yellow-500/10 text-xs text-yellow-700">
+                            <Crown className="h-3 w-3" />
+                            관리자
+                          </Badge>
+                        )}
+                        {comment.userRole === 2 && (
+                          <Badge className="gap-1 border-purple-500/30 bg-purple-500/10 text-xs text-purple-700">
+                            <Crown className="h-3 w-3" />
+                            운영진
+                          </Badge>
+                        )}
+                        {isValidTier && (
+                          <Badge variant="outline" className="gap-1 text-xs">
+                            <div
+                              className={`h-1.5 w-1.5 rounded-full ${commentTierColor}`}
+                            />
+                            {TIERS[tierEnglish as keyof typeof TIERS].nameKo}
+                          </Badge>
+                        )}
+                      </div>
                       <span className="text-muted-foreground text-xs">
                         {formatRelativeTime(comment.createdAt)}
                       </span>
@@ -215,9 +223,17 @@ export function CommentsSection({
                         </div>
                       </div>
                     ) : (
-                      <p className="text-sm whitespace-pre-wrap">
-                        {comment.content}
-                      </p>
+                      <div className="space-y-2">
+                        <p className="text-sm whitespace-pre-wrap">
+                          {comment.content}
+                        </p>
+                        <LikeButton
+                          isLiked={comment.isLiked ?? false}
+                          likeCount={comment.likeCount ?? 0}
+                          onToggle={() => onToggleCommentLike(comment.id)}
+                          size="sm"
+                        />
+                      </div>
                     )}
                   </div>
                   {canModifyComment && editingCommentId !== comment.id && (
@@ -226,7 +242,7 @@ export function CommentsSection({
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="text-muted-foreground hover:text-foreground h-8 w-8"
+                          className="text-muted-foreground hover:text-foreground h-8 w-8 touch-manipulation"
                         >
                           <MoreVertical className="h-4 w-4" />
                         </Button>
@@ -234,6 +250,7 @@ export function CommentsSection({
                       <DropdownMenuContent
                         align="end"
                         className="min-w-[120px]"
+                        sideOffset={5}
                       >
                         <DropdownMenuItem
                           className="cursor-pointer"

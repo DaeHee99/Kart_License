@@ -113,7 +113,7 @@ export class CommentService {
   /**
    * 게시글의 댓글 목록 조회
    */
-  async getCommentsByPostId(postId: string) {
+  async getCommentsByPostId(postId: string, currentUserId?: string) {
     if (!Types.ObjectId.isValid(postId)) {
       return [];
     }
@@ -123,19 +123,28 @@ export class CommentService {
       .sort({ createdAt: 1 })
       .lean();
 
-    return comments.map((comment: any) => ({
-      _id: comment._id.toString(),
-      user: {
-        _id: comment.user._id.toString(),
-        name: comment.user.name,
-        image: comment.user.image,
-        license: comment.user.license,
-        role: comment.user.role || 0,
-      },
-      content: comment.content,
-      createdAt: comment.createdAt,
-      updatedAt: comment.updatedAt,
-    }));
+    return comments.map((comment: any) => {
+      // Check if current user liked this comment
+      const isLiked = currentUserId
+        ? (comment.likes || []).some((likeId: Types.ObjectId) => likeId.toString() === currentUserId)
+        : undefined;
+
+      return {
+        _id: comment._id.toString(),
+        user: {
+          _id: comment.user._id.toString(),
+          name: comment.user.name,
+          image: comment.user.image,
+          license: comment.user.license,
+          role: comment.user.role || 0,
+        },
+        content: comment.content,
+        likeCount: (comment.likes || []).length,
+        isLiked,
+        createdAt: comment.createdAt,
+        updatedAt: comment.updatedAt,
+      };
+    });
   }
 }
 

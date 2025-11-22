@@ -19,6 +19,8 @@ import {
   useCreateComment,
   useUpdateComment,
   useDeleteComment,
+  useTogglePostLike,
+  useToggleCommentLike,
 } from "@/hooks/use-posts";
 import {
   Dialog,
@@ -47,8 +49,13 @@ export default function CommunityDetailPage() {
   const { user, isAuthenticated } = useAuth();
 
   // Queries
-  const { data: postResponse, isLoading: isLoadingPost, isError: isErrorPost } = usePost(postId);
-  const { data: commentsResponse, isLoading: isLoadingComments } = useComments(postId);
+  const {
+    data: postResponse,
+    isLoading: isLoadingPost,
+    isError: isErrorPost,
+  } = usePost(postId);
+  const { data: commentsResponse, isLoading: isLoadingComments } =
+    useComments(postId);
 
   // Mutations
   const { mutate: updatePost, isPending: isUpdating } = useUpdatePost(postId);
@@ -56,9 +63,14 @@ export default function CommunityDetailPage() {
   const { mutate: createComment } = useCreateComment(postId);
   const { mutate: updateComment } = useUpdateComment(postId);
   const { mutate: deleteComment } = useDeleteComment(postId);
+  const { mutate: togglePostLike, isPending: isLiking } =
+    useTogglePostLike(postId);
+  const { mutate: toggleCommentLike } = useToggleCommentLike(postId);
 
   const [showShareDialog, setShowShareDialog] = useState(false);
-  const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null);
+  const [deletingCommentId, setDeletingCommentId] = useState<string | null>(
+    null,
+  );
   const [deletingPost, setDeletingPost] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editTitle, setEditTitle] = useState("");
@@ -84,6 +96,9 @@ export default function CommunityDetailPage() {
       comments: [], // 댓글은 따로 관리
       commentCount: data.commentCount,
       views: data.views,
+      likes: [], // 좋아요 유저 ID 목록 (상세에서는 사용 안함)
+      likeCount: data.likeCount ?? 0,
+      isLiked: data.isLiked ?? false,
       createdAt: new Date(data.createdAt),
     };
   }, [postResponse]);
@@ -99,19 +114,23 @@ export default function CommunityDetailPage() {
       userRole: comment.user.role || 0,
       content: comment.content,
       createdAt: new Date(comment.createdAt),
+      likes: [],
+      likeCount: comment.likeCount ?? 0,
+      isLiked: comment.isLiked ?? false,
     }));
   }, [commentsResponse]);
 
   const currentUserId = user?._id || "";
   const currentUserRole = user?.role || 0;
   const isPostAuthor = currentPost?.userId === currentUserId;
-  const canModifyPost = isPostAuthor || currentUserRole === 1 || currentUserRole === 2; // 작성자 or 관리자 or 운영진
+  const canModifyPost =
+    isPostAuthor || currentUserRole === 1 || currentUserRole === 2; // 작성자 or 관리자 or 운영진
 
   // Loading state
   if (isLoadingPost) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="text-primary h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -171,7 +190,7 @@ export default function CommunityDetailPage() {
             setEditImages([]);
             setEditExistingImages([]);
           },
-        }
+        },
       );
     } catch (error) {
       console.error("Failed to update post:", error);
@@ -216,6 +235,23 @@ export default function CommunityDetailPage() {
     });
   };
 
+  const handleVibrate = () => {
+    // 진동 지원 기기에서 짧은 진동 (100ms)
+    if (typeof window !== "undefined" && "vibrate" in navigator) {
+      navigator.vibrate(100);
+    }
+  };
+
+  const handleTogglePostLike = () => {
+    togglePostLike();
+    handleVibrate();
+  };
+
+  const handleToggleCommentLike = (commentId: string) => {
+    toggleCommentLike(commentId);
+    handleVibrate();
+  };
+
   return (
     <div className="from-primary/5 via-background to-background min-h-screen bg-linear-to-b pb-24">
       <div className="mx-auto max-w-4xl space-y-6 px-4 py-6">
@@ -234,6 +270,8 @@ export default function CommunityDetailPage() {
             onShare={handleShare}
             onEdit={onEditPost}
             onDelete={() => setDeletingPost(true)}
+            onToggleLike={handleTogglePostLike}
+            isLiking={isLiking}
           />
         </motion.div>
 
@@ -250,6 +288,7 @@ export default function CommunityDetailPage() {
             onAddComment={handleAddComment}
             onEditComment={handleEditComment}
             onDeleteComment={(id) => setDeletingCommentId(id)}
+            onToggleCommentLike={handleToggleCommentLike}
           />
         </motion.div>
 
@@ -274,9 +313,7 @@ export default function CommunityDetailPage() {
             <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
               <DialogHeader>
                 <DialogTitle>글 수정</DialogTitle>
-                <DialogDescription>
-                  게시글을 수정하세요.
-                </DialogDescription>
+                <DialogDescription>게시글을 수정하세요.</DialogDescription>
               </DialogHeader>
               <NewPostForm
                 title={editTitle}
@@ -291,7 +328,9 @@ export default function CommunityDetailPage() {
               <Button
                 onClick={handleEditComplete}
                 className="w-full"
-                disabled={isUpdating || !editTitle.trim() || !editContent.trim()}
+                disabled={
+                  isUpdating || !editTitle.trim() || !editContent.trim()
+                }
               >
                 {isUpdating ? (
                   <>
@@ -309,9 +348,7 @@ export default function CommunityDetailPage() {
             <DrawerContent className="max-h-[95vh]">
               <DrawerHeader>
                 <DrawerTitle>글 수정</DrawerTitle>
-                <DrawerDescription>
-                  게시글을 수정하세요.
-                </DrawerDescription>
+                <DrawerDescription>게시글을 수정하세요.</DrawerDescription>
               </DrawerHeader>
               <ScrollArea className="max-h-[95vh] overflow-y-auto px-1">
                 <div className="px-4 pb-6">
@@ -328,7 +365,9 @@ export default function CommunityDetailPage() {
                   <Button
                     onClick={handleEditComplete}
                     className="mt-4 w-full"
-                    disabled={isUpdating || !editTitle.trim() || !editContent.trim()}
+                    disabled={
+                      isUpdating || !editTitle.trim() || !editContent.trim()
+                    }
                   >
                     {isUpdating ? (
                       <>

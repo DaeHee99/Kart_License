@@ -124,7 +124,9 @@ export interface Comment {
   userRole?: number; // 0: 일반, 1: 관리자, 2: 운영진
   content: string;
   createdAt: Date;
-  likes?: number;
+  likes: string[]; // 좋아요를 누른 유저 ID 배열
+  likeCount: number; // 좋아요 수
+  isLiked?: boolean; // 현재 유저가 좋아요를 눌렀는지 여부
 }
 
 export type PostCategory = "notice" | "general" | "question";
@@ -143,6 +145,9 @@ export interface Post {
   comments: Comment[];
   commentCount?: number; // API 응답에서 오는 댓글 수
   views?: number;
+  likes: string[]; // 좋아요를 누른 유저 ID 배열
+  likeCount: number; // 좋아요 수
+  isLiked?: boolean; // 현재 유저가 좋아요를 눌렀는지 여부
   createdAt: Date;
 }
 

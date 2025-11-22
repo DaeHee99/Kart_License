@@ -126,4 +126,22 @@ export const postsAPI = {
       method: "DELETE",
     });
   },
+
+  /**
+   * 게시글 좋아요 토글
+   */
+  async togglePostLike(postId: string) {
+    return apiClient(`/api/posts/${postId}/like`, {
+      method: "POST",
+    });
+  },
+
+  /**
+   * 댓글 좋아요 토글
+   */
+  async toggleCommentLike(commentId: string) {
+    return apiClient(`/api/comments/${commentId}/like`, {
+      method: "POST",
+    });
+  },
 };

@@ -16,9 +16,9 @@ export function BottomNavigation() {
   ];
 
   const handleNavClick = () => {
-    // 진동 지원 기기에서 짧은 진동 (10ms)
+    // 진동 지원 기기에서 짧은 진동 (100ms)
     if (typeof window !== "undefined" && "vibrate" in navigator) {
-      navigator.vibrate(10);
+      navigator.vibrate(100);
     }
   };
 

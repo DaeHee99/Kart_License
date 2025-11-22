@@ -233,3 +233,76 @@ export function useDeleteComment(postId: string) {
     },
   });
 }
+
+/**
+ * 게시글 좋아요 토글 Mutation
+ */
+export function useTogglePostLike(postId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => postsAPI.togglePostLike(postId),
+    onSuccess: (response) => {
+      if (response.success) {
+        // 게시글 상세 캐시 직접 업데이트 (refetch 방지로 조회수 증가 막기)
+        queryClient.setQueryData(POST_DETAIL_QUERY_KEY(postId), (oldData: any) => {
+          if (!oldData?.data) return oldData;
+          return {
+            ...oldData,
+            data: {
+              ...oldData.data,
+              likeCount: response.data.likeCount,
+              isLiked: response.data.liked,
+            },
+          };
+        });
+
+        // 게시글 목록 캐시 무효화 (목록은 refetch 필요)
+        queryClient.invalidateQueries({
+          queryKey: ["posts"],
+        });
+      } else {
+        toast.error(response.error || "좋아요 처리에 실패했습니다.");
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "좋아요 처리 중 오류가 발생했습니다.");
+    },
+  });
+}
+
+/**
+ * 댓글 좋아요 토글 Mutation
+ */
+export function useToggleCommentLike(postId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (commentId: string) => postsAPI.toggleCommentLike(commentId),
+    onSuccess: (response, commentId) => {
+      if (response.success) {
+        // 댓글 목록 캐시 직접 업데이트 (refetch 방지로 조회수 증가 막기)
+        queryClient.setQueryData(COMMENTS_QUERY_KEY(postId), (oldData: any) => {
+          if (!oldData?.data) return oldData;
+          return {
+            ...oldData,
+            data: oldData.data.map((comment: any) =>
+              comment._id === commentId
+                ? {
+                    ...comment,
+                    likeCount: response.data.likeCount,
+                    isLiked: response.data.liked,
+                  }
+                : comment
+            ),
+          };
+        });
+      } else {
+        toast.error(response.error || "좋아요 처리에 실패했습니다.");
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "좋아요 처리 중 오류가 발생했습니다.");
+    },
+  });
+}

@@ -11,10 +11,12 @@ interface LoadingScreenProps {
 
 export function LoadingScreen({ loadingProgress }: LoadingScreenProps) {
   useEffect(() => {
-    // 진동 지원 기기에서 주기적으로 짧은 진동 (600ms마다 30ms 진동)
+    // 진동 지원 기기에서 주기적으로 짧은 진동 (600ms마다 100ms 진동)
     if (typeof window !== "undefined" && "vibrate" in navigator) {
+      navigator.vibrate(100);
+
       const vibrateInterval = setInterval(() => {
-        navigator.vibrate(30);
+        navigator.vibrate(100);
       }, 600);
 
       return () => {

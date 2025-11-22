@@ -37,6 +37,8 @@ export interface PostListItem {
   images: string[];
   views: number;
   commentCount: number;
+  likeCount: number;
+  isLiked?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -52,6 +54,8 @@ export interface PostDetail extends PostListItem {
       role?: number;
     };
     content: string;
+    likeCount: number;
+    isLiked?: boolean;
     createdAt: Date;
     updatedAt: Date;
   }>;
@@ -91,7 +95,8 @@ export class PostService {
     page: number = 1,
     limit: number = 20,
     category?: PostCategory | "all",
-    searchQuery?: string
+    searchQuery?: string,
+    currentUserId?: string
   ): Promise<PaginatedPosts> {
     const skip = (page - 1) * limit;
     const query: any = {};
@@ -124,6 +129,11 @@ export class PostService {
           post: post._id,
         });
 
+        // Check if current user liked this post
+        const isLiked = currentUserId
+          ? (post.likes || []).some((likeId: Types.ObjectId) => likeId.toString() === currentUserId)
+          : undefined;
+
         return {
           _id: post._id.toString(),
           user: {
@@ -139,6 +149,8 @@ export class PostService {
           images: post.images || [],
           views: post.views,
           commentCount,
+          likeCount: (post.likes || []).length,
+          isLiked,
           createdAt: post.createdAt,
           updatedAt: post.updatedAt,
         };
@@ -156,7 +168,7 @@ export class PostService {
   /**
    * 게시글 상세 조회
    */
-  async getPostById(postId: string): Promise<PostDetail | null> {
+  async getPostById(postId: string, currentUserId?: string): Promise<PostDetail | null> {
     if (!Types.ObjectId.isValid(postId)) {
       return null;
     }
@@ -178,6 +190,11 @@ export class PostService {
       .sort({ createdAt: 1 })
       .lean();
 
+    // Check if current user liked this post
+    const isPostLiked = currentUserId
+      ? (post.likes || []).some((likeId: Types.ObjectId) => likeId.toString() === currentUserId)
+      : undefined;
+
     return {
       _id: post._id.toString(),
       user: {
@@ -193,21 +210,32 @@ export class PostService {
       images: post.images || [],
       views: post.views + 1,
       commentCount: comments.length,
+      likeCount: (post.likes || []).length,
+      isLiked: isPostLiked,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
-      comments: comments.map((comment: any) => ({
-        _id: comment._id.toString(),
-        user: {
-          _id: comment.user._id.toString(),
-          name: comment.user.name,
-          image: comment.user.image,
-          license: comment.user.license,
-          role: comment.user.role || 0,
-        },
-        content: comment.content,
-        createdAt: comment.createdAt,
-        updatedAt: comment.updatedAt,
-      })),
+      comments: comments.map((comment: any) => {
+        // Check if current user liked this comment
+        const isCommentLiked = currentUserId
+          ? (comment.likes || []).some((likeId: Types.ObjectId) => likeId.toString() === currentUserId)
+          : undefined;
+
+        return {
+          _id: comment._id.toString(),
+          user: {
+            _id: comment.user._id.toString(),
+            name: comment.user.name,
+            image: comment.user.image,
+            license: comment.user.license,
+            role: comment.user.role || 0,
+          },
+          content: comment.content,
+          likeCount: (comment.likes || []).length,
+          isLiked: isCommentLiked,
+          createdAt: comment.createdAt,
+          updatedAt: comment.updatedAt,
+        };
+      }),
     };
   }
 
@@ -277,6 +305,64 @@ export class PostService {
     await Comment.deleteMany({ post: new Types.ObjectId(postId) });
 
     return true;
+  }
+
+  /**
+   * 게시글 좋아요 토글
+   */
+  async togglePostLike(postId: string, userId: string): Promise<{ liked: boolean; likeCount: number }> {
+    if (!Types.ObjectId.isValid(postId) || !Types.ObjectId.isValid(userId)) {
+      throw new Error("유효하지 않은 ID입니다.");
+    }
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      throw new Error("게시글을 찾을 수 없습니다.");
+    }
+
+    const userObjectId = new Types.ObjectId(userId);
+    const likedIndex = post.likes.findIndex(id => id.toString() === userId);
+
+    if (likedIndex > -1) {
+      // 이미 좋아요를 눌렀으면 제거
+      post.likes.splice(likedIndex, 1);
+      await post.save();
+      return { liked: false, likeCount: post.likes.length };
+    } else {
+      // 좋아요 추가
+      post.likes.push(userObjectId);
+      await post.save();
+      return { liked: true, likeCount: post.likes.length };
+    }
+  }
+
+  /**
+   * 댓글 좋아요 토글
+   */
+  async toggleCommentLike(commentId: string, userId: string): Promise<{ liked: boolean; likeCount: number }> {
+    if (!Types.ObjectId.isValid(commentId) || !Types.ObjectId.isValid(userId)) {
+      throw new Error("유효하지 않은 ID입니다.");
+    }
+
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      throw new Error("댓글을 찾을 수 없습니다.");
+    }
+
+    const userObjectId = new Types.ObjectId(userId);
+    const likedIndex = comment.likes.findIndex(id => id.toString() === userId);
+
+    if (likedIndex > -1) {
+      // 이미 좋아요를 눌렀으면 제거
+      comment.likes.splice(likedIndex, 1);
+      await comment.save();
+      return { liked: false, likeCount: comment.likes.length };
+    } else {
+      // 좋아요 추가
+      comment.likes.push(userObjectId);
+      await comment.save();
+      return { liked: true, likeCount: comment.likes.length };
+    }
   }
 }
 

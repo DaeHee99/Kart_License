@@ -10,7 +10,13 @@ import {
   getTierRingClass,
 } from "@/lib/utils-calc";
 import { motion } from "motion/react";
-import { MessageCircle, Eye, Image as ImageIcon, Crown } from "lucide-react";
+import {
+  MessageCircle,
+  Eye,
+  Image as ImageIcon,
+  Crown,
+  Heart,
+} from "lucide-react";
 
 interface PostCardProps {
   post: Post;
@@ -80,13 +86,13 @@ export function PostCard({ post, index, onClick }: PostCardProps) {
             <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
               <span className="text-sm font-medium">{post.userNickname}</span>
               {post.userRole === 1 && (
-                <Badge className="gap-1 bg-yellow-500/10 text-yellow-700 border-yellow-500/30 text-xs">
+                <Badge className="gap-1 border-yellow-500/30 bg-yellow-500/10 text-xs text-yellow-700">
                   <Crown className="h-3 w-3" />
                   관리자
                 </Badge>
               )}
               {post.userRole === 2 && (
-                <Badge className="gap-1 bg-purple-500/10 text-purple-700 border-purple-500/30 text-xs">
+                <Badge className="gap-1 border-purple-500/30 bg-purple-500/10 text-xs text-purple-700">
                   <Crown className="h-3 w-3" />
                   운영진
                 </Badge>
@@ -121,6 +127,10 @@ export function PostCard({ post, index, onClick }: PostCardProps) {
 
             {/* 하단: 통계 */}
             <div className="text-muted-foreground flex items-center gap-3 text-xs">
+              <div className="flex items-center gap-1">
+                <Heart className="h-3.5 w-3.5" />
+                <span>{post.likeCount ?? 0}</span>
+              </div>
               <div className="flex items-center gap-1">
                 <MessageCircle className="h-3.5 w-3.5" />
                 <span>{post.commentCount ?? post.comments?.length ?? 0}</span>

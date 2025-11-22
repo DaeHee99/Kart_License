@@ -13,6 +13,12 @@ export async function GET(request: NextRequest) {
   try {
     await connectDB();
 
+    // 인증 확인 (선택사항 - 로그인하지 않아도 게시글 목록은 볼 수 있음)
+    const authResult = await authenticateUser();
+    const currentUserId = authResult.isAuth && authResult.user
+      ? authResult.user._id.toString()
+      : undefined;
+
     const searchParams = request.nextUrl.searchParams;
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
@@ -23,7 +29,8 @@ export async function GET(request: NextRequest) {
       page,
       limit,
       category === "all" ? undefined : (category || undefined),
-      searchQuery
+      searchQuery,
+      currentUserId
     );
 
     return NextResponse.json(

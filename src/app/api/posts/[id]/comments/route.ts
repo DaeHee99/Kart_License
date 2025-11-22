@@ -15,9 +15,15 @@ export async function GET(
   try {
     await connectDB();
 
+    // 인증 확인 (선택사항 - 로그인하지 않아도 댓글은 볼 수 있음)
+    const authResult = await authenticateUser();
+    const currentUserId = authResult.isAuth && authResult.user
+      ? authResult.user._id.toString()
+      : undefined;
+
     const { id: postId } = await params;
 
-    const comments = await commentService.getCommentsByPostId(postId);
+    const comments = await commentService.getCommentsByPostId(postId, currentUserId);
 
     return NextResponse.json(
       {

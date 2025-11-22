@@ -15,6 +15,7 @@ export interface IPost extends Document {
   content: string;
   images: string[]; // 이미지 URL 배열
   views: number;
+  likes: Types.ObjectId[]; // 좋아요를 누른 유저 ID 배열
   createdAt: Date;
   updatedAt: Date;
 }
@@ -61,6 +62,11 @@ const postSchema = new Schema<IPost, IPostModel>(
     views: {
       type: Number,
       default: 0,
+    },
+    likes: {
+      type: [{ type: Schema.Types.ObjectId, ref: "User" }],
+      default: [],
+      index: true,
     },
   },
   {

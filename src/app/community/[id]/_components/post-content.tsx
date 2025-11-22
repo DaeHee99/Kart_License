@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { LikeButton } from "../../_components/like-button";
 
 interface PostContentProps {
   post: Post;
@@ -35,6 +36,8 @@ interface PostContentProps {
   onShare: () => void;
   onEdit?: (post: Post) => void;
   onDelete: () => void;
+  onToggleLike: () => void;
+  isLiking?: boolean;
 }
 
 // 카테고리 뱃지 색상 매핑
@@ -57,6 +60,8 @@ export function PostContent({
   onShare,
   onEdit,
   onDelete,
+  onToggleLike,
+  isLiking,
 }: PostContentProps) {
   const router = useRouter();
 
@@ -223,12 +228,19 @@ export function PostContent({
       )}
 
       {/* Stats */}
-      <div className="border-border text-muted-foreground mt-6 flex items-center gap-4 border-t pt-4 text-sm">
-        <div className="flex items-center gap-1">
+      <div className="border-border mt-6 flex items-center gap-4 border-t pt-4 text-sm">
+        <LikeButton
+          isLiked={post.isLiked ?? false}
+          likeCount={post.likeCount ?? 0}
+          onToggle={onToggleLike}
+          isLoading={isLiking}
+          size="md"
+        />
+        <div className="text-muted-foreground flex items-center gap-1">
           <MessageCircle className="h-4 w-4" />
           <span>댓글 {commentsCount}</span>
         </div>
-        <div>조회 {post.views}</div>
+        <div className="text-muted-foreground">조회 {post.views}</div>
       </div>
     </Card>
   );
