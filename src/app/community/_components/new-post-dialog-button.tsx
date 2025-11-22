@@ -77,6 +77,8 @@ export function NewPostDialogButton({
       images: imageUrls.length > 0 ? imageUrls : undefined,
       comments: [],
       createdAt: new Date(),
+      likes: [],
+      likeCount: 0,
     };
 
     onPostCreate(newPost);

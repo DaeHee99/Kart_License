@@ -184,10 +184,14 @@ export const MOCK_POSTS: Post[] = [
         userTier: "master",
         content: "축하합니다! 대단하시네요 👏",
         createdAt: new Date("2025-10-24T10:30:00"),
+        likes: [],
+        likeCount: 0,
       },
     ],
     views: 1234,
     createdAt: new Date("2025-10-24T09:15:00"),
+    likes: [],
+    likeCount: 0,
   },
   {
     _id: "post-2",
@@ -203,6 +207,8 @@ export const MOCK_POSTS: Post[] = [
     comments: [],
     views: 567,
     createdAt: new Date("2025-10-23T14:20:00"),
+    likes: [],
+    likeCount: 0,
   },
   {
     _id: "post-3",
@@ -221,6 +227,8 @@ export const MOCK_POSTS: Post[] = [
         userTier: "elite",
         content: "포레스트 해어핀 맵을 집중 연습해보세요!",
         createdAt: new Date("2025-10-23T16:45:00"),
+        likes: [],
+        likeCount: 0,
       },
       {
         id: "comment-3",
@@ -230,10 +238,14 @@ export const MOCK_POSTS: Post[] = [
         userTier: "master",
         content: "드리프트 타이밍이 중요합니다. 연습 모드에서 먼저 익히세요.",
         createdAt: new Date("2025-10-23T17:10:00"),
+        likes: [],
+        likeCount: 0,
       },
     ],
     views: 892,
     createdAt: new Date("2025-10-23T15:30:00"),
+    likes: [],
+    likeCount: 0,
   },
 ];
 
