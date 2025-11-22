@@ -34,6 +34,8 @@ interface InputStepProps {
   onManualInput: () => void;
   onSkip: () => void;
   onUsePreviousRecords?: () => void;
+  onSearchTrack?: () => void;
+  isEditMode?: boolean;
 }
 
 export function InputStep({
@@ -52,6 +54,8 @@ export function InputStep({
   onManualInput,
   onSkip,
   onUsePreviousRecords,
+  onSearchTrack,
+  isEditMode,
 }: InputStepProps) {
   const progress = ((records.length + 1) / totalMaps) * 100;
 
@@ -90,6 +94,8 @@ export function InputStep({
         totalMaps={totalMaps}
         progress={progress}
         onCancel={onCancel}
+        onSearchTrack={onSearchTrack}
+        isEditMode={isEditMode}
       />
 
       {/* Main Content */}

@@ -7,6 +7,7 @@ import { MethodSelectStep } from "./_components/method-select-step";
 import { ConfirmStep } from "./_components/confirm-step";
 import { InputStep } from "./_components/input-step";
 import { LoginPromptModal } from "./_components/login-prompt-modal";
+import { TrackSearchModal } from "./_components/track-search-modal";
 import { useLatestMaps, useLatestRecord } from "@/hooks/use-records";
 import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
@@ -27,6 +28,9 @@ export default function MeasurePage() {
   const [hasShownLoginPrompt, setHasShownLoginPrompt] = useState(false);
   const [hasShownPreviousRecordToast, setHasShownPreviousRecordToast] =
     useState(false);
+  const [showTrackSearchModal, setShowTrackSearchModal] = useState(false);
+  const [originalRecordBeforeEdit, setOriginalRecordBeforeEdit] =
+    useState<UserMapRecord | null>(null);
 
   // API 데이터 불러오기
   const { maps, season, isLoading: mapsLoading } = useLatestMaps();
@@ -204,6 +208,7 @@ export default function MeasurePage() {
       updatedRecords = [...records];
       updatedRecords.splice(editingIndex, 0, newRecord);
       setEditingIndex(null);
+      setOriginalRecordBeforeEdit(null); // 원래 기록 초기화
     } else {
       // 일반 입력 모드
       updatedRecords = [...records, newRecord];
@@ -235,6 +240,7 @@ export default function MeasurePage() {
       updatedRecords = [...records];
       updatedRecords.splice(editingIndex, 0, newRecord);
       setEditingIndex(null);
+      setOriginalRecordBeforeEdit(null); // 원래 기록 초기화
     } else {
       // 일반 입력 모드
       updatedRecords = [...records, newRecord];
@@ -284,6 +290,7 @@ export default function MeasurePage() {
       updatedRecords = [...records];
       updatedRecords.splice(editingIndex, 0, newRecord);
       setEditingIndex(null);
+      setOriginalRecordBeforeEdit(null); // 원래 기록 초기화
     } else {
       // 일반 입력 모드
       updatedRecords = [...records, newRecord];
@@ -301,6 +308,10 @@ export default function MeasurePage() {
   };
 
   const handleEditMap = (mapIndex: number) => {
+    // 수정 전 원래 기록을 저장
+    const originalRecord = records[mapIndex];
+    setOriginalRecordBeforeEdit(originalRecord);
+
     // 해당 맵으로 이동하고 그 맵의 기록을 제거
     setCurrentMapIndex(mapIndex);
     const updatedRecords = records.filter((_, index) => index !== mapIndex);
@@ -317,9 +328,73 @@ export default function MeasurePage() {
   };
 
   const handleCancel = () => {
-    setStep("select-method");
-    setCurrentMapIndex(0);
-    setRecords([]);
+    // 수정 모드일 때: 원래 기록을 복원하고 컨펌으로 돌아감
+    if (isEditMode && editingIndex !== null && originalRecordBeforeEdit) {
+      const restoredRecords = [...records];
+      restoredRecords.splice(editingIndex, 0, originalRecordBeforeEdit);
+      setRecords(restoredRecords);
+      setStep("confirm");
+      setIsEditMode(false);
+      setEditingIndex(null);
+      setOriginalRecordBeforeEdit(null);
+    } else {
+      // 일반 모드일 때: 처음부터 다시 시작
+      setStep("select-method");
+      setCurrentMapIndex(0);
+      setRecords([]);
+    }
+  };
+
+  // 트랙 점프 핸들러 (중간 트랙들을 기본값으로 채움)
+  const handleJumpToTrack = (targetMapIndex: number) => {
+    // 이미 완료된 트랙이거나 현재 트랙이면 무시
+    if (targetMapIndex <= currentMapIndex) {
+      toast.error("이미 완료된 트랙이거나 현재 트랙입니다.");
+      return;
+    }
+
+    // 현재 트랙부터 목표 트랙 직전까지 기본값으로 채우기
+    const newRecords = [...records];
+    for (let i = currentMapIndex; i < targetMapIndex; i++) {
+      const map = mapsWithId[i];
+
+      // 이전 기록 찾기
+      let previousRecord = null;
+      if (isAuthenticated && latestRecord?.records) {
+        previousRecord = latestRecord.records.find(
+          (r) => r.mapName === map.name,
+        );
+      } else if (!isAuthenticated && guestRecord?.records) {
+        previousRecord = guestRecord.records.find(
+          (r) => r.mapName === map.name,
+        );
+      }
+
+      // 이전 기록이 있으면 사용, 없으면 기본값
+      if (previousRecord) {
+        const processedRecord = processRecordWithPlus(previousRecord.record);
+        newRecords.push({
+          mapId: map.id,
+          record: processedRecord,
+          tier: previousRecord.tier,
+        });
+      } else {
+        // 기본값: manual 방식이든 button 방식이든 bronze + 99:99:99
+        newRecords.push({
+          mapId: map.id,
+          record: "99:99:99",
+          tier: "bronze",
+        });
+      }
+    }
+
+    setRecords(newRecords);
+    setCurrentMapIndex(targetMapIndex);
+    setShowTrackSearchModal(false);
+
+    toast.success(
+      `${mapsWithId[targetMapIndex].name} 트랙으로 이동했습니다. (${targetMapIndex - currentMapIndex}개 트랙 기본값 적용)`,
+    );
   };
 
   // 이전 기록으로 즉시 결과 확인
@@ -381,22 +456,33 @@ export default function MeasurePage() {
   }
 
   return (
-    <InputStep
-      inputMethod={inputMethod!}
-      currentMapIndex={currentMapIndex}
-      totalMaps={mapsWithId.length}
-      currentMap={currentMap}
-      records={records}
-      currentInput={currentInput}
-      matchedTier={matchedTier}
-      previousRecord={previousRecordForCurrentMap}
-      hasPreviousRecords={hasPreviousRecords}
-      onCancel={handleCancel}
-      onTierSelect={handleTierSelect}
-      onInputChange={handleInputChange}
-      onManualInput={handleManualInput}
-      onSkip={handleSkip}
-      onUsePreviousRecords={handleUsePreviousRecords}
-    />
+    <>
+      <InputStep
+        inputMethod={inputMethod!}
+        currentMapIndex={currentMapIndex}
+        totalMaps={mapsWithId.length}
+        currentMap={currentMap}
+        records={records}
+        currentInput={currentInput}
+        matchedTier={matchedTier}
+        previousRecord={previousRecordForCurrentMap}
+        hasPreviousRecords={hasPreviousRecords}
+        onCancel={handleCancel}
+        onTierSelect={handleTierSelect}
+        onInputChange={handleInputChange}
+        onManualInput={handleManualInput}
+        onSkip={handleSkip}
+        onUsePreviousRecords={handleUsePreviousRecords}
+        onSearchTrack={() => setShowTrackSearchModal(true)}
+        isEditMode={isEditMode}
+      />
+      <TrackSearchModal
+        open={showTrackSearchModal}
+        onClose={() => setShowTrackSearchModal(false)}
+        maps={mapsWithId}
+        currentMapIndex={currentMapIndex}
+        onSelectTrack={handleJumpToTrack}
+      />
+    </>
   );
 }
