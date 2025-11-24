@@ -139,7 +139,8 @@ userSchema.statics.findByToken = async function (token: string) {
     const user = await this.findOne({ _id: decoded, token: token });
     return user;
   } catch (err) {
-    throw err;
+    // 잘못된 토큰이거나 만료된 경우 null 반환 (에러를 던지지 않음)
+    return null;
   }
 };
 

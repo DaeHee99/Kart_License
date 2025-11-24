@@ -7,10 +7,13 @@ export async function GET(request: NextRequest) {
     const authResult = await authenticateUser();
 
     if (!authResult.isAuth || !authResult.user) {
-      return NextResponse.json(
+      // 인증 실패 시 잘못된 토큰 쿠키 삭제
+      const response = NextResponse.json(
         { isAuth: false, message: authResult.message },
         { status: 200 }
       );
+      response.cookies.delete("token");
+      return response;
     }
 
     const cookieStore = await cookies();
