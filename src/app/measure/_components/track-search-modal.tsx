@@ -74,7 +74,7 @@ export function TrackSearchModal({
   const content = (
     <div className="space-y-4">
       {/* Search Input */}
-      <div className="relative">
+      <div className="relative mt-1">
         <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
         <Input
           value={searchQuery}
@@ -86,7 +86,9 @@ export function TrackSearchModal({
       </div>
 
       {/* Track List */}
-      <div className="max-h-[60vh] space-y-2 overflow-y-auto">
+      <div
+        className={`space-y-2 overflow-y-auto ${isMobile ? "max-h-[270px]" : "max-h-[60vh]"}`}
+      >
         <AnimatePresence>
           {filteredMaps.map((map, idx) => {
             const isCurrentTrack = map.originalIndex === currentMapIndex;
@@ -171,15 +173,26 @@ export function TrackSearchModal({
             <p className="text-muted-foreground">검색 결과가 없습니다</p>
           </motion.div>
         )}
+        <div className="from-background via-background/70 pointer-events-none sticky bottom-0 left-0 h-8 w-full bg-linear-to-t to-transparent" />
       </div>
     </div>
   );
 
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-        <DrawerContent>
-          <DrawerHeader>
+      <Drawer
+        open={open}
+        onOpenChange={(isOpen) => !isOpen && onClose()}
+        shouldScaleBackground={false}
+      >
+        <DrawerContent
+          className="flex h-[450px]! max-h-[450px]! flex-col"
+          style={{
+            height: "450px",
+            maxHeight: "450px",
+          }}
+        >
+          <DrawerHeader className="shrink-0">
             <DrawerTitle>트랙 검색</DrawerTitle>
             <DrawerDescription>
               트랙 이름을 검색하여 원하는 트랙을 선택할 수 있습니다.
@@ -188,7 +201,7 @@ export function TrackSearchModal({
             </DrawerDescription>
           </DrawerHeader>
 
-          <div className="px-4 pb-2">{content}</div>
+          <div className="flex-1 overflow-hidden px-4 pb-4">{content}</div>
         </DrawerContent>
       </Drawer>
     );
