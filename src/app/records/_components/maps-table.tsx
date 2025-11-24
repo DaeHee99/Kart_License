@@ -74,50 +74,56 @@ export function MapsTable({ filteredMaps, selectedTier }: MapsTableProps) {
               <tbody>
                 <AnimatePresence>
                   {filteredMaps.map((map, index) => {
-                    const difficultyBgColor = DIFFICULTY_ROW_COLORS[map.difficulty] || "";
-                    const difficultyHoverColor = DIFFICULTY_ROW_HOVER_COLORS[map.difficulty] || "hover:bg-accent";
+                    const difficultyBgColor =
+                      DIFFICULTY_ROW_COLORS[map.difficulty] || "";
+                    const difficultyHoverColor =
+                      DIFFICULTY_ROW_HOVER_COLORS[map.difficulty] ||
+                      "hover:bg-accent";
 
                     return (
                       <motion.tr
                         key={`${map.name}-${index}`}
                         className={`${index === filteredMaps.length - 1 ? "" : "border-border border-b"} ${difficultyBgColor} ${difficultyHoverColor} group cursor-pointer transition-colors duration-200`}
                       >
-                        <td className={`sticky left-0 z-10 p-4 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] ${difficultyBgColor} ${difficultyHoverColor}`}>
-                        <div className="flex items-center gap-3">
-                          {map.imageUrl ? (
-                            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg shadow-sm">
-                              <Image
-                                src={map.imageUrl}
-                                alt={map.name}
-                                fill
-                                className="object-cover"
-                                sizes="48px"
-                              />
-                            </div>
-                          ) : (
-                            <div className="from-primary/20 to-primary/10 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-linear-to-br shadow-sm">
-                              <Trophy className="text-primary h-5 w-5" />
-                            </div>
-                          )}
-                          <span className="min-w-[100px] font-medium">
-                            {map.name}
-                          </span>
-                        </div>
-                      </td>
-                      {(selectedTier === "all"
-                        ? Object.keys(TIERS)
-                        : [selectedTier]
-                      ).map((tier) => (
-                        <td key={tier} className="p-4 text-center">
-                          <Badge
-                            variant="outline"
-                            className="font-mono text-sm"
-                          >
-                            {map.tierRecords[tier as TierType]}
-                          </Badge>
+                        <td className="bg-background sticky left-0 z-10 p-4 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                          <div
+                            className={`pointer-events-none absolute inset-0 transition-colors duration-200 ${difficultyBgColor} group-hover:opacity-100 ${difficultyBgColor === "" ? "" : difficultyBgColor.replace("/5", "/10")}`}
+                          />
+                          <div className="relative flex items-center gap-3">
+                            {map.imageUrl ? (
+                              <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg shadow-sm">
+                                <Image
+                                  src={map.imageUrl}
+                                  alt={map.name}
+                                  fill
+                                  className="object-cover"
+                                  sizes="48px"
+                                />
+                              </div>
+                            ) : (
+                              <div className="from-primary/20 to-primary/10 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-linear-to-br shadow-sm">
+                                <Trophy className="text-primary h-5 w-5" />
+                              </div>
+                            )}
+                            <span className="min-w-[100px] font-medium">
+                              {map.name}
+                            </span>
+                          </div>
                         </td>
-                      ))}
-                    </motion.tr>
+                        {(selectedTier === "all"
+                          ? Object.keys(TIERS)
+                          : [selectedTier]
+                        ).map((tier) => (
+                          <td key={tier} className="p-4 text-center">
+                            <Badge
+                              variant="outline"
+                              className="font-mono text-sm"
+                            >
+                              {map.tierRecords[tier as TierType]}
+                            </Badge>
+                          </td>
+                        ))}
+                      </motion.tr>
                     );
                   })}
                 </AnimatePresence>
