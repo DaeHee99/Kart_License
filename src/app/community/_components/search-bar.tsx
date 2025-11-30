@@ -8,15 +8,29 @@ interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
   onClear?: () => void;
+  onSearch?: () => void;
 }
 
-export function SearchBar({ value, onChange, onClear }: SearchBarProps) {
+export function SearchBar({
+  value,
+  onChange,
+  onClear,
+  onSearch,
+}: SearchBarProps) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && onSearch) {
+      e.preventDefault();
+      onSearch();
+    }
+  };
+
   return (
     <div className="relative flex-1">
       <Input
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="제목, 내용, 작성자로 검색..."
+        onKeyDown={handleKeyDown}
+        placeholder="제목으로 검색..."
         className="border-primary/20 focus:border-primary/40 border-2 pl-10 transition-colors"
       />
       <Search className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform" />

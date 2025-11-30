@@ -60,27 +60,29 @@ export default function CommunityPage() {
   };
 
   // 모든 페이지의 게시글을 플랫하게 변환하고 Post 타입으로 매핑
-  const allPosts = (data?.pages.flatMap((page) =>
-    (page.data?.posts || []).map((post: any) => ({
-      _id: post._id,
-      userId: post.user._id,
-      userNickname: post.user.name,
-      userProfileImage: post.user.image,
-      userTier: post.user.license,
-      userRole: post.user.role || 0,
-      category: post.category,
-      title: post.title,
-      content: post.content,
-      images: post.images,
-      comments: [],
-      views: post.views,
-      createdAt: new Date(post.createdAt),
-      commentCount: post.commentCount,
-      likes: [],
-      likeCount: post.likeCount ?? 0,
-      isLiked: post.isLiked ?? false,
-    }))
-  ) || []).sort((a, b) => {
+  const allPosts = (
+    data?.pages.flatMap((page) =>
+      (page.data?.posts || []).map((post: any) => ({
+        _id: post._id,
+        userId: post.user._id,
+        userNickname: post.user.name,
+        userProfileImage: post.user.image,
+        userTier: post.user.license,
+        userRole: post.user.role || 0,
+        category: post.category,
+        title: post.title,
+        content: post.content,
+        images: post.images,
+        comments: [],
+        views: post.views,
+        createdAt: new Date(post.createdAt),
+        commentCount: post.commentCount,
+        likes: [],
+        likeCount: post.likeCount ?? 0,
+        isLiked: post.isLiked ?? false,
+      })),
+    ) || []
+  ).sort((a, b) => {
     // 공지사항을 가장 위로
     if (a.category === "notice" && b.category !== "notice") return -1;
     if (a.category !== "notice" && b.category === "notice") return 1;
@@ -105,6 +107,7 @@ export default function CommunityPage() {
               value={searchQuery}
               onChange={setSearchQuery}
               onClear={handleClearSearch}
+              onSearch={handleSearch}
             />
             <Button
               size="icon"

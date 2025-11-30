@@ -106,9 +106,15 @@ export class PostService {
       query.category = category;
     }
 
-    // 검색어 필터
+    // 검색어 필터 (제목 기준 regex 검색)
+    // 한글 검색을 위해 $text 대신 $regex 사용
+    // 내용 검색은 HTML 태그 문제로 제외 (성능 + 정확도 고려)
     if (searchQuery && searchQuery.trim()) {
-      query.$text = { $search: searchQuery };
+      // 특수문자 이스케이프 처리
+      const escapedQuery = searchQuery
+        .trim()
+        .replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      query.title = { $regex: escapedQuery, $options: "i" };
     }
 
     // 게시글 목록 조회
