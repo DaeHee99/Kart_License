@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Zap, Star } from "lucide-react";
 import { TierType, TIERS } from "@/lib/types";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface TierDistributionTableProps {
   tierDistribution: Record<TierType, number>;
@@ -17,6 +18,8 @@ export function TierDistributionTable({
   finalTier,
   totalMaps,
 }: TierDistributionTableProps) {
+  const isMobile = useIsMobile();
+
   // Helper function to get tier color hex (same as statistics page)
   const getTierColorHex = (tier: TierType): string => {
     const colorMap: Record<TierType, string> = {
@@ -63,16 +66,22 @@ export function TierDistributionTable({
 
           <div className="border-border/50 space-y-0 overflow-hidden rounded-lg border">
             {/* Header Row */}
-            <div className="bg-muted/50 border-border/50 grid grid-cols-3 border-b">
+            <div
+              className={`bg-muted/50 border-border/50 grid border-b ${isMobile ? "grid-cols-2" : "grid-cols-3"}`}
+            >
               <div className="text-muted-foreground px-4 py-2 text-xs font-medium">
                 군
               </div>
-              <div className="text-muted-foreground px-4 py-2 text-center text-xs font-medium">
-                개수
+              <div
+                className={`text-muted-foreground px-4 py-2 text-xs font-medium ${isMobile ? "text-right" : "text-center"}`}
+              >
+                {isMobile ? "개수 (비율)" : "개수"}
               </div>
-              <div className="text-muted-foreground px-4 py-2 text-right text-xs font-medium">
-                비율
-              </div>
+              {!isMobile && (
+                <div className="text-muted-foreground px-4 py-2 text-right text-xs font-medium">
+                  비율
+                </div>
+              )}
             </div>
 
             {/* Data Rows */}
@@ -92,7 +101,7 @@ export function TierDistributionTable({
                     delay: 0.45 + index * 0.03,
                     duration: 0.15,
                   }}
-                  className="border-border/50 hover:bg-primary/5 relative grid grid-cols-3 border-b transition-colors last:border-b-0"
+                  className={`border-border/50 hover:bg-primary/5 relative grid border-b transition-colors last:border-b-0 ${isMobile ? "grid-cols-2" : "grid-cols-3"}`}
                   style={{
                     backgroundColor: `${tierColorHex}10`,
                   }}
@@ -128,22 +137,26 @@ export function TierDistributionTable({
                       </motion.div>
                     )}
                   </div>
-                  <div className="relative z-10 px-4 py-3 text-center">
+                  <div
+                    className={`relative z-10 px-4 py-3 ${isMobile ? "text-right" : "text-center"}`}
+                  >
                     <span
                       className="font-mono text-sm font-bold"
                       style={{ color: "var(--foreground)" }}
                     >
-                      {count}
+                      {isMobile ? `${count} (${percentage}%)` : count}
                     </span>
                   </div>
-                  <div className="relative z-10 px-4 py-3 text-right">
-                    <span
-                      className="font-mono text-sm font-bold"
-                      style={{ color: "var(--foreground)" }}
-                    >
-                      {percentage}%
-                    </span>
-                  </div>
+                  {!isMobile && (
+                    <div className="relative z-10 px-4 py-3 text-right">
+                      <span
+                        className="font-mono text-sm font-bold"
+                        style={{ color: "var(--foreground)" }}
+                      >
+                        {percentage}%
+                      </span>
+                    </div>
+                  )}
                 </motion.div>
               );
             })}
