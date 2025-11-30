@@ -84,6 +84,9 @@ export function SeasonRecordsTab({
     );
   }
 
+  // 그래프용 데이터: 오름차순 정렬 (오래된 시즌 → 최신 시즌, 오른쪽으로 갈수록 최신)
+  const chartData = [...seasonRecords].reverse();
+
   return (
     <div className="space-y-4">
       <Card className="border-primary/20 p-6">
@@ -92,7 +95,7 @@ export function SeasonRecordsTab({
           <h3 className="font-bold">시즌별 최고 기록 그래프</h3>
         </div>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={seasonRecords}>
+          <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
             <XAxis
               dataKey="season"
