@@ -7,6 +7,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authAPI } from "@/lib/api/auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import type {
   LoginRequest,
   RegisterRequest,
@@ -31,6 +32,19 @@ export function useAuth() {
     staleTime: 5 * 60 * 1000, // 5분
   });
 
+  // bfcache (Back-Forward Cache)에서 페이지 복원 시 인증 상태 refetch
+  useEffect(() => {
+    const handlePageShow = (event: PageTransitionEvent) => {
+      // persisted가 true면 bfcache에서 복원된 것
+      if (event.persisted) {
+        refetch();
+      }
+    };
+
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, [refetch]);
+
   const user = data?.isAuth ? data : null;
   const isAuthenticated = data?.isAuth ?? false;
 
@@ -53,28 +67,23 @@ export function useAuth() {
  * 로그인 Mutation
  */
 export function useLogin() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (data: LoginRequest) => authAPI.login(data),
     onSuccess: (data) => {
       if (data.success) {
         toast.success("로그인 성공!");
 
-        // 이전 사용자의 캐시된 데이터(좋아요 상태 등)를 모두 지우기
-        queryClient.clear();
-
-        // 유저 정보 즉시 refetch
-        queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEY });
-
         // 비로그인 상태에서 저장한 측정 데이터 삭제
         clearGuestMeasurement();
 
-        // redirect 쿼리 파라미터 확인하여 원래 페이지로 이동
+        // redirect URL 확인
         const params = new URLSearchParams(window.location.search);
-        const redirectUrl = params.get("redirect");
-        router.replace(redirectUrl || "/");
+        const redirectUrl = params.get("redirect") || "/";
+
+        // 하드 네비게이션으로 페이지 이동 (replace로 히스토리 대체)
+        // - 쿠키가 확실히 적용된 상태에서 새 요청을 보냄
+        // - 뒤로가기로 로그인 페이지에 접근 불가
+        window.location.replace(redirectUrl);
       } else {
         toast.error(data.message || "로그인에 실패했습니다.");
       }
