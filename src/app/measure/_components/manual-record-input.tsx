@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,14 +30,155 @@ export function ManualRecordInput({
   onSubmit,
   isEditMode,
 }: ManualRecordInputProps) {
-  // 다음 버튼 클릭 핸들러: 00:00:00이면 건너뛰기 처리
-  const handleNext = () => {
-    if (currentInput === "00:00:00") {
-      onSkip();
-    } else {
-      onSubmit();
+  // 개별 인풋 상태
+  const [minutes, setMinutes] = useState("");
+  const [seconds, setSeconds] = useState("");
+  const [centiseconds, setCentiseconds] = useState("");
+
+  // 인풋 레퍼런스 (자동 포커스 이동용)
+  const minutesRef = useRef<HTMLInputElement>(null);
+  const secondsRef = useRef<HTMLInputElement>(null);
+  const centisecondsRef = useRef<HTMLInputElement>(null);
+
+  // currentInput이 변경되면 개별 상태 업데이트 (외부에서 값이 설정될 때)
+  useEffect(() => {
+    if (currentInput && currentInput.includes(":")) {
+      const parts = currentInput.split(":");
+      if (parts.length === 3) {
+        setMinutes(parts[0]);
+        setSeconds(parts[1]);
+        setCentiseconds(parts[2]);
+      }
+    } else if (!currentInput) {
+      setMinutes("");
+      setSeconds("");
+      setCentiseconds("");
+    }
+  }, [currentInput]);
+
+  // 숫자만 허용하는 핸들러
+  const handleNumericInput = (value: string) => {
+    return value.replace(/\D/g, "");
+  };
+
+  // 부모에게 합친 값 전달 (패딩 적용)
+  const sendCombinedValue = (min: string, sec: string, centi: string) => {
+    if (min || sec || centi) {
+      const paddedMin = (min || "0").padStart(2, "0");
+      const paddedSec = (sec || "0").padStart(2, "0");
+      const paddedCenti = (centi || "0").padStart(2, "0");
+      onInputChange(`${paddedMin}:${paddedSec}:${paddedCenti}`);
     }
   };
+
+  // 분 입력 핸들러 (00-99)
+  const handleMinutesChange = (value: string) => {
+    const numeric = handleNumericInput(value).slice(0, 2);
+    setMinutes(numeric);
+
+    // 2자리 입력 완료 시 다음 인풋으로 이동 + 부모에게 전달
+    if (numeric.length === 2) {
+      sendCombinedValue(numeric, seconds, centiseconds);
+      secondsRef.current?.focus();
+    }
+  };
+
+  // 초 입력 핸들러 (00-59)
+  const handleSecondsChange = (value: string) => {
+    let numeric = handleNumericInput(value).slice(0, 2);
+
+    // 59 초과 방지
+    if (numeric.length === 2) {
+      const num = parseInt(numeric, 10);
+      if (num > 59) {
+        numeric = "59";
+      }
+    }
+
+    setSeconds(numeric);
+
+    // 2자리 입력 완료 시 다음 인풋으로 이동 + 부모에게 전달
+    if (numeric.length === 2) {
+      sendCombinedValue(minutes, numeric, centiseconds);
+      centisecondsRef.current?.focus();
+    }
+  };
+
+  // 밀리초 입력 핸들러 (00-99)
+  const handleCentisecondsChange = (value: string) => {
+    const numeric = handleNumericInput(value).slice(0, 2);
+    setCentiseconds(numeric);
+
+    // 2자리 입력 완료 시 부모에게 전달
+    if (numeric.length === 2) {
+      sendCombinedValue(minutes, seconds, numeric);
+    }
+  };
+
+  // 포커스 해제 시 부모에게 값 전달
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement>,
+    setter: (v: string) => void,
+    maxValue?: number,
+  ) => {
+    const value = e.target.value;
+
+    // 최댓값 초과 시 보정
+    if (value.length === 2 && maxValue !== undefined) {
+      const num = parseInt(value, 10);
+      if (num > maxValue) {
+        const correctedValue = maxValue.toString().padStart(2, "0");
+        setter(correctedValue);
+      }
+    }
+
+    // 블러 시 부모에게 최종 값 전달 (ref에서 직접 최신 값 읽기)
+    setTimeout(() => {
+      const min = minutesRef.current?.value || "";
+      const sec = secondsRef.current?.value || "";
+      const centi = centisecondsRef.current?.value || "";
+      if (min || sec || centi) {
+        sendCombinedValue(min, sec, centi);
+      }
+    }, 0);
+  };
+
+  // 백스페이스로 이전 인풋으로 이동
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    prevRef: React.RefObject<HTMLInputElement | null> | null,
+    currentValue: string,
+  ) => {
+    if (e.key === "Backspace" && currentValue === "" && prevRef?.current) {
+      prevRef.current.focus();
+    }
+  };
+
+  // 최근 기록 적용
+  const handleApplyPreviousRecord = () => {
+    if (previousRecord) {
+      onInputChange(previousRecord);
+    }
+  };
+
+  // 다음 버튼 클릭 핸들러: 00:00:00이면 건너뛰기 처리
+  const handleNext = () => {
+    // 제출 전 최종 값 동기화
+    sendCombinedValue(minutes, seconds, centiseconds);
+
+    setTimeout(() => {
+      if (currentInput === "00:00:00") {
+        onSkip();
+      } else {
+        onSubmit();
+      }
+    }, 0);
+  };
+
+  // 입력 완료 여부 확인
+  const isComplete =
+    minutes.length >= 1 && seconds.length >= 1 && centiseconds.length >= 1;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -47,27 +189,80 @@ export function ManualRecordInput({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <label className="block text-sm font-medium">
-            기록 입력 (MM:SS:mm)
+            기록 입력 (분:초:밀리초)
           </label>
           {previousRecord && (
             <button
-              onClick={() => onInputChange(previousRecord)}
-              className="bg-blue-500/10 hover:bg-blue-500/20 border-blue-500/30 flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs transition-colors"
+              onClick={handleApplyPreviousRecord}
+              className="flex items-center gap-1.5 rounded-md border border-blue-500/30 bg-blue-500/10 px-2 py-1 text-xs transition-colors hover:bg-blue-500/20"
             >
               <History className="h-3 w-3 text-blue-500" />
               <span className="text-blue-500">최근: {previousRecord}</span>
             </button>
           )}
         </div>
-        <Input
-          type="tel"
-          inputMode="numeric"
-          placeholder={previousRecord || "012345"}
-          value={currentInput}
-          onChange={(e) => onInputChange(e.target.value)}
-          className="focus:border-primary from-background to-background focus:from-primary/5 focus:to-secondary/5 h-14 border-2 bg-linear-to-r text-center font-mono text-lg transition-all"
-          maxLength={8}
-        />
+
+        {/* 3개의 분리된 인풋 */}
+        <div className="flex items-center justify-center gap-2">
+          {/* 분 (MM) */}
+          <div className="flex flex-col items-center">
+            <Input
+              ref={minutesRef}
+              type="tel"
+              inputMode="numeric"
+              placeholder="00"
+              value={minutes}
+              onChange={(e) => handleMinutesChange(e.target.value)}
+              onBlur={(e) => handleBlur(e, setMinutes)}
+              onKeyDown={(e) => handleKeyDown(e, null, minutes)}
+              className="focus:border-primary focus:ring-primary/20 h-14 w-16 border-2 text-center font-mono text-xl transition-all focus:ring-2"
+              maxLength={2}
+            />
+            <span className="text-muted-foreground mt-1 text-xs">분</span>
+          </div>
+
+          <span className="text-muted-foreground pb-5 text-2xl font-bold">
+            :
+          </span>
+
+          {/* 초 (SS) */}
+          <div className="flex flex-col items-center">
+            <Input
+              ref={secondsRef}
+              type="tel"
+              inputMode="numeric"
+              placeholder="00"
+              value={seconds}
+              onChange={(e) => handleSecondsChange(e.target.value)}
+              onBlur={(e) => handleBlur(e, setSeconds, 59)}
+              onKeyDown={(e) => handleKeyDown(e, minutesRef, seconds)}
+              className="focus:border-primary focus:ring-primary/20 h-14 w-16 border-2 text-center font-mono text-xl transition-all focus:ring-2"
+              maxLength={2}
+            />
+            <span className="text-muted-foreground mt-1 text-xs">초</span>
+          </div>
+
+          <span className="text-muted-foreground pb-5 text-2xl font-bold">
+            :
+          </span>
+
+          {/* 밀리초 (mm) */}
+          <div className="flex flex-col items-center">
+            <Input
+              ref={centisecondsRef}
+              type="tel"
+              inputMode="numeric"
+              placeholder="00"
+              value={centiseconds}
+              onChange={(e) => handleCentisecondsChange(e.target.value)}
+              onBlur={(e) => handleBlur(e, setCentiseconds)}
+              onKeyDown={(e) => handleKeyDown(e, secondsRef, centiseconds)}
+              className="focus:border-primary focus:ring-primary/20 h-14 w-16 border-2 text-center font-mono text-xl transition-all focus:ring-2"
+              maxLength={2}
+            />
+            <span className="text-muted-foreground mt-1 text-xs">밀리초</span>
+          </div>
+        </div>
 
         {/* Real-time Tier Matching Display */}
         <AnimatePresence mode="wait">
@@ -140,30 +335,29 @@ export function ManualRecordInput({
           <div className="flex items-start gap-2">
             <div className="bg-primary mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" />
             <p className="text-muted-foreground text-xs">
+              각 칸에{" "}
               <span className="text-foreground font-medium">
-                숫자 6자리만 입력
+                숫자 2자리씩 입력
               </span>
-              하세요 (예: 012345)
+              하세요
             </p>
           </div>
           <div className="flex items-start gap-2">
             <div className="bg-primary mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" />
             <p className="text-muted-foreground text-xs">
-              구분자(<span className="font-mono">:</span>)는{" "}
-              <span className="text-foreground font-medium">자동으로 추가</span>
-              됩니다
+              2자리 입력 시{" "}
+              <span className="text-foreground font-medium">
+                자동으로 다음 칸으로 이동
+              </span>
+              합니다
             </p>
           </div>
           <div className="flex items-start gap-2">
             <div className="bg-secondary mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" />
             <p className="text-muted-foreground text-xs">
-              입력 예시: 1분 23초 45 →{" "}
-              <span className="text-foreground font-mono font-medium">
-                012345
-              </span>{" "}
-              →{" "}
+              예시: 1분 23초 45 →{" "}
               <span className="text-primary font-mono font-medium">
-                01:23:45
+                01 : 23 : 45
               </span>
             </p>
           </div>
@@ -183,7 +377,7 @@ export function ManualRecordInput({
         )}
         <Button
           onClick={handleNext}
-          disabled={currentInput.length !== 8}
+          disabled={!isComplete}
           className="from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 flex-1 bg-linear-to-r"
         >
           다음
