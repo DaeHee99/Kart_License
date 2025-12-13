@@ -12,9 +12,10 @@ export async function GET(request: NextRequest) {
   try {
     await connectDB();
 
-    // 관리자 권한 확인
+    // 관리자(1) 또는 운영진(2) 권한 확인
     const authResult = await authenticateUser();
-    if (!authResult.isAuth || authResult.user?.role !== 1) {
+    const userRole = authResult.user?.role ?? 0;
+    if (!authResult.isAuth || userRole < 1) {
       return NextResponse.json({ error: "권한이 없습니다." }, { status: 403 });
     }
 

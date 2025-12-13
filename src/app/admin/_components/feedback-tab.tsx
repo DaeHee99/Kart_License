@@ -15,7 +15,10 @@ export function FeedbackTab() {
   const [page, setPage] = useState(1);
   const { data, isLoading } = useAdminFeedbacks({ page, limit: 20 });
 
-  const renderRatingStars = (rating: number, icon: "difficulty" | "balance") => {
+  const renderRatingStars = (
+    rating: number,
+    icon: "difficulty" | "balance",
+  ) => {
     const Icon = icon === "difficulty" ? Star : Scale;
     return (
       <div className="flex items-center gap-1">
@@ -36,7 +39,7 @@ export function FeedbackTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="text-primary h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -140,7 +143,9 @@ export function FeedbackTab() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
+            onClick={() =>
+              setPage((p) => Math.min(pagination.totalPages, p + 1))
+            }
             disabled={page === pagination.totalPages}
           >
             다음

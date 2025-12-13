@@ -14,6 +14,7 @@ import {
   Loader2,
   Crown,
   Shield,
+  MessageSquare,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth, useLogout } from "@/hooks/use-auth";
@@ -152,7 +153,17 @@ export function UserProfileCard() {
               onClick={() => router.push("/admin")}
             >
               <Shield className="h-4 w-4" />
-              관리자 페이지
+              관리자
+            </Button>
+          )}
+          {user.role > 0 && (
+            <Button
+              variant="secondary"
+              className="w-full gap-2 border-blue-500/30 bg-blue-500/10 text-blue-700 hover:bg-blue-500/20"
+              onClick={() => router.push("/feedback")}
+            >
+              <MessageSquare className="h-4 w-4" />
+              유저 피드백
             </Button>
           )}
           <Button

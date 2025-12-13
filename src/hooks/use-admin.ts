@@ -123,6 +123,11 @@ export const adminKeys = {
   stats: () => [...adminKeys.all, "stats"] as const,
 };
 
+export const staffKeys = {
+  all: ["staff"] as const,
+  feedbacks: (params?: PaginationParams) => [...staffKeys.all, "feedbacks", params] as const,
+};
+
 export const recordKeys = {
   all: ["records"] as const,
   recent: (limit?: number) => [...recordKeys.all, "recent", limit] as const,
@@ -172,6 +177,24 @@ export function useAdminFeedbacks(params: PaginationParams = {}) {
 
   return useQuery({
     queryKey: adminKeys.feedbacks({ page, limit }),
+    queryFn: async (): Promise<FeedbacksResponse> => {
+      const response = await fetch(`/api/admin/feedbacks?page=${page}&limit=${limit}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch feedbacks");
+      }
+      return response.json();
+    },
+  });
+}
+
+/**
+ * 운영진용 피드백 목록 조회 (관리자/운영진 모두 사용 가능)
+ */
+export function useStaffFeedbacks(params: PaginationParams = {}) {
+  const { page = 1, limit = 20 } = params;
+
+  return useQuery({
+    queryKey: staffKeys.feedbacks({ page, limit }),
     queryFn: async (): Promise<FeedbacksResponse> => {
       const response = await fetch(`/api/admin/feedbacks?page=${page}&limit=${limit}`);
       if (!response.ok) {
