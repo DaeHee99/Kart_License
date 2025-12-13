@@ -45,6 +45,7 @@ interface TrackSearchModalProps {
   maps: (MapRecord & { id: string })[];
   currentMapIndex: number;
   onSelectTrack: (mapIndex: number) => void;
+  isEditMode?: boolean;
 }
 
 export function TrackSearchModal({
@@ -53,6 +54,7 @@ export function TrackSearchModal({
   maps,
   currentMapIndex,
   onSelectTrack,
+  isEditMode,
 }: TrackSearchModalProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const isMobile = useIsMobile();
@@ -93,6 +95,8 @@ export function TrackSearchModal({
           {filteredMaps.map((map, idx) => {
             const isCurrentTrack = map.originalIndex === currentMapIndex;
             const isPastTrack = map.originalIndex < currentMapIndex;
+            // 편집 모드에서는 트랙 이동 불가, 그 외에는 이전/다음 모두 이동 가능
+            const isDisabled = isEditMode;
 
             return (
               <motion.button
@@ -102,13 +106,15 @@ export function TrackSearchModal({
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ delay: idx * 0.02 }}
                 onClick={() => handleSelectMap(map.originalIndex)}
-                disabled={isPastTrack}
+                disabled={isDisabled}
                 className={`group relative w-full rounded-lg border p-3 text-left transition-all ${
                   isCurrentTrack
                     ? "border-primary/50 bg-primary/5"
-                    : isPastTrack
+                    : isDisabled
                       ? "bg-muted/50 border-muted/50 cursor-not-allowed opacity-50"
-                      : "hover:border-primary/30 hover:bg-accent/50 border-primary/10"
+                      : isPastTrack
+                        ? "border-amber-500/30 hover:border-amber-500/50 hover:bg-amber-500/10"
+                        : "hover:border-primary/30 hover:bg-accent/50 border-primary/10"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -150,10 +156,14 @@ export function TrackSearchModal({
                     </div>
                   )}
 
-                  {/* Completed Badge */}
+                  {/* Completed Badge - 이전 트랙으로 돌아갈 수 있음 */}
                   {isPastTrack && (
-                    <div className="bg-muted text-muted-foreground rounded-md px-2 py-1 text-xs font-medium">
-                      완료
+                    <div className={`rounded-md px-2 py-1 text-xs font-medium ${
+                      isDisabled
+                        ? "bg-muted text-muted-foreground"
+                        : "bg-amber-500/20 text-amber-600"
+                    }`}>
+                      {isDisabled ? "완료" : "되돌아가기"}
                     </div>
                   )}
                 </div>
@@ -197,7 +207,9 @@ export function TrackSearchModal({
             <DrawerDescription>
               트랙 이름을 검색하여 원하는 트랙을 선택할 수 있습니다.
               <br />
-              완료된 트랙은 선택할 수 없습니다.
+              {isEditMode
+                ? "수정 모드에서는 트랙 이동이 불가능합니다."
+                : "이전 트랙으로 돌아가면 해당 트랙 이후의 기록이 삭제됩니다."}
             </DrawerDescription>
           </DrawerHeader>
 
@@ -215,7 +227,9 @@ export function TrackSearchModal({
           <DialogDescription>
             트랙 이름을 검색하여 원하는 트랙을 선택할 수 있습니다.
             <br />
-            완료된 트랙은 선택할 수 없습니다.
+            {isEditMode
+              ? "수정 모드에서는 트랙 이동이 불가능합니다."
+              : "이전 트랙으로 돌아가면 해당 트랙 이후의 기록이 삭제됩니다."}
           </DialogDescription>
         </DialogHeader>
         {content}

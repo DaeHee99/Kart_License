@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TierType, TIERS } from "@/lib/types";
-import { History } from "lucide-react";
+import { History, ChevronLeft, SkipForward } from "lucide-react";
 
 interface TierSelectionInputProps {
   map: {
@@ -16,12 +16,18 @@ interface TierSelectionInputProps {
   };
   previousTier?: TierType;
   onTierSelect: (tier: TierType) => void;
+  onPrevious: () => void;
+  onSkip: () => void;
+  isEditMode?: boolean;
 }
 
 export function TierSelectionInput({
   map,
   previousTier,
   onTierSelect,
+  onPrevious,
+  onSkip,
+  isEditMode,
 }: TierSelectionInputProps) {
   return (
     <motion.div
@@ -91,6 +97,33 @@ export function TierSelectionInput({
           );
         })}
       </div>
+
+      {/* 이전/건너뛰기 버튼 */}
+      {!isEditMode && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.2 }}
+          className="flex gap-2 pt-2"
+        >
+          <Button
+            variant="outline"
+            onClick={onPrevious}
+            className="hover:bg-muted/50 flex-1"
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            이전
+          </Button>
+          <Button
+            variant="outline"
+            onClick={onSkip}
+            className="hover:bg-muted/50 flex-1"
+          >
+            건너뛰기
+            <SkipForward className="ml-1 h-4 w-4" />
+          </Button>
+        </motion.div>
+      )}
     </motion.div>
   );
 }

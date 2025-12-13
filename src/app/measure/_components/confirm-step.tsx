@@ -86,6 +86,7 @@ interface ConfirmStepProps {
   isAuthenticated: boolean;
   onEditMap: (mapIndex: number) => void;
   onRestart: () => void;
+  onComplete?: () => void;
 }
 
 export function ConfirmStep({
@@ -96,6 +97,7 @@ export function ConfirmStep({
   isAuthenticated,
   onEditMap,
   onRestart,
+  onComplete,
 }: ConfirmStepProps) {
   const router = useRouter();
   const { mutate: saveRecord, isPending } = useSaveRecord();
@@ -122,14 +124,15 @@ export function ConfirmStep({
   ).current;
 
   const handleSubmit = () => {
-    // 서버에 저장할 데이터 준비
-    const recordsToSave = records.map((record, index) => {
-      const map = maps[index];
+    // 서버에 저장할 데이터 준비 (맵 순서대로 제출 보장)
+    const recordsToSave = maps.map((map) => {
+      // 각 맵에 해당하는 기록 찾기 (mapId로 매칭)
+      const record = records.find((r) => r.mapId === map.id);
       return {
         mapName: map.name,
         difficulty: map.difficulty,
-        record: record.record || "",
-        tier: record.tier || "bronze",
+        record: record?.record || "99:99:99",
+        tier: record?.tier || "bronze",
       };
     });
 
@@ -140,6 +143,9 @@ export function ConfirmStep({
         records: recordsToSave,
       });
     }
+
+    // 자동 저장 데이터 삭제 (측정 완료)
+    onComplete?.();
 
     // 서버에 저장
     saveRecord({

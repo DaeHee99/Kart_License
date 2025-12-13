@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, CheckCircle2, History } from "lucide-react";
+import { Trophy, CheckCircle2, History, ChevronLeft } from "lucide-react";
 import { TierType } from "@/lib/types";
 import { TIERS } from "@/lib/types";
 
@@ -13,8 +13,10 @@ interface ManualRecordInputProps {
   matchedTier: TierType | null;
   previousRecord?: string;
   onInputChange: (value: string) => void;
+  onPrevious: () => void;
   onSkip: () => void;
   onSubmit: () => void;
+  isEditMode?: boolean;
 }
 
 export function ManualRecordInput({
@@ -22,9 +24,19 @@ export function ManualRecordInput({
   matchedTier,
   previousRecord,
   onInputChange,
+  onPrevious,
   onSkip,
   onSubmit,
+  isEditMode,
 }: ManualRecordInputProps) {
+  // 다음 버튼 클릭 핸들러: 00:00:00이면 건너뛰기 처리
+  const handleNext = () => {
+    if (currentInput === "00:00:00") {
+      onSkip();
+    } else {
+      onSubmit();
+    }
+  };
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -159,15 +171,18 @@ export function ManualRecordInput({
       </div>
 
       <div className="flex gap-2">
+        {!isEditMode && (
+          <Button
+            variant="outline"
+            onClick={onPrevious}
+            className="hover:bg-muted/50 flex-1"
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            이전
+          </Button>
+        )}
         <Button
-          variant="outline"
-          onClick={onSkip}
-          className="hover:bg-muted/50 flex-1"
-        >
-          건너뛰기
-        </Button>
-        <Button
-          onClick={onSubmit}
+          onClick={handleNext}
           disabled={currentInput.length !== 8}
           className="from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 flex-1 bg-linear-to-r"
         >

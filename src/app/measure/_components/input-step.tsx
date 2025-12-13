@@ -33,6 +33,8 @@ interface InputStepProps {
   onInputChange: (value: string) => void;
   onManualInput: () => void;
   onSkip: () => void;
+  onPrevious: () => void;
+  onSkipWithSelection: (previousTier?: TierType) => void;
   onUsePreviousRecords?: () => void;
   onSearchTrack?: () => void;
   isEditMode?: boolean;
@@ -53,11 +55,14 @@ export function InputStep({
   onInputChange,
   onManualInput,
   onSkip,
+  onPrevious,
+  onSkipWithSelection,
   onUsePreviousRecords,
   onSearchTrack,
   isEditMode,
 }: InputStepProps) {
-  const progress = ((records.length + 1) / totalMaps) * 100;
+  // 프로그레스는 현재 맵 인덱스 기반으로 계산 (이전 트랙으로 이동해도 정확히 반영)
+  const progress = ((currentMapIndex + 1) / totalMaps) * 100;
 
   // Reduced particles for confirm screen
   const confirmParticles = useRef(
@@ -90,7 +95,7 @@ export function InputStep({
 
       {/* Header */}
       <InputHeader
-        currentMapNumber={records.length + 1}
+        currentMapNumber={currentMapIndex + 1}
         totalMaps={totalMaps}
         progress={progress}
         onCancel={onCancel}
@@ -131,6 +136,9 @@ export function InputStep({
                     map={currentMap}
                     previousTier={previousRecord?.tier}
                     onTierSelect={onTierSelect}
+                    onPrevious={onPrevious}
+                    onSkip={() => onSkipWithSelection(previousRecord?.tier)}
+                    isEditMode={isEditMode}
                   />
                 ) : (
                   <ManualRecordInput
@@ -138,8 +146,10 @@ export function InputStep({
                     matchedTier={matchedTier}
                     previousRecord={previousRecord?.record}
                     onInputChange={onInputChange}
+                    onPrevious={onPrevious}
                     onSkip={onSkip}
                     onSubmit={onManualInput}
+                    isEditMode={isEditMode}
                   />
                 )}
               </Card>
