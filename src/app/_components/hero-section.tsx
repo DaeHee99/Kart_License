@@ -264,7 +264,7 @@ export function HeroSection({ userProfileSlot }: HeroSectionProps) {
                   className="h-16 border-2 px-8 text-lg"
                 >
                   <Sparkles className="mr-2 h-5 w-5" />
-                  S35 기록표 보기
+                  S36 기록표 보기
                 </Button>
               </motion.div>
             </motion.div>

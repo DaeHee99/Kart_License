@@ -5,11 +5,11 @@ import { Types } from "mongoose";
 
 /**
  * 특정 유저의 기록 목록 조회 API
- * GET /api/records/user/[userId]?season=35
+ * GET /api/records/user/[userId]?season=00
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ userId: string }> }
+  { params }: { params: Promise<{ userId: string }> },
 ) {
   try {
     await connectDB();
@@ -24,13 +24,13 @@ export async function GET(
           success: false,
           message: "유효하지 않은 유저 ID입니다.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const records = await recordService.getUserRecords(
       userId,
-      season ? parseInt(season) : undefined
+      season ? parseInt(season) : undefined,
     );
 
     return NextResponse.json(
@@ -38,7 +38,7 @@ export async function GET(
         success: true,
         data: records,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("User records fetch error:", error);
@@ -47,7 +47,7 @@ export async function GET(
         success: false,
         error: "유저 기록 조회 중 오류가 발생했습니다.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

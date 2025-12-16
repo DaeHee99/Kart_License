@@ -9,16 +9,18 @@ import { toast } from "sonner";
 import { convertedMapData } from "@/lib/converted-map-data";
 
 export function MapDataSection() {
-  const [isInitializing, setIsInitializing] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const handleInitializeMapData = async () => {
+  const handleUpdateMapData = async () => {
     if (
-      !confirm("맵 데이터를 초기화하시겠습니까? 이전 데이터는 비활성화됩니다.")
+      !confirm(
+        "맵 데이터를 업데이트하시겠습니까? 이전 데이터는 비활성화됩니다.",
+      )
     ) {
       return;
     }
 
-    setIsInitializing(true);
+    setIsUpdating(true);
     try {
       const response = await fetch("/api/maps/init", {
         method: "POST",
@@ -32,16 +34,16 @@ export function MapDataSection() {
 
       if (data.success) {
         toast.success(
-          `맵 데이터 초기화 성공! (시즌 ${data.data.season}, ${data.data.mapsCount}개 맵)`,
+          `맵 데이터 업데이트 성공! (시즌 ${data.data.season}, ${data.data.mapsCount}개 맵)`,
         );
       } else {
-        toast.error(data.error || "맵 데이터 초기화 실패");
+        toast.error(data.error || "맵 데이터 업데이트 실패");
       }
     } catch (error) {
       console.error("Map initialization error:", error);
-      toast.error("맵 데이터 초기화 중 오류가 발생했습니다.");
+      toast.error("맵 데이터 업데이트 중 오류가 발생했습니다.");
     } finally {
-      setIsInitializing(false);
+      setIsUpdating(false);
     }
   };
 
@@ -53,9 +55,9 @@ export function MapDataSection() {
             <Database className="h-6 w-6 text-yellow-600" />
           </div>
           <div>
-            <h3 className="mb-1 font-bold">맵 데이터 초기화</h3>
+            <h3 className="mb-1 font-bold">맵 데이터 업데이트</h3>
             <p className="text-muted-foreground mb-3 text-sm">
-              시즌 35 기준 실제 맵 데이터 (78개)를 데이터베이스에 저장합니다.
+              시즌 36 기준 실제 맵 데이터 (79개)를 데이터베이스에 저장합니다.
               <br />
               <span className="text-yellow-600">
                 ⚠️ 이전 데이터는 비활성화되며, 새로운 데이터가 활성화됩니다.
@@ -63,25 +65,25 @@ export function MapDataSection() {
             </p>
             <div className="text-muted-foreground flex flex-wrap gap-2 text-xs">
               <Badge variant="outline">루키 8개</Badge>
-              <Badge variant="outline">L3 27개</Badge>
+              <Badge variant="outline">L3 28개</Badge>
               <Badge variant="outline">L2 30개</Badge>
               <Badge variant="outline">L1 13개</Badge>
             </div>
           </div>
         </div>
         <Button
-          onClick={handleInitializeMapData}
-          disabled={isInitializing}
+          onClick={handleUpdateMapData}
+          disabled={isUpdating}
           variant="default"
           className="bg-yellow-600 hover:bg-yellow-700"
         >
-          {isInitializing ? (
+          {isUpdating ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              초기화 중...
+              업데이트 중...
             </>
           ) : (
-            "맵 데이터 초기화"
+            "맵 데이터 업데이트"
           )}
         </Button>
       </div>

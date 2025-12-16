@@ -25,7 +25,7 @@ export function ImageTab() {
 
       const link = document.createElement("a");
       link.href = dataUrl;
-      link.download = `카러플_S35_기록표.png`;
+      link.download = `카러플_S36_기록표.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -35,9 +35,9 @@ export function ImageTab() {
       // 기록표 이미지 다운로드 로그 생성
       createLog({
         actionType: LogActionType.IMAGE_DOWNLOAD,
-        content: "기록표 이미지 다운로드 - S35",
+        content: "기록표 이미지 다운로드 - S36",
         metadata: {
-          season: 35,
+          season: 36,
         },
       });
     } catch (err) {
@@ -77,8 +77,8 @@ export function ImageTab() {
             {/* Full Records Table */}
             <div className="overflow-x-auto">
               <Image
-                src="/S35_table.png"
-                alt="S35 기록표"
+                src="/S36_table.png"
+                alt="S36 기록표"
                 width={1000}
                 height={1000}
                 className="h-auto w-full"

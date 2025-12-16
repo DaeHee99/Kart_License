@@ -31,7 +31,7 @@ export function RecordsHeader() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
             >
-              S35 기록표
+              S36 기록표
             </motion.h1>
             <motion.p
               className="text-muted-foreground text-sm"
