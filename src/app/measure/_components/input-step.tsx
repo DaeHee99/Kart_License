@@ -11,7 +11,7 @@ import { MapInfoCard } from "./map-info-card";
 import { TierSelectionInput } from "./tier-selection-input";
 import { ManualRecordInput } from "./manual-record-input";
 import { useRef } from "react";
-import { History } from "lucide-react";
+import { History, FastForward } from "lucide-react";
 
 interface InputStepProps {
   inputMethod: InputMethod;
@@ -36,6 +36,7 @@ interface InputStepProps {
   onPrevious: () => void;
   onSkipWithSelection: (previousTier?: TierType) => void;
   onUsePreviousRecords?: () => void;
+  onFinishWithDefaults?: () => void;
   onSearchTrack?: () => void;
   isEditMode?: boolean;
 }
@@ -58,6 +59,7 @@ export function InputStep({
   onPrevious,
   onSkipWithSelection,
   onUsePreviousRecords,
+  onFinishWithDefaults,
   onSearchTrack,
   isEditMode,
 }: InputStepProps) {
@@ -104,7 +106,7 @@ export function InputStep({
       />
 
       {/* Main Content */}
-      <div className="relative z-10 px-4 pt-10">
+      <div className="relative z-10 px-4 pt-4">
         <div className="mx-auto max-w-2xl">
           <AnimatePresence mode="wait">
             <motion.div
@@ -114,6 +116,69 @@ export function InputStep({
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.2 }}
             >
+              {/* Quick Result Button - First map: use previous records */}
+              {currentMapIndex === 0 &&
+                hasPreviousRecords &&
+                onUsePreviousRecords && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.2 }}
+                    className="mb-4"
+                  >
+                    <Card className="border-muted-foreground/20 bg-muted/30 p-4">
+                      <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+                        <div className="flex items-center gap-2">
+                          <History className="text-muted-foreground h-5 w-5" />
+                          <p className="text-muted-foreground text-sm">
+                            이전 측정 기록이 있습니다
+                            <br />
+                            이전 기록에 따라 바뀐 군이 자동으로 선택됩니다
+                          </p>
+                        </div>
+                        <Button
+                          variant="outline"
+                          onClick={onUsePreviousRecords}
+                          className="w-full sm:w-auto"
+                        >
+                          <History className="mr-2 h-4 w-4" />
+                          이전 기록으로 즉시 결과 확인
+                        </Button>
+                      </div>
+                    </Card>
+                  </motion.div>
+                )}
+
+              {/* Quick Finish Button - After first map: finish with current + defaults */}
+              {currentMapIndex >= 1 && onFinishWithDefaults && !isEditMode && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.2 }}
+                  className="mb-4"
+                >
+                  <Card className="border-muted-foreground/20 bg-muted/30 p-4">
+                    <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+                      <div className="flex items-center gap-2">
+                        <FastForward className="text-muted-foreground h-5 w-5" />
+                        <p className="text-muted-foreground text-sm">
+                          {currentMapIndex}개 트랙 측정 완료
+                          <br />
+                          나머지 트랙은 이전 기록에 따라 자동으로 선택됩니다
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        onClick={onFinishWithDefaults}
+                        className="w-full sm:w-auto"
+                      >
+                        <FastForward className="mr-2 h-4 w-4" />
+                        여기까지만 측정하고 결과 확인
+                      </Button>
+                    </div>
+                  </Card>
+                </motion.div>
+              )}
               <Card className="border-primary/10 from-card via-card to-primary/5 relative space-y-6 overflow-hidden border-2 bg-linear-to-br p-6 shadow-xl">
                 {/* Shimmer effect */}
                 <motion.div
@@ -153,37 +218,6 @@ export function InputStep({
                   />
                 )}
               </Card>
-
-              {/* Quick Result Button - Only shown on first map when previous records exist */}
-              {currentMapIndex === 0 &&
-                hasPreviousRecords &&
-                onUsePreviousRecords && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.2 }}
-                    className="mt-4"
-                  >
-                    <Card className="border-muted-foreground/20 bg-muted/30 p-4">
-                      <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
-                        <div className="flex items-center gap-2">
-                          <History className="text-muted-foreground h-5 w-5" />
-                          <span className="text-muted-foreground text-sm">
-                            이전 측정 기록이 있습니다
-                          </span>
-                        </div>
-                        <Button
-                          variant="outline"
-                          onClick={onUsePreviousRecords}
-                          className="w-full sm:w-auto"
-                        >
-                          <History className="mr-2 h-4 w-4" />
-                          이전 기록으로 즉시 결과 확인
-                        </Button>
-                      </div>
-                    </Card>
-                  </motion.div>
-                )}
             </motion.div>
           </AnimatePresence>
         </div>

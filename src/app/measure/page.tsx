@@ -184,48 +184,6 @@ export default function MeasurePage() {
     }
   }, [step, hasPreviousRecords, hasShownPreviousRecordToast]);
 
-  // 현재 맵의 최근 기록 찾기 (맵 이름으로 매칭)
-  // 우선순위: allRecords > 서버/localStorage 기록
-  const previousRecordForCurrentMap = useMemo(() => {
-    if (!currentMap) return null;
-
-    // 1. 현재 세션에서 입력한 기록이 있으면 우선 사용
-    const existingRecord = allRecords[currentMapIndex];
-    if (existingRecord && existingRecord.record) {
-      return {
-        mapName: currentMap.name,
-        difficulty: currentMap.difficulty,
-        record: existingRecord.record,
-        tier: existingRecord.tier || ("bronze" as TierType),
-      };
-    }
-
-    // 2. 로그인 유저: 서버에서 가져온 기록 사용
-    if (isAuthenticated && latestRecord?.records) {
-      const matchedRecord = latestRecord.records.find(
-        (r) => r.mapName === currentMap.name,
-      );
-      return matchedRecord || null;
-    }
-
-    // 3. 비로그인 유저: localStorage에서 가져온 기록 사용
-    if (!isAuthenticated && guestRecord?.records) {
-      const matchedRecord = guestRecord.records.find(
-        (r) => r.mapName === currentMap.name,
-      );
-      return matchedRecord || null;
-    }
-
-    return null;
-  }, [
-    latestRecord,
-    currentMap,
-    currentMapIndex,
-    isAuthenticated,
-    guestRecord,
-    allRecords,
-  ]);
-
   // '+' 문자가 있는 기록을 처리하여 0.01초를 더한 값으로 변환
   const processRecordWithPlus = useCallback((record: string): string => {
     if (!record.includes("+")) {
@@ -256,6 +214,76 @@ export default function MeasurePage() {
 
     return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}:${String(centiseconds).padStart(2, "0")}`;
   }, []);
+
+  // 현재 맵의 최근 기록 찾기 (맵 이름으로 매칭)
+  // 우선순위: allRecords > 서버/localStorage 기록
+  // 중요: 시즌 변경으로 기준이 바뀔 수 있으므로, 기록 기반으로 티어를 재계산
+  const previousRecordForCurrentMap = useMemo(() => {
+    if (!currentMap) return null;
+
+    // 1. 현재 세션에서 입력한 기록이 있으면 우선 사용
+    const existingRecord = allRecords[currentMapIndex];
+    if (existingRecord && existingRecord.record) {
+      // 현재 맵의 tierRecords 기준으로 티어 재계산
+      const recalculatedTier =
+        findMatchingTier(existingRecord.record, currentMap.tierRecords) ||
+        "bronze";
+      return {
+        mapName: currentMap.name,
+        difficulty: currentMap.difficulty,
+        record: existingRecord.record,
+        tier: recalculatedTier as TierType,
+      };
+    }
+
+    // 2. 로그인 유저: 서버에서 가져온 기록 사용
+    if (isAuthenticated && latestRecord?.records) {
+      const matchedRecord = latestRecord.records.find(
+        (r) => r.mapName === currentMap.name,
+      );
+      if (matchedRecord) {
+        // 기록을 현재 맵의 tierRecords와 비교하여 새로운 티어 계산
+        const processedRecord = processRecordWithPlus(matchedRecord.record);
+        const recalculatedTier =
+          findMatchingTier(processedRecord, currentMap.tierRecords) || "bronze";
+        return {
+          ...matchedRecord,
+          record: processedRecord,
+          tier: recalculatedTier as TierType,
+        };
+      }
+      return null;
+    }
+
+    // 3. 비로그인 유저: localStorage에서 가져온 기록 사용
+    if (!isAuthenticated && guestRecord?.records) {
+      const matchedRecord = guestRecord.records.find(
+        (r) => r.mapName === currentMap.name,
+      );
+      if (matchedRecord) {
+        // 기록을 현재 맵의 tierRecords와 비교하여 새로운 티어 계산
+        const processedRecord = processRecordWithPlus(matchedRecord.record);
+        const recalculatedTier =
+          findMatchingTier(processedRecord, currentMap.tierRecords) || "bronze";
+        return {
+          ...matchedRecord,
+          record: processedRecord,
+          tier: recalculatedTier as TierType,
+        };
+      }
+      return null;
+    }
+
+    return null;
+  }, [
+    latestRecord,
+    currentMap,
+    currentMapIndex,
+    isAuthenticated,
+    guestRecord,
+    allRecords,
+    processRecordWithPlus,
+  ]);
 
   // 맵이 변경되거나 최근 기록이 있을 때 자동으로 입력값 설정
   useEffect(() => {
@@ -572,12 +600,15 @@ export default function MeasurePage() {
       }
 
       // 이전 기록이 있으면 사용, 없으면 기본값
+      // 중요: 시즌 변경으로 기준이 바뀔 수 있으므로, 기록 기반으로 티어를 재계산
       if (previousRecord) {
         const processedRecord = processRecordWithPlus(previousRecord.record);
+        const recalculatedTier =
+          findMatchingTier(processedRecord, map.tierRecords) || "bronze";
         newAllRecords[i] = {
           mapId: map.id,
           record: processedRecord,
-          tier: previousRecord.tier,
+          tier: recalculatedTier as TierType,
         };
       } else {
         newAllRecords[i] = {
@@ -605,6 +636,7 @@ export default function MeasurePage() {
   };
 
   // 이전 기록으로 즉시 결과 확인
+  // 중요: 시즌 변경으로 기준이 바뀔 수 있으므로, 기록 기반으로 티어를 재계산
   const handleUsePreviousRecords = () => {
     const previousRecords = isAuthenticated
       ? latestRecord?.records
@@ -618,10 +650,13 @@ export default function MeasurePage() {
       const prevRecord = previousRecords.find((r) => r.mapName === map.name);
 
       if (prevRecord) {
+        const processedRecord = processRecordWithPlus(prevRecord.record);
+        const recalculatedTier =
+          findMatchingTier(processedRecord, map.tierRecords) || "bronze";
         newAllRecords[index] = {
           mapId: map.id,
-          record: prevRecord.record,
-          tier: prevRecord.tier,
+          record: processedRecord,
+          tier: recalculatedTier as TierType,
         };
       } else {
         newAllRecords[index] = {
@@ -634,6 +669,49 @@ export default function MeasurePage() {
 
     setAllRecords(newAllRecords);
     setStep("confirm");
+  };
+
+  // 현재까지 측정한 기록 + 나머지는 기본값으로 결과 확인
+  const handleFinishWithDefaults = () => {
+    const previousRecords = isAuthenticated
+      ? latestRecord?.records
+      : guestRecord?.records;
+
+    const newAllRecords: Record<number, UserMapRecord> = { ...allRecords };
+
+    // 현재 맵부터 끝까지 기본값으로 채우기
+    for (let i = currentMapIndex; i < mapsWithId.length; i++) {
+      // 이미 기록이 있으면 스킵
+      if (newAllRecords[i]) continue;
+
+      const map = mapsWithId[i];
+
+      // 이전 기록 찾기
+      const prevRecord = previousRecords?.find((r) => r.mapName === map.name);
+
+      if (prevRecord) {
+        const processedRecord = processRecordWithPlus(prevRecord.record);
+        const recalculatedTier =
+          findMatchingTier(processedRecord, map.tierRecords) || "bronze";
+        newAllRecords[i] = {
+          mapId: map.id,
+          record: processedRecord,
+          tier: recalculatedTier as TierType,
+        };
+      } else {
+        newAllRecords[i] = {
+          mapId: map.id,
+          record: "99:99:99",
+          tier: "bronze" as const,
+        };
+      }
+    }
+
+    setAllRecords(newAllRecords);
+    setStep("confirm");
+    toast.success(
+      `${currentMapIndex}개 트랙 측정 완료, 나머지는 기본값으로 설정되었습니다.`,
+    );
   };
 
   // 측정 완료 후 자동 저장 삭제 (ConfirmStep에서 호출)
@@ -698,6 +776,7 @@ export default function MeasurePage() {
         onPrevious={handleGoToPreviousMap}
         onSkipWithSelection={handleSkipWithSelection}
         onUsePreviousRecords={handleUsePreviousRecords}
+        onFinishWithDefaults={handleFinishWithDefaults}
         onSearchTrack={() => setShowTrackSearchModal(true)}
         isEditMode={isEditMode}
       />
