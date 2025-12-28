@@ -11,6 +11,21 @@ import { convertedMapData } from "@/lib/converted-map-data";
 export function MapDataSection() {
   const [isUpdating, setIsUpdating] = useState(false);
 
+  const season = convertedMapData.season;
+  const mapsCount = convertedMapData.maps.length;
+  const rookieMapsCount = convertedMapData.maps.filter(
+    (map) => map.difficulty === "루키",
+  ).length;
+  const l3MapsCount = convertedMapData.maps.filter(
+    (map) => map.difficulty === "L3",
+  ).length;
+  const l2MapsCount = convertedMapData.maps.filter(
+    (map) => map.difficulty === "L2",
+  ).length;
+  const l1MapsCount = convertedMapData.maps.filter(
+    (map) => map.difficulty === "L1",
+  ).length;
+
   const handleUpdateMapData = async () => {
     if (
       !confirm(
@@ -57,17 +72,18 @@ export function MapDataSection() {
           <div>
             <h3 className="mb-1 font-bold">맵 데이터 업데이트</h3>
             <p className="text-muted-foreground mb-3 text-sm">
-              시즌 36 기준 실제 맵 데이터 (79개)를 데이터베이스에 저장합니다.
+              시즌 {season} 기준 실제 맵 데이터 ({mapsCount}
+              개)를 데이터베이스에 저장합니다.
               <br />
               <span className="text-yellow-600">
                 ⚠️ 이전 데이터는 비활성화되며, 새로운 데이터가 활성화됩니다.
               </span>
             </p>
             <div className="text-muted-foreground flex flex-wrap gap-2 text-xs">
-              <Badge variant="outline">루키 8개</Badge>
-              <Badge variant="outline">L3 28개</Badge>
-              <Badge variant="outline">L2 30개</Badge>
-              <Badge variant="outline">L1 13개</Badge>
+              <Badge variant="outline">루키 {rookieMapsCount}개</Badge>
+              <Badge variant="outline">L3 {l3MapsCount}개</Badge>
+              <Badge variant="outline">L2 {l2MapsCount}개</Badge>
+              <Badge variant="outline">L1 {l1MapsCount}개</Badge>
             </div>
           </div>
         </div>
