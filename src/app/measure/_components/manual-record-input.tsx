@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +35,11 @@ export function ManualRecordInput({
   const [seconds, setSeconds] = useState("");
   const [centiseconds, setCentiseconds] = useState("");
 
+  // 사용자가 현재 입력 중인지 추적 (외부 값 변경 무시용)
+  const isUserEditingRef = useRef(false);
+  // 마지막으로 외부에 전달한 값 (중복 전달 방지용)
+  const lastSentValueRef = useRef("");
+
   // 인풋 레퍼런스 (자동 포커스 이동용)
   const minutesRef = useRef<HTMLInputElement>(null);
   const secondsRef = useRef<HTMLInputElement>(null);
@@ -42,6 +47,11 @@ export function ManualRecordInput({
 
   // currentInput이 변경되면 개별 상태 업데이트 (외부에서 값이 설정될 때)
   useEffect(() => {
+    // 사용자가 편집 중이면 외부 값 변경 무시
+    if (isUserEditingRef.current) {
+      return;
+    }
+
     if (currentInput && currentInput.includes(":")) {
       const parts = currentInput.split(":");
       if (parts.length === 3) {
@@ -62,23 +72,40 @@ export function ManualRecordInput({
   };
 
   // 부모에게 합친 값 전달 (패딩 적용)
-  const sendCombinedValue = (min: string, sec: string, centi: string) => {
-    if (min || sec || centi) {
-      const paddedMin = (min || "0").padStart(2, "0");
-      const paddedSec = (sec || "0").padStart(2, "0");
-      const paddedCenti = (centi || "0").padStart(2, "0");
-      onInputChange(`${paddedMin}:${paddedSec}:${paddedCenti}`);
-    }
-  };
+  const sendCombinedValue = useCallback(
+    (min: string, sec: string, centi: string) => {
+      if (min || sec || centi) {
+        const paddedMin = (min || "0").padStart(2, "0");
+        const paddedSec = (sec || "0").padStart(2, "0");
+        const paddedCenti = (centi || "0").padStart(2, "0");
+        const combinedValue = `${paddedMin}:${paddedSec}:${paddedCenti}`;
+
+        // 중복 전달 방지
+        if (lastSentValueRef.current !== combinedValue) {
+          lastSentValueRef.current = combinedValue;
+          onInputChange(combinedValue);
+        }
+      }
+    },
+    [onInputChange],
+  );
+
+  // 다른 시간 입력 필드로 이동하는지 확인
+  const isTimeInputField = useCallback((element: Element | null): boolean => {
+    return (
+      element === minutesRef.current ||
+      element === secondsRef.current ||
+      element === centisecondsRef.current
+    );
+  }, []);
 
   // 분 입력 핸들러 (00-99)
   const handleMinutesChange = (value: string) => {
     const numeric = handleNumericInput(value).slice(0, 2);
     setMinutes(numeric);
 
-    // 2자리 입력 완료 시 다음 인풋으로 이동 + 부모에게 전달
+    // 2자리 입력 완료 시 다음 인풋으로 이동 (부모에게 전달하지 않음 - 입력 중이므로)
     if (numeric.length === 2) {
-      sendCombinedValue(numeric, seconds, centiseconds);
       secondsRef.current?.focus();
     }
   };
@@ -97,9 +124,8 @@ export function ManualRecordInput({
 
     setSeconds(numeric);
 
-    // 2자리 입력 완료 시 다음 인풋으로 이동 + 부모에게 전달
+    // 2자리 입력 완료 시 다음 인풋으로 이동 (부모에게 전달하지 않음 - 입력 중이므로)
     if (numeric.length === 2) {
-      sendCombinedValue(minutes, numeric, centiseconds);
       centisecondsRef.current?.focus();
     }
   };
@@ -109,10 +135,15 @@ export function ManualRecordInput({
     const numeric = handleNumericInput(value).slice(0, 2);
     setCentiseconds(numeric);
 
-    // 2자리 입력 완료 시 부모에게 전달
-    if (numeric.length === 2) {
+    // 모든 필드가 2자리 입력 완료 시 부모에게 전달
+    if (numeric.length === 2 && minutes.length >= 1 && seconds.length >= 1) {
       sendCombinedValue(minutes, seconds, numeric);
     }
+  };
+
+  // 포커스 시 편집 모드 활성화
+  const handleFocus = () => {
+    isUserEditingRef.current = true;
   };
 
   // 포커스 해제 시 부모에게 값 전달
@@ -122,6 +153,7 @@ export function ManualRecordInput({
     maxValue?: number,
   ) => {
     const value = e.target.value;
+    const relatedTarget = e.relatedTarget as Element | null;
 
     // 최댓값 초과 시 보정
     if (value.length === 2 && maxValue !== undefined) {
@@ -132,7 +164,15 @@ export function ManualRecordInput({
       }
     }
 
-    // 블러 시 부모에게 최종 값 전달 (ref에서 직접 최신 값 읽기)
+    // 다른 시간 입력 필드로 이동하는 경우
+    if (isTimeInputField(relatedTarget)) {
+      // 편집 모드 유지, 값 동기화하지 않음
+      return;
+    }
+
+    // 외부로 포커스가 이동할 때 편집 모드 종료 및 부모에게 최종 값 전달
+    isUserEditingRef.current = false;
+
     setTimeout(() => {
       const min = minutesRef.current?.value || "";
       const sec = secondsRef.current?.value || "";
@@ -213,6 +253,7 @@ export function ManualRecordInput({
               placeholder="00"
               value={minutes}
               onChange={(e) => handleMinutesChange(e.target.value)}
+              onFocus={handleFocus}
               onBlur={(e) => handleBlur(e, setMinutes)}
               onKeyDown={(e) => handleKeyDown(e, null, minutes)}
               className="focus:border-primary focus:ring-primary/20 h-14 w-16 border-2 text-center font-mono text-xl transition-all focus:ring-2"
@@ -234,6 +275,7 @@ export function ManualRecordInput({
               placeholder="00"
               value={seconds}
               onChange={(e) => handleSecondsChange(e.target.value)}
+              onFocus={handleFocus}
               onBlur={(e) => handleBlur(e, setSeconds, 59)}
               onKeyDown={(e) => handleKeyDown(e, minutesRef, seconds)}
               className="focus:border-primary focus:ring-primary/20 h-14 w-16 border-2 text-center font-mono text-xl transition-all focus:ring-2"
@@ -255,6 +297,7 @@ export function ManualRecordInput({
               placeholder="00"
               value={centiseconds}
               onChange={(e) => handleCentisecondsChange(e.target.value)}
+              onFocus={handleFocus}
               onBlur={(e) => handleBlur(e, setCentiseconds)}
               onKeyDown={(e) => handleKeyDown(e, secondsRef, centiseconds)}
               className="focus:border-primary focus:ring-primary/20 h-14 w-16 border-2 text-center font-mono text-xl transition-all focus:ring-2"

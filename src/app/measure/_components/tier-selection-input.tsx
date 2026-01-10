@@ -36,14 +36,14 @@ export function TierSelectionInput({
       transition={{ delay: 0.25, duration: 0.2 }}
       className="relative space-y-3"
     >
-      <p className="text-muted-foreground text-center text-sm">
-        자신의 기록과 가장 가까운 군을 선택하세요
-      </p>
       {previousTier && (
-        <div className="bg-blue-500/10 border-blue-500/30 flex items-center gap-2 rounded-lg border p-2">
+        <div className="flex items-center gap-2 rounded-lg border border-blue-500/30 bg-blue-500/10 p-2">
           <History className="h-4 w-4 text-blue-500" />
           <span className="text-muted-foreground text-xs">
-            최근 기록: <span className="text-blue-500 font-medium">{TIERS[previousTier].nameKo}</span>
+            최근 기록:{" "}
+            <span className="font-medium text-blue-500">
+              {TIERS[previousTier].nameKo}
+            </span>
           </span>
         </div>
       )}
@@ -67,7 +67,9 @@ export function TierSelectionInput({
               {/* Glow on hover or if previous tier */}
               <div
                 className={`absolute -inset-0.5 bg-linear-to-r ${tier.color} rounded-lg blur transition-opacity duration-200 ${
-                  isPreviousTier ? 'opacity-40' : 'opacity-0 group-hover:opacity-30'
+                  isPreviousTier
+                    ? "opacity-40"
+                    : "opacity-0 group-hover:opacity-30"
                 }`}
               />
 
@@ -76,8 +78,8 @@ export function TierSelectionInput({
                 onClick={() => onTierSelect(tierId)}
                 className={`relative h-auto w-full justify-between py-4 transition-all duration-200 ${
                   isPreviousTier
-                    ? 'border-blue-500/50 bg-blue-500/10'
-                    : 'hover:border-primary hover:from-primary/5 hover:to-secondary/5 bg-linear-to-r'
+                    ? "border-blue-500/50 bg-blue-500/10"
+                    : "hover:border-primary hover:from-primary/5 hover:to-secondary/5 bg-linear-to-r"
                 }`}
               >
                 <div className="flex items-center gap-3">
