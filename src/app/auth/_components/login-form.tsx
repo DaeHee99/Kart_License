@@ -8,10 +8,12 @@ import { Label } from "@/components/ui/label";
 import { LogIn, Lock, User } from "lucide-react";
 import { useState } from "react";
 import { useLogin } from "@/hooks/use-auth";
+import { ForgotPasswordModal } from "./forgot-password-modal";
 
 export function LoginForm() {
   const [loginId, setLoginId] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const { mutate: login, isPending } = useLogin();
 
   const handleLogin = (e: React.FormEvent) => {
@@ -123,8 +125,28 @@ export function LoginForm() {
               </span>
             </Button>
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2, delay: 0.25 }}
+            className="text-center"
+          >
+            <button
+              type="button"
+              onClick={() => setForgotPasswordOpen(true)}
+              className="text-muted-foreground hover:text-primary text-sm underline-offset-4 hover:underline"
+            >
+              비밀번호를 잊으셨나요?
+            </button>
+          </motion.div>
         </form>
       </Card>
+
+      <ForgotPasswordModal
+        open={forgotPasswordOpen}
+        onClose={() => setForgotPasswordOpen(false)}
+      />
     </motion.div>
   );
 }
