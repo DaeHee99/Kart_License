@@ -63,7 +63,7 @@ const mapRecordSchema = new Schema<IMapRecord>(
       bronze: { type: String, required: true },
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const mapDataSchema = new Schema<IMapData, IMapDataModel>(
@@ -89,7 +89,7 @@ const mapDataSchema = new Schema<IMapData, IMapDataModel>(
       index: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // 인덱스 설정: 활성화된 최신 데이터 조회 최적화
@@ -99,10 +99,9 @@ mapDataSchema.index({ isActive: 1, createdAt: -1 });
 mapDataSchema.pre("save", async function (next) {
   if (this.isNew && this.isActive) {
     try {
-      await mongoose.model<IMapData>("MapData").updateMany(
-        { isActive: true },
-        { $set: { isActive: false } }
-      );
+      await mongoose
+        .model<IMapData>("MapData")
+        .updateMany({ isActive: true }, { $set: { isActive: false } });
       next();
     } catch (err) {
       next(err as Error);
