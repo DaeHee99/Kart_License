@@ -60,7 +60,8 @@ export default function CommunityPage() {
   };
 
   // 모든 페이지의 게시글을 플랫하게 변환하고 Post 타입으로 매핑
-  const allPosts = (
+  // 공지사항 우선 정렬은 백엔드에서 처리됨
+  const allPosts =
     data?.pages.flatMap((page) =>
       (page.data?.posts || []).map((post: any) => ({
         _id: post._id,
@@ -81,13 +82,7 @@ export default function CommunityPage() {
         likeCount: post.likeCount ?? 0,
         isLiked: post.isLiked ?? false,
       })),
-    ) || []
-  ).sort((a, b) => {
-    // 공지사항을 가장 위로
-    if (a.category === "notice" && b.category !== "notice") return -1;
-    if (a.category !== "notice" && b.category === "notice") return 1;
-    return 0; // 원래 순서 유지
-  });
+    ) || [];
   const totalCount = data?.pages[0]?.data?.totalCount || 0;
 
   return (

@@ -96,7 +96,7 @@ export class PostService {
     limit: number = 20,
     category?: PostCategory | "all",
     searchQuery?: string,
-    currentUserId?: string
+    currentUserId?: string,
   ): Promise<PaginatedPosts> {
     const skip = (page - 1) * limit;
     const query: any = {};
@@ -117,14 +117,31 @@ export class PostService {
       query.title = { $regex: escapedQuery, $options: "i" };
     }
 
-    // 게시글 목록 조회
+    // 게시글 목록 조회 (공지사항 우선 정렬)
     const [posts, totalCount] = await Promise.all([
-      Post.find(query)
-        .populate("user", "name image license role")
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean(),
+      Post.aggregate([
+        { $match: query },
+        {
+          $addFields: {
+            _sortPriority: {
+              $cond: [{ $eq: ["$category", "notice"] }, 0, 1],
+            },
+          },
+        },
+        { $sort: { _sortPriority: 1, createdAt: -1 } },
+        { $skip: skip },
+        { $limit: limit },
+        {
+          $lookup: {
+            from: "users",
+            localField: "user",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        { $unwind: "$user" },
+        { $project: { _sortPriority: 0 } },
+      ]),
       Post.countDocuments(query),
     ]);
 
@@ -137,7 +154,9 @@ export class PostService {
 
         // Check if current user liked this post
         const isLiked = currentUserId
-          ? (post.likes || []).some((likeId: Types.ObjectId) => likeId.toString() === currentUserId)
+          ? (post.likes || []).some(
+              (likeId: Types.ObjectId) => likeId.toString() === currentUserId,
+            )
           : undefined;
 
         return {
@@ -160,7 +179,7 @@ export class PostService {
           createdAt: post.createdAt,
           updatedAt: post.updatedAt,
         };
-      })
+      }),
     );
 
     return {
@@ -174,7 +193,10 @@ export class PostService {
   /**
    * 게시글 상세 조회
    */
-  async getPostById(postId: string, currentUserId?: string): Promise<PostDetail | null> {
+  async getPostById(
+    postId: string,
+    currentUserId?: string,
+  ): Promise<PostDetail | null> {
     if (!Types.ObjectId.isValid(postId)) {
       return null;
     }
@@ -198,7 +220,9 @@ export class PostService {
 
     // Check if current user liked this post
     const isPostLiked = currentUserId
-      ? (post.likes || []).some((likeId: Types.ObjectId) => likeId.toString() === currentUserId)
+      ? (post.likes || []).some(
+          (likeId: Types.ObjectId) => likeId.toString() === currentUserId,
+        )
       : undefined;
 
     return {
@@ -223,7 +247,9 @@ export class PostService {
       comments: comments.map((comment: any) => {
         // Check if current user liked this comment
         const isCommentLiked = currentUserId
-          ? (comment.likes || []).some((likeId: Types.ObjectId) => likeId.toString() === currentUserId)
+          ? (comment.likes || []).some(
+              (likeId: Types.ObjectId) => likeId.toString() === currentUserId,
+            )
           : undefined;
 
         return {
@@ -252,7 +278,7 @@ export class PostService {
     postId: string,
     userId: string,
     input: UpdatePostInput,
-    userRole: number = 0
+    userRole: number = 0,
   ): Promise<IPost | null> {
     if (!Types.ObjectId.isValid(postId)) {
       return null;
@@ -276,7 +302,7 @@ export class PostService {
     const updatedPost = await Post.findByIdAndUpdate(
       postId,
       { $set: input },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     return updatedPost;
@@ -285,7 +311,11 @@ export class PostService {
   /**
    * 게시글 삭제
    */
-  async deletePost(postId: string, userId: string, userRole: number = 0): Promise<boolean> {
+  async deletePost(
+    postId: string,
+    userId: string,
+    userRole: number = 0,
+  ): Promise<boolean> {
     if (!Types.ObjectId.isValid(postId)) {
       return false;
     }
@@ -316,7 +346,10 @@ export class PostService {
   /**
    * 게시글 좋아요 토글
    */
-  async togglePostLike(postId: string, userId: string): Promise<{ liked: boolean; likeCount: number }> {
+  async togglePostLike(
+    postId: string,
+    userId: string,
+  ): Promise<{ liked: boolean; likeCount: number }> {
     if (!Types.ObjectId.isValid(postId) || !Types.ObjectId.isValid(userId)) {
       throw new Error("유효하지 않은 ID입니다.");
     }
@@ -327,7 +360,7 @@ export class PostService {
     }
 
     const userObjectId = new Types.ObjectId(userId);
-    const likedIndex = post.likes.findIndex(id => id.toString() === userId);
+    const likedIndex = post.likes.findIndex((id) => id.toString() === userId);
 
     if (likedIndex > -1) {
       // 이미 좋아요를 눌렀으면 제거
@@ -345,7 +378,10 @@ export class PostService {
   /**
    * 댓글 좋아요 토글
    */
-  async toggleCommentLike(commentId: string, userId: string): Promise<{ liked: boolean; likeCount: number }> {
+  async toggleCommentLike(
+    commentId: string,
+    userId: string,
+  ): Promise<{ liked: boolean; likeCount: number }> {
     if (!Types.ObjectId.isValid(commentId) || !Types.ObjectId.isValid(userId)) {
       throw new Error("유효하지 않은 ID입니다.");
     }
@@ -356,7 +392,9 @@ export class PostService {
     }
 
     const userObjectId = new Types.ObjectId(userId);
-    const likedIndex = comment.likes.findIndex(id => id.toString() === userId);
+    const likedIndex = comment.likes.findIndex(
+      (id) => id.toString() === userId,
+    );
 
     if (likedIndex > -1) {
       // 이미 좋아요를 눌렀으면 제거
