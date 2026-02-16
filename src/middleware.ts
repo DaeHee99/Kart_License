@@ -56,6 +56,17 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
   const authenticated = !!token;
 
+  // 페이지 접근 로깅 (프로덕션만)
+  if (process.env.NODE_ENV === "production") {
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      "unknown";
+    const now = new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
+    console.log(
+      ` \x1b[90m${now}\x1b[0m \x1b[35m[PAGE]\x1b[0m \x1b[32m${request.method}\x1b[0m ${pathname} - IP: ${ip}`,
+    );
+  }
+
   // 로그인된 상태에서 auth 페이지 접근 시 메인 페이지로 리다이렉트
   const isAuthPath = authOnlyPaths.some((path) => pathname.startsWith(path));
   if (isAuthPath && authenticated) {
