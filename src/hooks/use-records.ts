@@ -70,6 +70,15 @@ export function useSaveRecord() {
 
   return useMutation({
     mutationFn: (data: SaveRecordRequest) => recordsAPI.saveRecord(data),
+    onMutate: () => {
+      // mutate()는 유저의 버튼 클릭에서 동기적으로 호출되므로
+      // 이 시점에 user activation이 유효하여 모바일에서 진동이 작동함
+      if (typeof window !== "undefined" && "vibrate" in navigator) {
+        // 50ms 진동 + 550ms 대기를 ~4초간 반복 (API 호출 + 로딩 화면 커버)
+        const pattern = Array.from({ length: 7 }, () => [50, 550]).flat();
+        navigator.vibrate(pattern);
+      }
+    },
     onSuccess: (data) => {
       if (data.success && data.data) {
         // 최근 기록 캐시 무효화
@@ -84,6 +93,9 @@ export function useSaveRecord() {
       }
     },
     onError: (error: any) => {
+      if (typeof window !== "undefined" && "vibrate" in navigator) {
+        navigator.vibrate(0);
+      }
       toast.error(error.message || "기록 저장 중 오류가 발생했습니다.");
     },
   });

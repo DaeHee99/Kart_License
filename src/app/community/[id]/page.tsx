@@ -235,21 +235,12 @@ export default function CommunityDetailPage() {
     });
   };
 
-  const handleVibrate = () => {
-    // 진동 지원 기기에서 짧은 진동 (100ms)
-    if (typeof window !== "undefined" && "vibrate" in navigator) {
-      navigator.vibrate(100);
-    }
-  };
-
   const handleTogglePostLike = () => {
     togglePostLike();
-    handleVibrate();
   };
 
   const handleToggleCommentLike = (commentId: string) => {
     toggleCommentLike(commentId);
-    handleVibrate();
   };
 
   return (

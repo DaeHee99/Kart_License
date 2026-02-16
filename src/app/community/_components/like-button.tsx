@@ -34,9 +34,8 @@ export function LikeButton({
   const handleClick = () => {
     if (isLoading) return;
 
-    // 모바일 진동
     if (typeof window !== "undefined" && "vibrate" in navigator) {
-      navigator.vibrate([10, 5, 10]);
+      navigator.vibrate(50);
     }
 
     // 좋아요 추가 시에만 파티클 애니메이션

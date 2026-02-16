@@ -2,28 +2,34 @@
 
 import { motion } from "motion/react";
 import { Sparkles } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface LoadingScreenProps {
-  loadingProgress: number;
+  /** 로딩 애니메이션 지속 시간 (ms) */
+  duration?: number;
+  /** 애니메이션 완료 시 호출되는 콜백 */
+  onComplete?: () => void;
 }
 
-export function LoadingScreen({ loadingProgress }: LoadingScreenProps) {
-  useEffect(() => {
-    // 진동 지원 기기에서 주기적으로 짧은 진동 (600ms마다 100ms 진동)
-    if (typeof window !== "undefined" && "vibrate" in navigator) {
-      navigator.vibrate(100);
+export function LoadingScreen({
+  duration = 2500,
+  onComplete,
+}: LoadingScreenProps) {
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
-      const vibrateInterval = setInterval(() => {
-        navigator.vibrate(100);
-      }, 600);
+  useEffect(() => {
+    if (typeof window !== "undefined" && "vibrate" in navigator) {
+      const cycleMs = 600;
+      const count = Math.ceil(duration / cycleMs);
+      const pattern = Array.from({ length: count }, () => [50, 550]).flat();
+      navigator.vibrate(pattern);
 
       return () => {
-        clearInterval(vibrateInterval);
+        navigator.vibrate(0);
       };
     }
-  }, []);
+  }, [duration]);
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden pb-24">
@@ -79,7 +85,19 @@ export function LoadingScreen({ loadingProgress }: LoadingScreenProps) {
             잠시만 기다려주세요
           </p>
         </div>
-        <Progress value={loadingProgress} className="mx-auto w-64" />
+        {/* CSS transition 대신 framer-motion으로 부드러운 프로그레스 바 */}
+        <div className="bg-primary/20 relative mx-auto h-2 w-64 overflow-hidden rounded-full">
+          <motion.div
+            className="bg-primary absolute inset-y-0 left-0 rounded-full"
+            initial={{ width: "0%" }}
+            animate={{ width: "100%" }}
+            transition={{
+              duration: duration / 1000,
+              ease: "easeInOut",
+            }}
+            onAnimationComplete={() => onCompleteRef.current?.()}
+          />
+        </div>
       </motion.div>
     </div>
   );

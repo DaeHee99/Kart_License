@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LoadingScreen } from "./_components/loading-screen";
 
@@ -9,48 +9,26 @@ function ResultContent() {
   const searchParams = useSearchParams();
   const recordId = searchParams.get("id");
 
-  const [loadingProgress, setLoadingProgress] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
-
   useEffect(() => {
-    // recordId가 없으면 측정 페이지로 리디렉션
     if (!recordId) {
       router.replace("/measure");
-      return;
     }
-
-    // Animate loading progress from 0 to 100 over 2.5 seconds
-    const duration = 2500; // 2.5 seconds
-    const interval = 16; // ~60fps
-    const increment = (100 / duration) * interval;
-
-    const timer = setInterval(() => {
-      setLoadingProgress((prev) => {
-        const next = prev + increment;
-        if (next >= 100) {
-          clearInterval(timer);
-          setIsComplete(true);
-          return 100;
-        }
-        return next;
-      });
-    }, interval);
-
-    return () => clearInterval(timer);
   }, [recordId, router]);
 
-  useEffect(() => {
-    if (isComplete && recordId) {
+  const handleComplete = useCallback(() => {
+    if (recordId) {
       router.replace(`/result/${recordId}`);
     }
-  }, [isComplete, recordId, router]);
+  }, [recordId, router]);
 
-  return <LoadingScreen loadingProgress={loadingProgress} />;
+  if (!recordId) return null;
+
+  return <LoadingScreen duration={2500} onComplete={handleComplete} />;
 }
 
 export default function ResultPage() {
   return (
-    <Suspense fallback={<LoadingScreen loadingProgress={0} />}>
+    <Suspense fallback={<LoadingScreen />}>
       <ResultContent />
     </Suspense>
   );

@@ -15,10 +15,9 @@ export function BottomNavigation() {
     { id: "/mypage", label: "마이", icon: User },
   ];
 
-  const handleNavClick = () => {
-    // 진동 지원 기기에서 짧은 진동 (100ms)
+  const handleNavVibrate = () => {
     if (typeof window !== "undefined" && "vibrate" in navigator) {
-      navigator.vibrate(100);
+      navigator.vibrate(50);
     }
   };
 
@@ -41,7 +40,7 @@ export function BottomNavigation() {
             <Link
               key={item.id}
               href={item.id}
-              onClick={handleNavClick}
+              onClick={handleNavVibrate}
               className="relative flex h-full flex-1 flex-col items-center justify-center gap-1"
             >
               <motion.div whileTap={{ scale: 0.9 }} className="relative">
