@@ -42,8 +42,8 @@ export function useRecordStatistics() {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: RECORD_STATISTICS_QUERY_KEY,
     queryFn: statisticsAPI.getRecordStatistics,
-    staleTime: 5 * 60 * 1000, // 5분
-    gcTime: 10 * 60 * 1000, // 10분
+    staleTime: 1 * 60 * 1000, // 1분
+    gcTime: 5 * 60 * 1000, // 5분
   });
 
   return {
@@ -62,8 +62,8 @@ export function useUserLicenseStatistics() {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: USER_LICENSE_STATISTICS_QUERY_KEY,
     queryFn: statisticsAPI.getUserLicenseStatistics,
-    staleTime: 5 * 60 * 1000, // 5분
-    gcTime: 10 * 60 * 1000, // 10분
+    staleTime: 1 * 60 * 1000, // 1분
+    gcTime: 5 * 60 * 1000, // 5분
   });
 
   return {

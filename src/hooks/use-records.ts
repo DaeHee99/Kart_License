@@ -86,6 +86,14 @@ export function useSaveRecord() {
           queryKey: ["records", "latest"],
         });
 
+        // 통계 관련 캐시 무효화
+        queryClient.invalidateQueries({
+          queryKey: ["statistics"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["records", "recent"],
+        });
+
         // 로딩 페이지로 이동 (recordId를 쿼리 파라미터로 전달)
         router.push(`/result?id=${data.data.recordId}`);
       } else {

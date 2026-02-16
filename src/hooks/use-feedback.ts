@@ -20,8 +20,8 @@ export function useFeedbackStatistics(season: number) {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: FEEDBACK_STATISTICS_QUERY_KEY(season),
     queryFn: () => feedbackAPI.getFeedbackStatistics(season),
-    staleTime: 2 * 60 * 1000, // 2분
-    gcTime: 10 * 60 * 1000, // 10분
+    staleTime: 1 * 60 * 1000, // 1분
+    gcTime: 5 * 60 * 1000, // 5분
   });
 
   return {
@@ -88,6 +88,11 @@ export function useSaveFeedback() {
         // 유저 피드백 캐시 무효화
         queryClient.invalidateQueries({
           queryKey: USER_FEEDBACK_QUERY_KEY(variables.userId, variables.season),
+        });
+
+        // 통계 요약 캐시 무효화
+        queryClient.invalidateQueries({
+          queryKey: ["statistics", "summary"],
         });
       } else {
         toast.error(data.message || "피드백 저장에 실패했습니다.");
