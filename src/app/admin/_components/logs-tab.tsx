@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -9,9 +8,14 @@ import { motion } from "motion/react";
 import { User, Loader2 } from "lucide-react";
 import { formatRelativeTime } from "@/lib/utils-calc";
 import { useAdminLogs } from "@/hooks/use-admin";
+import { AdminPagination } from "./admin-pagination";
 
-export function LogsTab() {
-  const [page, setPage] = useState(1);
+interface LogsTabProps {
+  page: number;
+  onPageChange: (page: number) => void;
+}
+
+export function LogsTab({ page, onPageChange }: LogsTabProps) {
   const { data, isLoading } = useAdminLogs({ page, limit: 50 });
 
   const getActionTypeColor = (actionType: string) => {
@@ -119,32 +123,11 @@ export function LogsTab() {
         </div>
       </Card>
 
-      {/* Pagination */}
-      {pagination.totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-          >
-            이전
-          </Button>
-          <span className="text-muted-foreground text-sm">
-            {page} / {pagination.totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              setPage((p) => Math.min(pagination.totalPages, p + 1))
-            }
-            disabled={page === pagination.totalPages}
-          >
-            다음
-          </Button>
-        </div>
-      )}
+      <AdminPagination
+        currentPage={page}
+        totalPages={pagination.totalPages}
+        onPageChange={onPageChange}
+      />
     </div>
   );
 }

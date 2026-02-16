@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,6 +13,7 @@ import {
 import { TIERS, TierType } from "@/lib/types";
 import Link from "next/link";
 import { useAdminUsers } from "@/hooks/use-admin";
+import { AdminPagination } from "./admin-pagination";
 
 // Helper function to get tier color hex
 const getTierColorHex = (tier: TierType): string => {
@@ -29,8 +29,12 @@ const getTierColorHex = (tier: TierType): string => {
   return colorMap[tier];
 };
 
-export function UsersTab() {
-  const [page, setPage] = useState(1);
+interface UsersTabProps {
+  page: number;
+  onPageChange: (page: number) => void;
+}
+
+export function UsersTab({ page, onPageChange }: UsersTabProps) {
   const { data, isLoading } = useAdminUsers({ page, limit: 20 });
 
   if (isLoading) {
@@ -142,30 +146,11 @@ export function UsersTab() {
         </div>
       </Card>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-          >
-            이전
-          </Button>
-          <span className="text-muted-foreground text-sm">
-            {page} / {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page === totalPages}
-          >
-            다음
-          </Button>
-        </div>
-      )}
+      <AdminPagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
     </div>
   );
 }

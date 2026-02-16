@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,9 +9,14 @@ import { User, Loader2, Star, Scale } from "lucide-react";
 import { formatRelativeTime } from "@/lib/utils-calc";
 import Link from "next/link";
 import { useAdminFeedbacks } from "@/hooks/use-admin";
+import { AdminPagination } from "./admin-pagination";
 
-export function FeedbackTab() {
-  const [page, setPage] = useState(1);
+interface FeedbackTabProps {
+  page: number;
+  onPageChange: (page: number) => void;
+}
+
+export function FeedbackTab({ page, onPageChange }: FeedbackTabProps) {
   const { data, isLoading } = useAdminFeedbacks({ page, limit: 20 });
 
   const renderRatingStars = (
@@ -126,32 +130,11 @@ export function FeedbackTab() {
         ))}
       </div>
 
-      {/* Pagination */}
-      {pagination.totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-          >
-            이전
-          </Button>
-          <span className="text-muted-foreground text-sm">
-            {page} / {pagination.totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              setPage((p) => Math.min(pagination.totalPages, p + 1))
-            }
-            disabled={page === pagination.totalPages}
-          >
-            다음
-          </Button>
-        </div>
-      )}
+      <AdminPagination
+        currentPage={page}
+        totalPages={pagination.totalPages}
+        onPageChange={onPageChange}
+      />
     </div>
   );
 }

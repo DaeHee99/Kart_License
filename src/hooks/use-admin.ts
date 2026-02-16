@@ -117,6 +117,7 @@ interface StatsData {
 export const adminKeys = {
   all: ["admin"] as const,
   users: (params?: PaginationParams) => [...adminKeys.all, "users", params] as const,
+  records: (params?: PaginationParams) => [...adminKeys.all, "records", params] as const,
   feedbacks: (params?: PaginationParams) => [...adminKeys.all, "feedbacks", params] as const,
   logs: (params?: PaginationParams) => [...adminKeys.all, "logs", params] as const,
   announcements: (params?: PaginationParams) => [...adminKeys.all, "announcements", params] as const,
@@ -163,6 +164,30 @@ export function useRecentRecords(limit: number = 20) {
       const response = await fetch(`/api/records/recent?limit=${limit}`);
       if (!response.ok) {
         throw new Error("Failed to fetch recent records");
+      }
+      return response.json();
+    },
+  });
+}
+
+/**
+ * 관리자 측정 기록 조회 (페이지네이션)
+ */
+export function useAdminRecords(params: PaginationParams = {}) {
+  const { page = 1, limit = 20 } = params;
+
+  return useQuery({
+    queryKey: adminKeys.records({ page, limit }),
+    queryFn: async (): Promise<{
+      success: boolean;
+      data: RecordData[];
+      pagination: PaginationInfo;
+    }> => {
+      const response = await fetch(
+        `/api/records/recent?page=${page}&limit=${limit}`,
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch records");
       }
       return response.json();
     },

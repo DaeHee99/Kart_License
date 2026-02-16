@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongodb";
 import { authenticateUser } from "@/lib/middleware/auth";
 import User from "@/lib/db/models/user.model";
-import Log from "@/lib/db/models/log.model";
 
 /**
  * 관리자용 유저 리스트 API
@@ -24,42 +23,79 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "20");
     const skip = (page - 1) * limit;
 
-    // 모든 유저 조회
-    const users = await User.find().select("_id name image license").lean();
+    const [total, users] = await Promise.all([
+      User.countDocuments(),
+      User.aggregate([
+        {
+          $project: {
+            _id: 1,
+            name: 1,
+            image: 1,
+            license: 1,
+          },
+        },
+        {
+          $lookup: {
+            from: "logs",
+            let: { userId: "$_id" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$user", "$$userId"] } } },
+              { $sort: { createdAt: -1 } },
+              { $limit: 1 },
+              { $project: { createdAt: 1 } },
+            ],
+            as: "latestLog",
+          },
+        },
+        {
+          $addFields: {
+            lastAccess: {
+              $ifNull: [
+                { $arrayElemAt: ["$latestLog.createdAt", 0] },
+                null,
+              ],
+            },
+            hasAccess: {
+              $cond: [
+                {
+                  $gt: [
+                    { $arrayElemAt: ["$latestLog.createdAt", 0] },
+                    null,
+                  ],
+                },
+                1,
+                0,
+              ],
+            },
+          },
+        },
+        { $unset: "latestLog" },
+        { $sort: { hasAccess: -1, lastAccess: -1 } },
+        { $skip: skip },
+        { $limit: limit },
+        {
+          $project: {
+            _id: { $toString: "$_id" },
+            nickname: "$name",
+            profileImage: {
+              $ifNull: ["$image", "/profile/gyool_dizini.png"],
+            },
+            tier: "$license",
+            lastAccess: 1,
+            hasAccess: 1,
+          },
+        },
+      ]),
+    ]);
 
-    // 각 유저의 최근 로그 시간 조회
-    const usersWithLastAccess = await Promise.all(
-      users.map(async (user) => {
-        const latestLog = (await Log.findOne({ user: user._id })
-          .sort({ createdAt: -1 })
-          .select("createdAt")
-          .lean()) as { createdAt: Date } | null;
-
-        return {
-          _id: user._id.toString(),
-          nickname: user.name,
-          profileImage: user.image || "/profile/gyool_dizini.png",
-          tier: user.license,
-          lastAccess: latestLog?.createdAt || null,
-        };
-      }),
+    // hasAccess 필드 제거 (정렬용으로만 사용)
+    const cleanedUsers = users.map(
+      ({ hasAccess, ...user }: { hasAccess: number; [key: string]: unknown }) =>
+        user,
     );
 
-    // 최근 접속 기준으로 정렬 (null은 맨 뒤로)
-    usersWithLastAccess.sort((a, b) => {
-      if (!a.lastAccess) return 1;
-      if (!b.lastAccess) return -1;
-      return (
-        new Date(b.lastAccess).getTime() - new Date(a.lastAccess).getTime()
-      );
-    });
-
-    // 페이지네이션 적용
-    const paginatedUsers = usersWithLastAccess.slice(skip, skip + limit);
-    const total = usersWithLastAccess.length;
-
     return NextResponse.json({
-      users: paginatedUsers,
+      users: cleanedUsers,
       pagination: {
         page,
         limit,

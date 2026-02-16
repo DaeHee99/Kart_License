@@ -12,7 +12,8 @@ import {
 } from "@/lib/utils-calc";
 import { TIERS, TierType } from "@/lib/types";
 import Link from "next/link";
-import { useRecentRecords } from "@/hooks/use-admin";
+import { useAdminRecords } from "@/hooks/use-admin";
+import { AdminPagination } from "./admin-pagination";
 
 // Helper function to get tier color hex
 const getTierColorHex = (tier: TierType): string => {
@@ -28,8 +29,13 @@ const getTierColorHex = (tier: TierType): string => {
   return colorMap[tier];
 };
 
-export function MeasurementsTab() {
-  const { data, isLoading } = useRecentRecords(20);
+interface MeasurementsTabProps {
+  page: number;
+  onPageChange: (page: number) => void;
+}
+
+export function MeasurementsTab({ page, onPageChange }: MeasurementsTabProps) {
+  const { data, isLoading } = useAdminRecords({ page, limit: 20 });
 
   if (isLoading) {
     return (
@@ -40,6 +46,7 @@ export function MeasurementsTab() {
   }
 
   const records = data?.data || [];
+  const totalPages = data?.pagination?.totalPages || 1;
 
   return (
     <div className="space-y-4">
@@ -173,6 +180,12 @@ export function MeasurementsTab() {
           </div>
         </div>
       </Card>
+
+      <AdminPagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
     </div>
   );
 }

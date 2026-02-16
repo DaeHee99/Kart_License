@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { motion } from "motion/react";
@@ -12,9 +10,14 @@ import {
   useAdminAnnouncements,
   useToggleAnnouncementShow,
 } from "@/hooks/use-admin";
+import { AdminPagination } from "./admin-pagination";
 
-export function AnnouncementsTab() {
-  const [page, setPage] = useState(1);
+interface AnnouncementsTabProps {
+  page: number;
+  onPageChange: (page: number) => void;
+}
+
+export function AnnouncementsTab({ page, onPageChange }: AnnouncementsTabProps) {
   const { data, isLoading } = useAdminAnnouncements({ page, limit: 20 });
   const toggleMutation = useToggleAnnouncementShow();
 
@@ -115,32 +118,11 @@ export function AnnouncementsTab() {
         ))}
       </div>
 
-      {/* Pagination */}
-      {pagination.totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-          >
-            이전
-          </Button>
-          <span className="text-muted-foreground text-sm">
-            {page} / {pagination.totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              setPage((p) => Math.min(pagination.totalPages, p + 1))
-            }
-            disabled={page === pagination.totalPages}
-          >
-            다음
-          </Button>
-        </div>
-      )}
+      <AdminPagination
+        currentPage={page}
+        totalPages={pagination.totalPages}
+        onPageChange={onPageChange}
+      />
     </div>
   );
 }
