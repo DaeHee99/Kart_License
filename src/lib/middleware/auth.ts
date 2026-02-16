@@ -31,8 +31,11 @@ export async function authenticateUser(): Promise<AuthResult> {
       return { isAuth: false, message: "인증 실패" };
     }
 
-    // authCount 증가
-    await User.updateOne({ _id: user._id }, { $inc: { authCount: 1 } });
+    // authCount 증가 + 최근 접속 시간 업데이트
+    await User.updateOne(
+      { _id: user._id },
+      { $inc: { authCount: 1 }, $set: { lastAccess: new Date() } },
+    );
 
     return { isAuth: true, user };
   } catch (error) {

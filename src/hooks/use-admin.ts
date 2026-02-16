@@ -16,6 +16,7 @@ interface PaginationInfo {
 
 interface UserData {
   _id: string;
+  loginId: string;
   nickname: string;
   profileImage: string;
   tier: string;
@@ -116,7 +117,7 @@ interface StatsData {
 
 export const adminKeys = {
   all: ["admin"] as const,
-  users: (params?: PaginationParams) => [...adminKeys.all, "users", params] as const,
+  users: (params?: PaginationParams & { search?: string }) => [...adminKeys.all, "users", params] as const,
   records: (params?: PaginationParams) => [...adminKeys.all, "records", params] as const,
   feedbacks: (params?: PaginationParams) => [...adminKeys.all, "feedbacks", params] as const,
   logs: (params?: PaginationParams) => [...adminKeys.all, "logs", params] as const,
@@ -139,13 +140,20 @@ export const recordKeys = {
 /**
  * 관리자 유저 목록 조회
  */
-export function useAdminUsers(params: PaginationParams = {}) {
-  const { page = 1, limit = 20 } = params;
+export function useAdminUsers(
+  params: PaginationParams & { search?: string } = {},
+) {
+  const { page = 1, limit = 20, search = "" } = params;
 
   return useQuery({
-    queryKey: adminKeys.users({ page, limit }),
+    queryKey: adminKeys.users({ page, limit, search }),
     queryFn: async (): Promise<UsersResponse> => {
-      const response = await fetch(`/api/admin/users?page=${page}&limit=${limit}`);
+      const query = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+      });
+      if (search) query.set("search", search);
+      const response = await fetch(`/api/admin/users?${query}`);
       if (!response.ok) {
         throw new Error("Failed to fetch users");
       }

@@ -6,7 +6,7 @@ import User from "@/lib/db/models/user.model";
 /**
  * 관리자용 유저 리스트 API
  * GET /api/admin/users
- * 최근 접속(로그) 기준으로 정렬된 유저 목록 반환
+ * 최근 접속 기준으로 정렬된 유저 목록 반환
  */
 export async function GET(request: NextRequest) {
   try {
@@ -21,81 +21,49 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
+    const search = searchParams.get("search")?.trim() || "";
     const skip = (page - 1) * limit;
 
-    const [total, users] = await Promise.all([
-      User.countDocuments(),
+    const matchStage = search
+      ? { $match: { name: { $regex: search, $options: "i" } } }
+      : null;
+
+    const basePipeline = matchStage ? [matchStage] : [];
+
+    const countPipeline = [...basePipeline, { $count: "total" }];
+    const [countResult, users] = await Promise.all([
+      User.aggregate(countPipeline),
       User.aggregate([
-        {
-          $project: {
-            _id: 1,
-            name: 1,
-            image: 1,
-            license: 1,
-          },
-        },
-        {
-          $lookup: {
-            from: "logs",
-            let: { userId: "$_id" },
-            pipeline: [
-              { $match: { $expr: { $eq: ["$user", "$$userId"] } } },
-              { $sort: { createdAt: -1 } },
-              { $limit: 1 },
-              { $project: { createdAt: 1 } },
-            ],
-            as: "latestLog",
-          },
-        },
+        ...basePipeline,
         {
           $addFields: {
-            lastAccess: {
-              $ifNull: [
-                { $arrayElemAt: ["$latestLog.createdAt", 0] },
-                null,
-              ],
-            },
             hasAccess: {
-              $cond: [
-                {
-                  $gt: [
-                    { $arrayElemAt: ["$latestLog.createdAt", 0] },
-                    null,
-                  ],
-                },
-                1,
-                0,
-              ],
+              $cond: [{ $gt: ["$lastAccess", null] }, 1, 0],
             },
           },
         },
-        { $unset: "latestLog" },
         { $sort: { hasAccess: -1, lastAccess: -1 } },
         { $skip: skip },
         { $limit: limit },
         {
           $project: {
             _id: { $toString: "$_id" },
+            loginId: "$id",
             nickname: "$name",
             profileImage: {
               $ifNull: ["$image", "/profile/gyool_dizini.png"],
             },
             tier: "$license",
             lastAccess: 1,
-            hasAccess: 1,
           },
         },
       ]),
     ]);
 
-    // hasAccess 필드 제거 (정렬용으로만 사용)
-    const cleanedUsers = users.map(
-      ({ hasAccess, ...user }: { hasAccess: number; [key: string]: unknown }) =>
-        user,
-    );
+    const total = countResult[0]?.total ?? 0;
 
     return NextResponse.json({
-      users: cleanedUsers,
+      users,
       pagination: {
         page,
         limit,

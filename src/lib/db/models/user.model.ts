@@ -24,6 +24,7 @@ export interface IUser {
   tokenExp?: number;
   authCount: number;
   recentSurvey: number;
+  lastAccess?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -90,6 +91,10 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
     recentSurvey: {
       type: Number,
       default: 0,
+    },
+    lastAccess: {
+      type: Date,
+      default: null,
     },
   },
   { timestamps: true },
