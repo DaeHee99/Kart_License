@@ -41,6 +41,7 @@ export function LogsTab({ page, onPageChange }: LogsTabProps) {
       PASSWORD_UPDATE: "bg-amber-100 text-amber-700",
       PROFILE_PICTURE_UPDATE: "bg-emerald-100 text-emerald-700",
       FEEDBACK_SUBMIT: "bg-violet-100 text-violet-700",
+      WITHDRAW: "bg-red-100 text-red-700",
     };
     return colorMap[actionType] || "bg-gray-100 text-gray-700";
   };
@@ -63,62 +64,65 @@ export function LogsTab({ page, onPageChange }: LogsTabProps) {
           <div className="min-w-[700px]">
             {/* Header Row */}
             <div className="bg-muted/50 border-border/50 grid grid-cols-4 border-b">
-            <div className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
-              유저
+              <div className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
+                유저
+              </div>
+              <div className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
+                액션 타입
+              </div>
+              <div className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
+                내용
+              </div>
+              <div className="text-muted-foreground px-4 py-3 text-right text-xs font-medium">
+                시간
+              </div>
             </div>
-            <div className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
-              액션 타입
-            </div>
-            <div className="text-muted-foreground px-4 py-3 text-left text-xs font-medium">
-              내용
-            </div>
-            <div className="text-muted-foreground px-4 py-3 text-right text-xs font-medium">
-              시간
-            </div>
-          </div>
 
-          {/* Data Rows */}
-          {logs.map((log, index) => (
-            <motion.div
-              key={log._id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.02, duration: 0.15 }}
-              className="border-border/50 hover:bg-accent/50 grid grid-cols-4 border-b transition-colors last:border-b-0"
-            >
-              <div className="px-4 py-4">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={log.profilePicture} alt={log.nickname} />
-                    <AvatarFallback className="text-xs">
-                      <User className="h-4 w-4" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <p className="text-sm font-medium">
-                    {log.nickname || "알 수 없음"}
+            {/* Data Rows */}
+            {logs.map((log, index) => (
+              <motion.div
+                key={log._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.02, duration: 0.15 }}
+                className="border-border/50 hover:bg-accent/50 grid grid-cols-4 border-b transition-colors last:border-b-0"
+              >
+                <div className="px-4 py-4">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage
+                        src={log.profilePicture}
+                        alt={log.nickname}
+                      />
+                      <AvatarFallback className="text-xs">
+                        <User className="h-4 w-4" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <p className="text-sm font-medium">
+                      {log.nickname || "알 수 없음"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center px-4 py-4">
+                  {log.actionType && (
+                    <Badge
+                      variant="outline"
+                      className={`text-xs ${getActionTypeColor(log.actionType)}`}
+                    >
+                      {log.actionType}
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center px-4 py-4">
+                  <p className="text-sm">{log.content}</p>
+                </div>
+                <div className="flex items-center justify-end px-4 py-4">
+                  <p className="text-muted-foreground text-xs">
+                    {formatRelativeTime(new Date(log.createdAt))}
                   </p>
                 </div>
-              </div>
-              <div className="flex items-center px-4 py-4">
-                {log.actionType && (
-                  <Badge
-                    variant="outline"
-                    className={`text-xs ${getActionTypeColor(log.actionType)}`}
-                  >
-                    {log.actionType}
-                  </Badge>
-                )}
-              </div>
-              <div className="flex items-center px-4 py-4">
-                <p className="text-sm">{log.content}</p>
-              </div>
-              <div className="flex items-center justify-end px-4 py-4">
-                <p className="text-muted-foreground text-xs">
-                  {formatRelativeTime(new Date(log.createdAt))}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
           </div>
         </div>
       </Card>

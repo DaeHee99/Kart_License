@@ -55,6 +55,7 @@ export async function GET(request: NextRequest) {
             },
             tier: "$license",
             lastAccess: 1,
+            deletedAt: 1,
           },
         },
       ]),

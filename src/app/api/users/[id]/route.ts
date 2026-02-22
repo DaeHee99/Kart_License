@@ -13,6 +13,7 @@ import { Types } from "mongoose";
  * - image: 프로필 이미지
  * - license: 면허 등급
  * - role: 권한 등급 (0: 일반, 1: 관리자, 2: 운영진)
+ * - deletedAt: 탈퇴 시각 (있으면 탈퇴 유저)
  */
 export async function GET(
   request: NextRequest,
@@ -33,9 +34,9 @@ export async function GET(
       );
     }
 
-    // 유저 정보 조회 (비밀번호 제외)
+    // 유저 정보 조회 (비밀번호 제외, 탈퇴 여부 포함)
     const user = await User.findById(id)
-      .select("_id name image license role createdAt")
+      .select("_id name image license role createdAt deletedAt")
       .lean();
 
     if (!user) {

@@ -9,7 +9,7 @@ import { TierBadge } from "@/components/tier-badge";
 import { TIERS, TierType } from "@/lib/types";
 import { useMypageData } from "@/hooks/use-mypage";
 import { useRouter } from "next/navigation";
-import { Crown } from "lucide-react";
+import { Crown, Trash } from "lucide-react";
 
 interface UserProfileSummaryCardProps {
   user: {
@@ -18,6 +18,8 @@ interface UserProfileSummaryCardProps {
     image?: string;
     license: string;
     role?: number;
+    /** 탈퇴 시각 (API에서 ISO 문자열로 옴) */
+    deletedAt?: Date | string | null;
   };
 }
 
@@ -47,18 +49,18 @@ export function UserProfileSummaryCard({ user }: UserProfileSummaryCardProps) {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <Avatar className="border-background h-20 w-20 border-4 shadow-lg">
-                <AvatarImage src={user.image} alt={user.name} className="object-cover" />
+                <AvatarImage
+                  src={user.image}
+                  alt={user.name}
+                  className="object-cover"
+                />
                 <AvatarFallback className="from-primary to-secondary text-primary-foreground bg-linear-to-br text-3xl">
                   {user.name[0]}
                 </AvatarFallback>
               </Avatar>
               {user.license && TIERS[userTier] && (
                 <div className="absolute -right-1 -bottom-1">
-                  <TierBadge
-                    tier={userTier}
-                    size="base"
-                    showLabel={false}
-                  />
+                  <TierBadge tier={userTier} size="base" showLabel={false} />
                 </div>
               )}
             </motion.div>
@@ -66,19 +68,23 @@ export function UserProfileSummaryCard({ user }: UserProfileSummaryCardProps) {
             {/* Info */}
             <div className="min-w-0 flex-1">
               <div className="mb-3 flex items-center gap-2">
-                <h2 className="truncate text-2xl font-bold">
-                  {user.name}
-                </h2>
+                <h2 className="truncate text-2xl font-bold">{user.name}</h2>
                 {user.role === 1 && (
-                  <Badge className="gap-1.5 bg-yellow-500/10 text-yellow-700 border-yellow-500/30">
+                  <Badge className="gap-1.5 border-yellow-500/30 bg-yellow-500/10 text-yellow-700">
                     <Crown className="h-3.5 w-3.5" />
                     관리자
                   </Badge>
                 )}
                 {user.role === 2 && (
-                  <Badge className="gap-1.5 bg-purple-500/10 text-purple-700 border-purple-500/30">
+                  <Badge className="gap-1.5 border-purple-500/30 bg-purple-500/10 text-purple-700">
                     <Crown className="h-3.5 w-3.5" />
                     운영진
+                  </Badge>
+                )}
+                {user.deletedAt && (
+                  <Badge className="gap-1.5 border-red-500/30 bg-red-500/10 text-red-700">
+                    <Trash className="h-3.5 w-3.5" />
+                    탈퇴
                   </Badge>
                 )}
               </div>

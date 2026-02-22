@@ -31,6 +31,11 @@ export async function authenticateUser(): Promise<AuthResult> {
       return { isAuth: false, message: "인증 실패" };
     }
 
+    // 탈퇴한 유저는 인증 불가
+    if (user.deletedAt) {
+      return { isAuth: false, message: "인증 실패" };
+    }
+
     // authCount 증가 + 최근 접속 시간 업데이트
     await User.updateOne(
       { _id: user._id },

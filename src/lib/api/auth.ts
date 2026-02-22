@@ -46,6 +46,13 @@ export const authAPI = {
     });
   },
 
+  // 회원 탈퇴 (soft delete, 성공 시 쿠키 삭제됨)
+  withdraw: async (): Promise<APIResponse> => {
+    return apiClient<APIResponse>(`${API_BASE}/withdraw`, {
+      method: "POST",
+    });
+  },
+
   // 유저 정보 수정
   updateProfile: async (data: UpdateProfileRequest): Promise<APIResponse> => {
     return apiClient<APIResponse>(`${API_BASE}/update`, {

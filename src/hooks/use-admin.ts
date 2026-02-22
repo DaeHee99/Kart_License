@@ -21,6 +21,7 @@ interface UserData {
   profileImage: string;
   tier: string;
   lastAccess: string | null;
+  deletedAt: string | null;
 }
 
 interface UsersResponse {
@@ -108,6 +109,7 @@ interface AnnouncementsResponse {
 
 interface StatsData {
   totalUsers: number;
+  withdrawnUsers: number;
   totalMeasurements: number;
   totalFeedbacks: number;
   totalLogs: number;

@@ -8,6 +8,7 @@ export enum LogActionType {
   LOGIN = "LOGIN",
   LOGOUT = "LOGOUT",
   REGISTER = "REGISTER",
+  WITHDRAW = "WITHDRAW",
 
   // Measurement
   MEASUREMENT_COMPLETE = "MEASUREMENT_COMPLETE",

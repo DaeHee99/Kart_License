@@ -25,6 +25,7 @@ export interface IUser {
   authCount: number;
   recentSurvey: number;
   lastAccess?: Date;
+  deletedAt?: Date; // soft delete: 탈퇴 처리 시각
   createdAt: Date;
   updatedAt: Date;
 }
@@ -93,6 +94,10 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
       default: 0,
     },
     lastAccess: {
+      type: Date,
+      default: null,
+    },
+    deletedAt: {
       type: Date,
       default: null,
     },

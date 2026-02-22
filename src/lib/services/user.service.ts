@@ -24,14 +24,16 @@ export class UserService {
   /**
    * 회원가입
    */
-  static async register(data: RegisterData): Promise<{ success: boolean; message?: string }> {
+  static async register(
+    data: RegisterData,
+  ): Promise<{ success: boolean; message?: string }> {
     // 닉네임 중복 확인
     const existingName = await User.findOne({ name: data.name });
     if (existingName) {
       return { success: false, message: "이미 존재하는 닉네임입니다." };
     }
 
-    // 아이디 중복 확인
+    // 아이디 중복 확인 (탈퇴한 유저 포함 - 같은 아이디로 재가입 불가)
     const existingId = await User.findOne({ id: data.id });
     if (existingId) {
       return { success: false, message: "이미 존재하는 아이디입니다." };
@@ -71,6 +73,11 @@ export class UserService {
       return { success: false, message: "존재하지 않는 아이디 입니다." };
     }
 
+    // 탈퇴한 유저는 로그인 불가 (존재하지 않는 아이디로 처리)
+    if (user.deletedAt) {
+      return { success: false, message: "존재하지 않는 아이디 입니다." };
+    }
+
     // 비밀번호 확인
     const isMatch = await user.comparePassword(data.password);
     if (!isMatch) {
@@ -105,12 +112,40 @@ export class UserService {
   }
 
   /**
+   * 회원 탈퇴 (soft delete)
+   * deletedAt 설정 및 토큰 제거
+   */
+  static async withdraw(
+    userId: string,
+  ): Promise<{ success: boolean; message?: string }> {
+    try {
+      const user = await User.findOne({ _id: userId });
+      if (!user) {
+        return { success: false, message: "사용자를 찾을 수 없습니다." };
+      }
+      if (user.deletedAt) {
+        return { success: false, message: "이미 탈퇴 처리된 계정입니다." };
+      }
+
+      const deletedAt = new Date();
+      user.deletedAt = deletedAt;
+      user.token = "";
+      await user.save();
+
+      return { success: true };
+    } catch (error) {
+      console.error("Withdraw error:", error);
+      throw error;
+    }
+  }
+
+  /**
    * 유저 정보 수정 (통합)
    * 닉네임, 비밀번호, 프로필 사진을 선택적으로 변경
    */
   static async updateProfile(
     userId: string,
-    data: UpdateProfileData
+    data: UpdateProfileData,
   ): Promise<{ success: boolean; message?: string }> {
     try {
       const user = await User.findOne({ _id: userId });
@@ -168,7 +203,7 @@ export class UserService {
         await logService.createLog({
           userId,
           actionType: LogActionType.NICKNAME_UPDATE,
-          content: `닉네임 변경 (${updates.find(u => u.includes('닉네임'))})`,
+          content: `닉네임 변경 (${updates.find((u) => u.includes("닉네임"))})`,
         });
       }
       if (data.password) {
@@ -212,7 +247,9 @@ export class UserService {
   /**
    * 유저 조회 - 페이지네이션
    */
-  static async getUsersByPage(page: number): Promise<{ count: number; userList: UserDocument[] }> {
+  static async getUsersByPage(
+    page: number,
+  ): Promise<{ count: number; userList: UserDocument[] }> {
     try {
       const userList = await User.find()
         .sort({ updatedAt: -1 })
@@ -233,7 +270,9 @@ export class UserService {
   /**
    * 유저 검색 - 이름으로
    */
-  static async findUsersByName(name: string): Promise<{ count: number; userList: UserDocument[] }> {
+  static async findUsersByName(
+    name: string,
+  ): Promise<{ count: number; userList: UserDocument[] }> {
     try {
       const userList = await User.find({ name: { $regex: name } })
         .sort({ updatedAt: -1 })

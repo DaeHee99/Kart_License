@@ -21,10 +21,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "권한이 없습니다." }, { status: 403 });
     }
 
-    // 병렬로 통계 데이터 조회
-    const [totalUsers, totalMeasurements, totalFeedbacks, totalLogs] =
+    // 병렬로 통계 데이터 조회 (탈퇴 유저 수 포함)
+    const [totalUsers, withdrawnUsers, totalMeasurements, totalFeedbacks, totalLogs] =
       await Promise.all([
         User.countDocuments(),
+        User.countDocuments({ deletedAt: { $ne: null } }),
         Record.countDocuments(),
         Feedback.countDocuments(),
         Log.countDocuments(),
@@ -32,6 +33,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       totalUsers,
+      withdrawnUsers,
       totalMeasurements,
       totalFeedbacks,
       totalLogs,

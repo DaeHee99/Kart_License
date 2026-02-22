@@ -53,6 +53,10 @@ export function QuickStats() {
             <p className="text-muted-foreground text-sm">총 사용자</p>
             <p className="text-2xl font-bold">
               <AnimatedNumber value={stats?.totalUsers || 0} />
+              <span className="text-red-600 dark:text-red-400">
+                {" "}
+                (<AnimatedNumber value={stats?.withdrawnUsers || 0} />)
+              </span>
             </p>
           </div>
         </div>
