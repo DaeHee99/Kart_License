@@ -25,6 +25,17 @@ import {
   LogIn,
   Crown,
 } from "lucide-react";
+
+function formatDeletedAt(deletedAt: Date | string | null | undefined): string {
+  if (!deletedAt) return "";
+  const d = new Date(deletedAt);
+  const yy = String(d.getFullYear()).slice(-2);
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+  return `${yy}-${mm}-${dd} ${hh}:${min}`;
+}
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -138,7 +149,11 @@ export function CommentsSection({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="flex gap-3 rounded-lg p-3 transition-colors"
+                  className={`flex gap-3 rounded-lg border-2 p-3 transition-colors ${
+                    comment.deletedAt
+                      ? "border-red-500/60 bg-red-500/5"
+                      : "border-transparent"
+                  }`}
                 >
                   <Avatar
                     className={`cursor-pointer transition-opacity hover:opacity-80 ${
@@ -187,6 +202,12 @@ export function CommentsSection({
                             {TIERS[tierEnglish as keyof typeof TIERS].nameKo}
                           </Badge>
                         )}
+                        {comment.deletedAt && (
+                          <Badge className="gap-1 border-red-500/30 bg-red-500/10 text-xs text-red-700 dark:text-red-400">
+                            <Trash2 className="h-3 w-3" />
+                            삭제됨 {formatDeletedAt(comment.deletedAt)}
+                          </Badge>
+                        )}
                       </div>
                       <span className="text-muted-foreground text-xs">
                         {formatRelativeTime(comment.createdAt)}
@@ -232,49 +253,52 @@ export function CommentsSection({
                           likeCount={comment.likeCount ?? 0}
                           onToggle={() => onToggleCommentLike(comment.id)}
                           size="sm"
+                          readOnly={!!comment.deletedAt}
                         />
                       </div>
                     )}
                   </div>
-                  {canModifyComment && editingCommentId !== comment.id && (
-                    <DropdownMenu modal={false}>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-muted-foreground hover:text-foreground h-8 w-8 touch-manipulation"
+                  {canModifyComment &&
+                    !comment.deletedAt &&
+                    editingCommentId !== comment.id && (
+                      <DropdownMenu modal={false}>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-muted-foreground hover:text-foreground h-8 w-8 touch-manipulation"
+                          >
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          align="end"
+                          className="min-w-[120px]"
+                          sideOffset={5}
                         >
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        align="end"
-                        className="min-w-[120px]"
-                        sideOffset={5}
-                      >
-                        <DropdownMenuItem
-                          className="cursor-pointer"
-                          onSelect={() =>
-                            handleStartEdit(comment.id, comment.content)
-                          }
-                        >
-                          <div className="flex items-center gap-2">
-                            <Edit2 className="h-4 w-4" />
-                            <span>수정</span>
-                          </div>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="text-destructive focus:text-destructive cursor-pointer"
-                          onSelect={() => onDeleteComment(comment.id)}
-                        >
-                          <div className="flex items-center gap-2">
-                            <Trash2 className="h-4 w-4" />
-                            <span>삭제</span>
-                          </div>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
+                          <DropdownMenuItem
+                            className="cursor-pointer"
+                            onSelect={() =>
+                              handleStartEdit(comment.id, comment.content)
+                            }
+                          >
+                            <div className="flex items-center gap-2">
+                              <Edit2 className="h-4 w-4" />
+                              <span>수정</span>
+                            </div>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive cursor-pointer"
+                            onSelect={() => onDeleteComment(comment.id)}
+                          >
+                            <div className="flex items-center gap-2">
+                              <Trash2 className="h-4 w-4" />
+                              <span>삭제</span>
+                            </div>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
                 </motion.div>
               );
             })

@@ -39,6 +39,7 @@ export interface PostListItem {
   commentCount: number;
   likeCount: number;
   isLiked?: boolean;
+  deletedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -56,6 +57,7 @@ export interface PostDetail extends PostListItem {
     content: string;
     likeCount: number;
     isLiked?: boolean;
+    deletedAt?: Date | null;
     createdAt: Date;
     updatedAt: Date;
   }>;
@@ -88,8 +90,17 @@ export class PostService {
     return post;
   }
 
+  /** 삭제되지 않은 문서만 보는 쿼리 조건 */
+  private notDeletedQuery = {
+    $or: [
+      { deletedAt: null },
+      { deletedAt: { $exists: false } },
+    ],
+  };
+
   /**
    * 게시글 목록 조회 (페이지네이션)
+   * @param includeDeleted true면 관리자: 삭제된 글 포함. false면 삭제된 글 제외.
    */
   async getPosts(
     page: number = 1,
@@ -97,9 +108,15 @@ export class PostService {
     category?: PostCategory | "all",
     searchQuery?: string,
     currentUserId?: string,
+    includeDeleted: boolean = false,
   ): Promise<PaginatedPosts> {
     const skip = (page - 1) * limit;
     const query: any = {};
+
+    // 일반 유저는 삭제되지 않은 글만 조회
+    if (!includeDeleted) {
+      Object.assign(query, this.notDeletedQuery);
+    }
 
     // 카테고리 필터
     if (category && category !== "all") {
@@ -145,11 +162,15 @@ export class PostService {
       Post.countDocuments(query),
     ]);
 
-    // 각 게시글의 댓글 수 조회
+    // 각 게시글의 댓글 수 조회 (관리자가 아니면 삭제된 댓글 제외)
+    const commentCountFilter = includeDeleted
+      ? {}
+      : { $or: [{ deletedAt: null }, { deletedAt: { $exists: false } }] };
     const postsWithCommentCount = await Promise.all(
       posts.map(async (post: any) => {
         const commentCount = await Comment.countDocuments({
           post: post._id,
+          ...commentCountFilter,
         });
 
         // Check if current user liked this post
@@ -176,6 +197,7 @@ export class PostService {
           commentCount,
           likeCount: (post.likes || []).length,
           isLiked,
+          deletedAt: post.deletedAt ?? null,
           createdAt: post.createdAt,
           updatedAt: post.updatedAt,
         };
@@ -192,10 +214,12 @@ export class PostService {
 
   /**
    * 게시글 상세 조회
+   * @param includeDeleted true면 관리자: 삭제된 글/댓글도 포함. false면 삭제된 글은 null, 삭제된 댓글 제외.
    */
   async getPostById(
     postId: string,
     currentUserId?: string,
+    includeDeleted: boolean = false,
   ): Promise<PostDetail | null> {
     if (!Types.ObjectId.isValid(postId)) {
       return null;
@@ -209,11 +233,24 @@ export class PostService {
       return null;
     }
 
-    // 조회수 증가
+    // 삭제된 글은 관리자만 조회 가능
+    const postDeleted = (post as any).deletedAt != null;
+    if (postDeleted && !includeDeleted) {
+      return null;
+    }
+
+    // 조회수 증가 (삭제된 글도 증가하지 않도록 할 수 있음 - 일단 증가시킴)
     await Post.findByIdAndUpdate(postId, { $inc: { views: 1 } });
 
-    // 댓글 조회
-    const comments = await Comment.find({ post: new Types.ObjectId(postId) })
+    // 댓글 조회 (관리자가 아니면 삭제된 댓글 제외)
+    const commentFilter: any = { post: new Types.ObjectId(postId) };
+    if (!includeDeleted) {
+      commentFilter.$or = [
+        { deletedAt: null },
+        { deletedAt: { $exists: false } },
+      ];
+    }
+    const comments = await Comment.find(commentFilter)
       .populate("user", "name image license role")
       .sort({ createdAt: 1 })
       .lean();
@@ -242,6 +279,7 @@ export class PostService {
       commentCount: comments.length,
       likeCount: (post.likes || []).length,
       isLiked: isPostLiked,
+      deletedAt: (post as any).deletedAt ?? null,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
       comments: comments.map((comment: any) => {
@@ -264,6 +302,7 @@ export class PostService {
           content: comment.content,
           likeCount: (comment.likes || []).length,
           isLiked: isCommentLiked,
+          deletedAt: comment.deletedAt ?? null,
           createdAt: comment.createdAt,
           updatedAt: comment.updatedAt,
         };
@@ -286,7 +325,7 @@ export class PostService {
 
     // 게시글 존재 여부 및 권한 확인
     const post = await Post.findById(postId);
-    if (!post) {
+    if (!post || (post as any).deletedAt) {
       return null;
     }
 
@@ -322,7 +361,7 @@ export class PostService {
 
     // 게시글 존재 여부 및 권한 확인
     const post = await Post.findById(postId);
-    if (!post) {
+    if (!post || (post as any).deletedAt) {
       return false;
     }
 
@@ -334,11 +373,10 @@ export class PostService {
       throw new Error("게시글 삭제 권한이 없습니다.");
     }
 
-    // 게시글 삭제
-    await Post.findByIdAndDelete(postId);
-
-    // 관련 댓글도 삭제
-    await Comment.deleteMany({ post: new Types.ObjectId(postId) });
+    // 게시글 soft delete
+    await Post.findByIdAndUpdate(postId, {
+      $set: { deletedAt: new Date() },
+    });
 
     return true;
   }
@@ -355,7 +393,7 @@ export class PostService {
     }
 
     const post = await Post.findById(postId);
-    if (!post) {
+    if (!post || (post as any).deletedAt) {
       throw new Error("게시글을 찾을 수 없습니다.");
     }
 
@@ -387,7 +425,7 @@ export class PostService {
     }
 
     const comment = await Comment.findById(commentId);
-    if (!comment) {
+    if (!comment || (comment as any).deletedAt) {
       throw new Error("댓글을 찾을 수 없습니다.");
     }
 

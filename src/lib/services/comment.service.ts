@@ -25,9 +25,9 @@ export class CommentService {
    * 댓글 생성
    */
   async createComment(input: CreateCommentInput): Promise<IComment> {
-    // 게시글 존재 여부 확인
+    // 게시글 존재 여부 및 삭제 여부 확인
     const postExists = await Post.findById(input.postId);
-    if (!postExists) {
+    if (!postExists || (postExists as any).deletedAt) {
       throw new Error("게시글을 찾을 수 없습니다.");
     }
 
@@ -56,7 +56,7 @@ export class CommentService {
 
     // 댓글 존재 여부 및 권한 확인
     const comment = await Comment.findById(commentId);
-    if (!comment) {
+    if (!comment || (comment as any).deletedAt) {
       return null;
     }
 
@@ -92,7 +92,7 @@ export class CommentService {
 
     // 댓글 존재 여부 및 권한 확인
     const comment = await Comment.findById(commentId);
-    if (!comment) {
+    if (!comment || (comment as any).deletedAt) {
       return false;
     }
 
@@ -104,21 +104,36 @@ export class CommentService {
       throw new Error("댓글 삭제 권한이 없습니다.");
     }
 
-    // 댓글 삭제
-    await Comment.findByIdAndDelete(commentId);
+    // 댓글 soft delete
+    await Comment.findByIdAndUpdate(commentId, {
+      $set: { deletedAt: new Date() },
+    });
 
     return true;
   }
 
   /**
    * 게시글의 댓글 목록 조회
+   * @param includeDeleted true면 관리자: 삭제된 댓글 포함. false면 삭제된 댓글 제외.
    */
-  async getCommentsByPostId(postId: string, currentUserId?: string) {
+  async getCommentsByPostId(
+    postId: string,
+    currentUserId?: string,
+    includeDeleted: boolean = false,
+  ) {
     if (!Types.ObjectId.isValid(postId)) {
       return [];
     }
 
-    const comments = await Comment.find({ post: new Types.ObjectId(postId) })
+    const filter: any = { post: new Types.ObjectId(postId) };
+    if (!includeDeleted) {
+      filter.$or = [
+        { deletedAt: null },
+        { deletedAt: { $exists: false } },
+      ];
+    }
+
+    const comments = await Comment.find(filter)
       .populate("user", "name image license role")
       .sort({ createdAt: 1 })
       .lean();
@@ -141,6 +156,7 @@ export class CommentService {
         content: comment.content,
         likeCount: (comment.likes || []).length,
         isLiked,
+        deletedAt: comment.deletedAt ?? null,
         createdAt: comment.createdAt,
         updatedAt: comment.updatedAt,
       };

@@ -16,7 +16,19 @@ import {
   Image as ImageIcon,
   Crown,
   Heart,
+  Trash2,
 } from "lucide-react";
+
+function formatDeletedAt(deletedAt: Date | string | null | undefined): string {
+  if (!deletedAt) return "";
+  const d = new Date(deletedAt);
+  const yy = String(d.getFullYear()).slice(-2);
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+  return `${yy}-${mm}-${dd} ${hh}:${min}`;
+}
 
 interface PostCardProps {
   post: Post;
@@ -59,7 +71,11 @@ export function PostCard({ post, index, onClick }: PostCardProps) {
       transition={{ delay: Math.min(index * 0.03, 0.3) }}
     >
       <Card
-        className="border-border hover:border-primary/30 group cursor-pointer overflow-hidden border p-3 transition-all duration-200 hover:shadow-md"
+        className={`group cursor-pointer overflow-hidden border p-3 transition-all duration-200 hover:shadow-md ${
+          post.deletedAt
+            ? "border-red-500/60 bg-red-500/5 hover:border-red-500/80"
+            : "border-border hover:border-primary/30"
+        }`}
         onClick={onClick}
       >
         <div className="flex gap-3">
@@ -113,6 +129,12 @@ export function PostCard({ post, index, onClick }: PostCardProps) {
                       post.category as keyof typeof CATEGORY_LABELS
                     ]
                   }
+                </Badge>
+              )}
+              {post.deletedAt && (
+                <Badge className="gap-1 border-red-500/30 bg-red-500/10 text-xs text-red-700 dark:text-red-400">
+                  <Trash2 className="h-3 w-3" />
+                  삭제됨 {formatDeletedAt(post.deletedAt)}
                 </Badge>
               )}
               <span className="text-muted-foreground text-xs">

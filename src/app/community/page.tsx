@@ -81,6 +81,7 @@ export default function CommunityPage() {
         likes: [],
         likeCount: post.likeCount ?? 0,
         isLiked: post.isLiked ?? false,
+        deletedAt: post.deletedAt ?? null,
       })),
     ) || [];
   const totalCount = data?.pages[0]?.data?.totalCount || 0;

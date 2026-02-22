@@ -53,6 +53,17 @@ const CATEGORY_LABELS = {
   question: "질문",
 };
 
+function formatDeletedAt(deletedAt: Date | string | null | undefined): string {
+  if (!deletedAt) return "";
+  const d = new Date(deletedAt);
+  const yy = String(d.getFullYear()).slice(-2);
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+  return `${yy}-${mm}-${dd} ${hh}:${min}`;
+}
+
 export function PostContent({
   post,
   commentsCount,
@@ -87,7 +98,13 @@ export function PostContent({
   };
 
   return (
-    <Card className="border-primary/10 hover:border-primary/20 relative overflow-hidden border-2 p-6 transition-all">
+    <Card
+      className={`relative overflow-hidden border-2 p-6 transition-all ${
+        post.deletedAt
+          ? "border-red-500/60 bg-red-500/5"
+          : "border-primary/10 hover:border-primary/20"
+      }`}
+    >
       {/* Background gradient */}
       <div className="bg-primary/5 pointer-events-none absolute top-0 right-0 hidden h-40 w-40 rounded-full blur-3xl md:block" />
       <div className="bg-primary/5 pointer-events-none absolute bottom-0 left-0 hidden h-32 w-32 rounded-full blur-3xl md:block" />
@@ -145,6 +162,12 @@ export function PostContent({
                   }
                 </Badge>
               )}
+              {post.deletedAt && (
+                <Badge className="gap-1 border-red-500/30 bg-red-500/10 text-xs text-red-700 dark:text-red-400">
+                  <Trash2 className="h-3 w-3" />
+                  삭제됨 {formatDeletedAt(post.deletedAt)}
+                </Badge>
+              )}
             </div>
             <div className="text-muted-foreground text-sm">
               {formatRelativeTime(post.createdAt)}
@@ -161,7 +184,7 @@ export function PostContent({
             <Share2 className="h-4 w-4" />
             공유
           </Button>
-          {isPostAuthor && (
+          {isPostAuthor && !post.deletedAt && (
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -235,6 +258,7 @@ export function PostContent({
           onToggle={onToggleLike}
           isLoading={isLiking}
           size="md"
+          readOnly={!!post.deletedAt}
         />
         <div className="text-muted-foreground flex items-center gap-1">
           <MessageCircle className="h-4 w-4" />

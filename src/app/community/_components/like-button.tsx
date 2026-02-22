@@ -12,6 +12,8 @@ interface LikeButtonProps {
   isLoading?: boolean;
   size?: "sm" | "md" | "lg";
   showCount?: boolean;
+  /** true면 클릭 불가, 좋아요 수만 표시 (삭제된 글/댓글 등) */
+  readOnly?: boolean;
 }
 
 export function LikeButton({
@@ -21,6 +23,7 @@ export function LikeButton({
   isLoading = false,
   size = "md",
   showCount = true,
+  readOnly = false,
 }: LikeButtonProps) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [particles, setParticles] = useState<Array<{ id: number; angle: number }>>([]);
@@ -32,7 +35,7 @@ export function LikeButton({
   };
 
   const handleClick = () => {
-    if (isLoading) return;
+    if (isLoading || readOnly) return;
 
     if (typeof window !== "undefined" && "vibrate" in navigator) {
       navigator.vibrate(50);
@@ -84,22 +87,27 @@ export function LikeButton({
         ))}
       </AnimatePresence>
 
-      {/* 좋아요 버튼 */}
-      <motion.button
-        onClick={handleClick}
-        disabled={isLoading}
+      {/* 좋아요 버튼 (readOnly면 div로 표시만) */}
+      <motion.div
+        role={readOnly ? undefined : "button"}
+        onClick={readOnly ? undefined : handleClick}
         className={cn(
-          "group relative flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors",
-          "hover:bg-red-50 dark:hover:bg-red-950/20",
-          "disabled:cursor-not-allowed disabled:opacity-50",
-          isLiked && "bg-red-50 dark:bg-red-950/20"
+          "relative flex items-center gap-1.5 rounded-full px-3 py-1.5",
+          readOnly
+            ? "cursor-default text-muted-foreground"
+            : cn(
+                "group transition-colors",
+                "hover:bg-red-50 dark:hover:bg-red-950/20",
+                isLoading && "cursor-not-allowed opacity-50",
+                isLiked && "bg-red-50 dark:bg-red-950/20"
+              )
         )}
-        whileTap={!isLoading ? { scale: 0.9 } : {}}
+        whileTap={!readOnly && !isLoading ? { scale: 0.9 } : {}}
       >
         {/* 좋아요 아이콘 */}
         <motion.div
           animate={
-            isAnimating
+            !readOnly && isAnimating
               ? {
                   scale: [1, 1.4, 1],
                   rotate: [0, -10, 10, -10, 0],
@@ -115,12 +123,14 @@ export function LikeButton({
               "transition-colors duration-200",
               isLiked
                 ? "fill-red-500 text-red-500"
-                : "text-muted-foreground group-hover:text-red-500"
+                : readOnly
+                  ? "text-muted-foreground"
+                  : "text-muted-foreground group-hover:text-red-500"
             )}
           />
 
           {/* 하트 빛나는 효과 */}
-          {isLiked && (
+          {isLiked && !readOnly && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: [0, 1, 0], scale: [0.8, 1.2, 1.5] }}
@@ -148,7 +158,7 @@ export function LikeButton({
             </motion.span>
           </AnimatePresence>
         )}
-      </motion.button>
+      </motion.div>
     </div>
   );
 }

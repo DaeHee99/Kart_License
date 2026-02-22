@@ -11,6 +11,7 @@ export interface IComment extends Document {
   user: Types.ObjectId;
   content: string;
   likes: Types.ObjectId[]; // 좋아요를 누른 유저 ID 배열
+  deletedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -43,6 +44,10 @@ const commentSchema = new Schema<IComment, ICommentModel>(
       type: [{ type: Schema.Types.ObjectId, ref: "User" }],
       default: [],
       index: true,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
     },
   },
   {

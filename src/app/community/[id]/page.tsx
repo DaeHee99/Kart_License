@@ -39,7 +39,9 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { NewPostForm } from "../_components/new-post-form";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Loader2, FileQuestion, Trash2 } from "lucide-react";
+import { APIError } from "@/lib/api/client";
 
 export default function CommunityDetailPage() {
   const router = useRouter();
@@ -53,6 +55,7 @@ export default function CommunityDetailPage() {
     data: postResponse,
     isLoading: isLoadingPost,
     isError: isErrorPost,
+    error: postError,
   } = usePost(postId);
   const { data: commentsResponse, isLoading: isLoadingComments } =
     useComments(postId);
@@ -99,6 +102,7 @@ export default function CommunityDetailPage() {
       likes: [], // 좋아요 유저 ID 목록 (상세에서는 사용 안함)
       likeCount: data.likeCount ?? 0,
       isLiked: data.isLiked ?? false,
+      deletedAt: data.deletedAt ?? null,
       createdAt: new Date(data.createdAt),
     };
   }, [postResponse]);
@@ -117,6 +121,7 @@ export default function CommunityDetailPage() {
       likes: [],
       likeCount: comment.likeCount ?? 0,
       isLiked: comment.isLiked ?? false,
+      deletedAt: comment.deletedAt ?? null,
     }));
   }, [commentsResponse]);
 
@@ -135,9 +140,63 @@ export default function CommunityDetailPage() {
     );
   }
 
-  // Error or not found
-  if (isErrorPost || !postResponse?.success || !currentPost) {
-    router.replace("/community");
+  // 게시글 없음 또는 삭제된 게시글 접근
+  if (
+    !isLoadingPost &&
+    (isErrorPost || !postResponse?.success || !currentPost)
+  ) {
+    const reason =
+      (postError instanceof APIError && (postError as APIError).data?.reason) ||
+      "not_found";
+    const isDeleted = reason === "deleted";
+
+    return (
+      <div className="from-primary/5 via-background to-background min-h-screen bg-linear-to-b pb-24">
+        <div className="px-4 py-6">
+          <div className="mx-auto max-w-4xl">
+            <BackButton onBack={() => router.push("/community")} />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="mt-8"
+            >
+              <Card className="border-border/50 flex flex-col items-center justify-center border-2 p-12 text-center">
+                <div
+                  className={`mb-4 flex h-16 w-16 items-center justify-center rounded-full ${
+                    isDeleted
+                      ? "bg-red-500/10 text-red-600 dark:text-red-400"
+                      : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  {isDeleted ? (
+                    <Trash2 className="h-8 w-8" />
+                  ) : (
+                    <FileQuestion className="h-8 w-8" />
+                  )}
+                </div>
+                <h2 className="mb-2 text-xl font-semibold">
+                  {isDeleted
+                    ? "삭제된 게시글입니다"
+                    : "게시글을 찾을 수 없습니다"}
+                </h2>
+                <p className="text-muted-foreground mb-6 text-sm">
+                  {isDeleted
+                    ? "해당 게시글은 삭제되어 더 이상 볼 수 없습니다."
+                    : "존재하지 않거나 삭제된 게시글일 수 있습니다."}
+                </p>
+                <Button onClick={() => router.push("/community")}>
+                  커뮤니티 목록으로
+                </Button>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentPost) {
     return null;
   }
 

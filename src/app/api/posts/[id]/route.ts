@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongodb";
 import { postService } from "@/lib/services/post.service";
+import Post from "@/lib/db/models/post.model";
 import { authenticateUser } from "@/lib/middleware/auth";
 import { logService, LogActionType } from "@/lib/services/log.service";
 
 /**
  * 게시글 상세 조회 API
  * GET /api/posts/[id]
+ * 404 시 reason: "not_found" | "deleted" 로 구분 (클라이언트 메시지용)
  */
 export async function GET(
   request: NextRequest,
@@ -20,16 +22,41 @@ export async function GET(
     const currentUserId = authResult.isAuth && authResult.user
       ? authResult.user._id.toString()
       : undefined;
+    const includeDeleted = authResult.isAuth && authResult.user?.role === 1;
 
     const { id: postId } = await params;
 
-    const post = await postService.getPostById(postId, currentUserId);
+    // 없음 vs 삭제됨 구분: 먼저 존재 여부만 확인
+    const postMeta = await Post.findById(postId).select("deletedAt").lean();
+    if (!postMeta) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "게시글을 찾을 수 없습니다.",
+          reason: "not_found",
+        },
+        { status: 404 }
+      );
+    }
+    const isDeleted = (postMeta as any).deletedAt != null;
+    if (isDeleted && !includeDeleted) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "삭제된 게시글입니다.",
+          reason: "deleted",
+        },
+        { status: 404 }
+      );
+    }
 
+    const post = await postService.getPostById(postId, currentUserId, includeDeleted);
     if (!post) {
       return NextResponse.json(
         {
           success: false,
           error: "게시글을 찾을 수 없습니다.",
+          reason: "not_found",
         },
         { status: 404 }
       );

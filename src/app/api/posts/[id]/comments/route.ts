@@ -20,10 +20,11 @@ export async function GET(
     const currentUserId = authResult.isAuth && authResult.user
       ? authResult.user._id.toString()
       : undefined;
+    const includeDeleted = authResult.isAuth && authResult.user?.role === 1;
 
     const { id: postId } = await params;
 
-    const comments = await commentService.getCommentsByPostId(postId, currentUserId);
+    const comments = await commentService.getCommentsByPostId(postId, currentUserId, includeDeleted);
 
     return NextResponse.json(
       {

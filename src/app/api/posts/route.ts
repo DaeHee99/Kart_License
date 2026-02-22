@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
     const currentUserId = authResult.isAuth && authResult.user
       ? authResult.user._id.toString()
       : undefined;
+    const includeDeleted = authResult.isAuth && authResult.user?.role === 1;
 
     const searchParams = request.nextUrl.searchParams;
     const page = parseInt(searchParams.get("page") || "1");
@@ -30,7 +31,8 @@ export async function GET(request: NextRequest) {
       limit,
       category === "all" ? undefined : (category || undefined),
       searchQuery,
-      currentUserId
+      currentUserId,
+      includeDeleted,
     );
 
     return NextResponse.json(
