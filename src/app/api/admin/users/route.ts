@@ -24,8 +24,18 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search")?.trim() || "";
     const skip = (page - 1) * limit;
 
+    // 닉네임(name) 또는 로그인 아이디(id)로 OR 검색
+    // 정규식 메타문자는 이스케이프하여 안전하게 처리
+    const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const matchStage = search
-      ? { $match: { name: { $regex: search, $options: "i" } } }
+      ? {
+          $match: {
+            $or: [
+              { name: { $regex: escaped, $options: "i" } },
+              { id: { $regex: escaped, $options: "i" } },
+            ],
+          },
+        }
       : null;
 
     const basePipeline = matchStage ? [matchStage] : [];

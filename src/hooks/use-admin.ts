@@ -123,7 +123,7 @@ export const adminKeys = {
   users: (params?: PaginationParams & { search?: string }) => [...adminKeys.all, "users", params] as const,
   records: (params?: PaginationParams) => [...adminKeys.all, "records", params] as const,
   feedbacks: (params?: PaginationParams) => [...adminKeys.all, "feedbacks", params] as const,
-  logs: (params?: PaginationParams) => [...adminKeys.all, "logs", params] as const,
+  logs: (params?: PaginationParams & { actionTypes?: string[] }) => [...adminKeys.all, "logs", params] as const,
   announcements: (params?: PaginationParams) => [...adminKeys.all, "announcements", params] as const,
   stats: () => [...adminKeys.all, "stats"] as const,
 };
@@ -243,14 +243,28 @@ export function useStaffFeedbacks(params: PaginationParams = {}) {
 
 /**
  * 관리자 로그 목록 조회
+ *
+ * actionTypes가 비어있지 않으면 해당 액션 타입들만 필터링하여 조회한다.
+ * (서버는 콤마 구분 actionType 쿼리 파라미터를 지원)
  */
-export function useAdminLogs(params: PaginationParams = {}) {
-  const { page = 1, limit = 50 } = params;
+export function useAdminLogs(
+  params: PaginationParams & { actionTypes?: string[] } = {},
+) {
+  const { page = 1, limit = 50, actionTypes = [] } = params;
+  // 쿼리 키 안정성을 위해 정렬된 사본을 사용
+  const sortedActionTypes = [...actionTypes].sort();
 
   return useQuery({
-    queryKey: adminKeys.logs({ page, limit }),
+    queryKey: adminKeys.logs({ page, limit, actionTypes: sortedActionTypes }),
     queryFn: async (): Promise<LogsResponse> => {
-      const response = await fetch(`/api/logs?page=${page}&limit=${limit}`);
+      const query = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+      });
+      if (sortedActionTypes.length > 0) {
+        query.set("actionType", sortedActionTypes.join(","));
+      }
+      const response = await fetch(`/api/logs?${query}`);
       if (!response.ok) {
         throw new Error("Failed to fetch logs");
       }
@@ -289,6 +303,40 @@ export function useAdminStats() {
         throw new Error("Failed to fetch stats");
       }
       return response.json();
+    },
+  });
+}
+
+/**
+ * 관리자: 유저 비밀번호 초기화 Mutation
+ * 대상 유저의 비밀번호를 기본값("1234")으로 초기화한다.
+ */
+export function useResetUserPassword() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (
+      userId: string,
+    ): Promise<{ success: boolean; message?: string }> => {
+      const response = await fetch(
+        `/api/admin/users/${userId}/reset-password`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "비밀번호 초기화에 실패했습니다.");
+      }
+      return data;
+    },
+    onSuccess: () => {
+      // 관리자 로그/유저 쿼리 무효화 (다른 탭에 즉시 반영되도록)
+      queryClient.invalidateQueries({ queryKey: adminKeys.all });
     },
   });
 }

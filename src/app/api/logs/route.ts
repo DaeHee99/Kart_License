@@ -59,15 +59,30 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "50");
-    const actionType = searchParams.get("actionType");
+    const actionTypeParam = searchParams.get("actionType");
     const userId = searchParams.get("userId");
+
+    // actionType은 콤마 구분으로 다중 전달 가능
+    // 예) actionType=LOGIN,LOGOUT,REGISTER
+    const actionTypes = actionTypeParam
+      ? actionTypeParam
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean)
+      : [];
 
     let result;
 
     if (userId) {
       result = await logService.getLogsByUser(userId, page, limit);
-    } else if (actionType) {
-      result = await logService.getLogsByActionType(actionType, page, limit);
+    } else if (actionTypes.length === 1) {
+      result = await logService.getLogsByActionType(
+        actionTypes[0],
+        page,
+        limit,
+      );
+    } else if (actionTypes.length > 1) {
+      result = await logService.getLogsByActionType(actionTypes, page, limit);
     } else {
       result = await logService.getAllLogs(page, limit);
     }

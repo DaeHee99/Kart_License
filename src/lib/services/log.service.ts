@@ -2,44 +2,10 @@ import connectDB from "@/lib/db/mongodb";
 import Log from "@/lib/db/models/log.model";
 import User from "@/lib/db/models/user.model";
 import mongoose from "mongoose";
+import { LogActionType } from "./log-action-types";
 
-export enum LogActionType {
-  // Authentication
-  LOGIN = "LOGIN",
-  LOGOUT = "LOGOUT",
-  REGISTER = "REGISTER",
-  WITHDRAW = "WITHDRAW",
-
-  // Measurement
-  MEASUREMENT_COMPLETE = "MEASUREMENT_COMPLETE",
-
-  // Community Posts
-  POST_CREATE = "POST_CREATE",
-  POST_EDIT = "POST_EDIT",
-  POST_DELETE = "POST_DELETE",
-
-  // Community Comments
-  COMMENT_CREATE = "COMMENT_CREATE",
-  COMMENT_EDIT = "COMMENT_EDIT",
-  COMMENT_DELETE = "COMMENT_DELETE",
-
-  // Share & Download
-  KAKAO_SHARE_RESULT = "KAKAO_SHARE_RESULT",
-  KAKAO_SHARE_POST = "KAKAO_SHARE_POST",
-  QR_DOWNLOAD_RESULT = "QR_DOWNLOAD_RESULT",
-  QR_DOWNLOAD_POST = "QR_DOWNLOAD_POST",
-  LINK_COPY_RESULT = "LINK_COPY_RESULT",
-  LINK_COPY_POST = "LINK_COPY_POST",
-  IMAGE_DOWNLOAD = "IMAGE_DOWNLOAD",
-
-  // User Profile
-  NICKNAME_UPDATE = "NICKNAME_UPDATE",
-  PASSWORD_UPDATE = "PASSWORD_UPDATE",
-  PROFILE_PICTURE_UPDATE = "PROFILE_PICTURE_UPDATE",
-
-  // Feedback
-  FEEDBACK_SUBMIT = "FEEDBACK_SUBMIT",
-}
+// 기존 사용처의 호환성을 위해 동일 경로에서 enum을 re-export
+export { LogActionType };
 
 interface CreateLogParams {
   userId?: string | mongoose.Types.ObjectId; // Optional for non-logged-in users
@@ -171,9 +137,12 @@ class LogService {
 
   /**
    * Get logs by action type
+   *
+   * @param actionType 단일 액션 타입(string) 또는 다중 액션 타입(string[])
+   *                   배열로 전달하면 $in 매칭으로 여러 타입을 한 번에 필터링한다.
    */
   async getLogsByActionType(
-    actionType: LogActionType | string,
+    actionType: LogActionType | string | Array<LogActionType | string>,
     page = 1,
     limit = 50,
   ) {
@@ -182,13 +151,17 @@ class LogService {
 
       const skip = (page - 1) * limit;
 
-      const logs = await Log.find({ actionType })
+      const filter: Record<string, unknown> = Array.isArray(actionType)
+        ? { actionType: { $in: actionType } }
+        : { actionType };
+
+      const logs = await Log.find(filter)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .lean();
 
-      const total = await Log.countDocuments({ actionType });
+      const total = await Log.countDocuments(filter);
 
       return {
         logs,
