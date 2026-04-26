@@ -14,6 +14,7 @@ const tierOrder: TierType[] = [
   "platinum",
   "gold",
   "silver",
+  "light",
   "bronze",
 ];
 
@@ -40,11 +41,11 @@ export function TierIntroduction() {
               viewport={{ once: true }}
               className="text-muted-foreground"
             >
-              7단계 군으로 당신의 실력을 정확하게 평가합니다
+              8단계 군으로 당신의 실력을 정확하게 평가합니다
             </motion.p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-7">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-8">
             {tierOrder.map((tierId, index) => {
               const tier = TIERS[tierId];
               return (

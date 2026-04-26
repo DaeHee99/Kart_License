@@ -6,7 +6,7 @@ import mongoose, { Model, Schema, Types } from "mongoose";
 export interface IFeedback {
   _id: Types.ObjectId;
   user: Types.ObjectId; // User 참조
-  license: string; // 본인의 군 (강주력, 주력, 1군, 2군, 3군, 4군, 일반)
+  license: string; // 본인의 군 (강주력, 주력, 1군, 2군, 3군, 4군, 라이트, 일반)
   level: number; // 난이도 (1: 매우 쉬움, 2: 쉬움, 3: 보통, 4: 어려움, 5: 매우 어려움)
   balance: number; // 밸런스 (1: 매우 좋음, 2: 좋음, 3: 보통, 4: 나쁨, 5: 매우 나쁨)
   review: string; // 그 외 의견
@@ -34,7 +34,7 @@ const feedbackSchema = new Schema<IFeedback, IFeedbackModel>(
     },
     license: {
       type: String,
-      enum: ["강주력", "주력", "1군", "2군", "3군", "4군", "일반"],
+      enum: ["강주력", "주력", "1군", "2군", "3군", "4군", "라이트", "일반"],
       required: true,
     },
     level: {

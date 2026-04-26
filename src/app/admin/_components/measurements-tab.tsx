@@ -24,6 +24,7 @@ const getTierColorHex = (tier: TierType): string => {
     platinum: "#06b6d4",
     gold: "#eab308",
     silver: "#94a3b8",
+    light: "#10b981",
     bronze: "#d97706",
   };
   return colorMap[tier];
@@ -145,6 +146,10 @@ export function MeasurementsTab({ page, onPageChange }: MeasurementsTabProps) {
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-muted-foreground font-medium">4군</span>
                           <span className="font-mono font-bold">{record.tierDistribution.silver || 0}</span>
+                        </div>
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-muted-foreground font-medium">라이트</span>
+                          <span className="font-mono font-bold">{record.tierDistribution.light || 0}</span>
                         </div>
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-muted-foreground font-medium">일반</span>

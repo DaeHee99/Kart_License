@@ -361,10 +361,15 @@ export default function MeasurePage() {
   };
 
   const handleTierSelect = (tier: TierType) => {
+    const tierRecord = currentMap.tierRecords[tier];
+    if (typeof tierRecord !== "string" || tierRecord.length === 0) {
+      toast.error("해당 군의 기준 기록이 없습니다. 다른 군을 선택해주세요.");
+      return;
+    }
     const newRecord: UserMapRecord = {
       mapId: currentMap.id,
       tier,
-      record: currentMap.tierRecords[tier],
+      record: tierRecord,
     };
 
     if (isEditMode && editingIndex !== null) {
@@ -486,9 +491,13 @@ export default function MeasurePage() {
   // 기록 선택 방식에서 건너뛰기 (이전 선택된 tier 또는 bronze)
   const handleSkipWithSelection = (previousTier?: TierType) => {
     const tier = previousTier || "bronze";
-    const record = previousTier
+    const tierRecord = previousTier
       ? currentMap.tierRecords[previousTier]
-      : "99:99:99";
+      : undefined;
+    const record =
+      typeof tierRecord === "string" && tierRecord.length > 0
+        ? tierRecord
+        : "99:99:99";
 
     const newRecord: UserMapRecord = {
       mapId: currentMap.id,

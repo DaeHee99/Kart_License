@@ -26,6 +26,7 @@ const getTierColorHex = (tier: TierType): string => {
     platinum: "#06b6d4",
     gold: "#eab308",
     silver: "#94a3b8",
+    light: "#10b981",
     bronze: "#d97706",
   };
   return colorMap[tier];

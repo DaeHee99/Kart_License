@@ -89,7 +89,7 @@ export function FeedbackDialog({
           </Label>
           <RadioGroup value={license} onValueChange={setLicense} disabled>
             <div className="grid grid-cols-2 gap-3">
-              {["강주력", "주력", "1군", "2군", "3군", "4군", "일반"].map(
+              {["강주력", "주력", "1군", "2군", "3군", "4군", "라이트", "일반"].map(
                 (tier) => (
                   <div key={tier} className="flex items-center space-x-2">
                     <RadioGroupItem value={tier} id={`license-${tier}`} disabled />

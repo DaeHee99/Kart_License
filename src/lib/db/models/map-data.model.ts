@@ -14,6 +14,7 @@ export interface IMapRecord {
     platinum: string; // 2군
     gold: string; // 3군
     silver: string; // 4군
+    light: string; // 라이트
     bronze: string; // 일반
   };
 }
@@ -60,6 +61,7 @@ const mapRecordSchema = new Schema<IMapRecord>(
       platinum: { type: String, required: true },
       gold: { type: String, required: true },
       silver: { type: String, required: true },
+      light: { type: String, required: true },
       bronze: { type: String, required: true },
     },
   },

@@ -57,12 +57,13 @@ export async function GET(request: NextRequest) {
     // 티어 순서 (숫자로 변환)
     const tierToValue = (tier: string): number => {
       const tierMap: Record<string, number> = {
-        강주력: 7,
-        주력: 6,
-        "1군": 5,
-        "2군": 4,
-        "3군": 3,
-        "4군": 2,
+        강주력: 8,
+        주력: 7,
+        "1군": 6,
+        "2군": 5,
+        "3군": 4,
+        "4군": 3,
+        라이트: 2,
         일반: 1,
       };
       return tierMap[tier] || 0;
@@ -77,6 +78,7 @@ export async function GET(request: NextRequest) {
         "2군": "platinum",
         "3군": "gold",
         "4군": "silver",
+        라이트: "light",
         일반: "bronze",
       };
       return tierMap[tierKo] || "bronze";

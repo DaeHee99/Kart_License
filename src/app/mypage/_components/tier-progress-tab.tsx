@@ -92,12 +92,13 @@ export function TierProgressTab({
             <YAxis
               stroke="var(--muted-foreground)"
               fontSize={12}
-              domain={[0, 7]}
-              ticks={[0, 1, 2, 3, 4, 5, 6, 7]}
+              domain={[0, 8]}
+              ticks={[0, 1, 2, 3, 4, 5, 6, 7, 8]}
               tickFormatter={(value) => {
                 const tiers = [
                   "",
                   "bronze",
+                  "light",
                   "silver",
                   "gold",
                   "platinum",
@@ -120,6 +121,7 @@ export function TierProgressTab({
                   const tiers = [
                     "",
                     "bronze",
+                    "light",
                     "silver",
                     "gold",
                     "platinum",

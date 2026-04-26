@@ -14,6 +14,7 @@ export interface IUserMapRecord {
     | "platinum"
     | "gold"
     | "silver"
+    | "light"
     | "bronze"; // 선택한 티어
 }
 
@@ -32,9 +33,10 @@ export interface IRecord {
     platinum: number;
     gold: number;
     silver: number;
+    light: number;
     bronze: number;
   }; // 티어별 분포
-  finalTier: string; // 최종 군 (강주력, 주력, 1군, 2군, 3군, 4군, 일반)
+  finalTier: string; // 최종 군 (강주력, 주력, 1군, 2군, 3군, 4군, 라이트, 일반)
   createdAt: Date;
   updatedAt: Date;
 }
@@ -73,6 +75,7 @@ const userMapRecordSchema = new Schema<IUserMapRecord>(
         "platinum",
         "gold",
         "silver",
+        "light",
         "bronze",
       ],
       required: true,
@@ -112,12 +115,13 @@ const recordSchema = new Schema<IRecord, IRecordModel>(
       platinum: { type: Number, default: 0, min: 0 },
       gold: { type: Number, default: 0, min: 0 },
       silver: { type: Number, default: 0, min: 0 },
+      light: { type: Number, default: 0, min: 0 },
       bronze: { type: Number, default: 0, min: 0 },
     },
     finalTier: {
       type: String,
       required: false,
-      enum: ["강주력", "주력", "1군", "2군", "3군", "4군", "일반"],
+      enum: ["강주력", "주력", "1군", "2군", "3군", "4군", "라이트", "일반"],
       default: "일반",
     },
   },
@@ -140,6 +144,7 @@ recordSchema.pre("save", function (next) {
     platinum: 0,
     gold: 0,
     silver: 0,
+    light: 0,
     bronze: 0,
   };
 
@@ -150,7 +155,8 @@ recordSchema.pre("save", function (next) {
   record.tierDistribution = tierCounts;
 
   // 최종 군 계산 (as-is 로직과 동일)
-  // 누적 합계가 20개 이상이 되는 첫 번째 티어를 최종 군으로 결정
+  // 누적 합계가 15개 이상이 되는 첫 번째 티어를 최종 군으로 결정
+  // 라이트 등급까지 포함하여 누적 → 도달하지 못하면 '일반'
   const tierOrder = [
     "elite",
     "master",
@@ -158,6 +164,7 @@ recordSchema.pre("save", function (next) {
     "platinum",
     "gold",
     "silver",
+    "light",
   ] as const;
   let cumulativeCount = 0;
   let finalTier = "일반";
@@ -173,6 +180,7 @@ recordSchema.pre("save", function (next) {
       else if (i === 3) finalTier = "2군";
       else if (i === 4) finalTier = "3군";
       else if (i === 5) finalTier = "4군";
+      else if (i === 6) finalTier = "라이트";
       break;
     }
   }

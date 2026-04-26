@@ -4,7 +4,7 @@
 
 interface OldMapData {
   name: string;
-  record: string[]; // 7개 요소: [elite, master, diamond, platinum, gold, silver, bronze]
+  record: string[]; // 8개 요소: [elite, master, diamond, platinum, gold, silver, light, bronze]
   image: string;
 }
 
@@ -19,6 +19,7 @@ interface NewMapData {
     platinum: string;
     gold: string;
     silver: string;
+    light: string;
     bronze: string;
   };
 }
@@ -79,7 +80,8 @@ export function convertMapData(
         platinum: oldMap.record[3],
         gold: oldMap.record[4],
         silver: oldMap.record[5],
-        bronze: oldMap.record[6],
+        light: oldMap.record[6],
+        bronze: oldMap.record[7],
       },
     };
   });

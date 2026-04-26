@@ -45,6 +45,7 @@ interface RecordData {
     platinum: number;
     gold: number;
     silver: number;
+    light: number;
     bronze: number;
   };
   createdAt: string;

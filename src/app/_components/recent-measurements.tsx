@@ -22,6 +22,7 @@ const getTierTypeFromFinalTier = (finalTier: string): TierType => {
     "2군": "platinum",
     "3군": "gold",
     "4군": "silver",
+    "라이트": "light",
     "일반": "bronze",
   };
   return tierMap[finalTier] || "bronze";

@@ -1,6 +1,6 @@
 /**
  * server-asis/mapData.js 데이터를 새로운 형식으로 변환한 데이터
- * 시즌 38 기준
+ * 시즌 38 기준 (8티어 시스템: 강주력, 주력, 1군, 2군, 3군, 4군, 라이트, 일반)
  */
 
 export const convertedMapData = {
@@ -18,7 +18,8 @@ export const convertedMapData = {
         platinum: "01:32:99",
         gold: "01:33:99",
         silver: "01:34:99",
-        bronze: "01:34:99 +",
+        light: "01:37:49",
+        bronze: "01:37:49 +",
       },
     },
     {
@@ -32,7 +33,8 @@ export const convertedMapData = {
         platinum: "01:28:49",
         gold: "01:29:99",
         silver: "01:31:49",
-        bronze: "01:31:49 +",
+        light: "01:34:49",
+        bronze: "01:34:49 +",
       },
     },
     {
@@ -46,7 +48,8 @@ export const convertedMapData = {
         platinum: "01:44:49",
         gold: "01:45:99",
         silver: "01:47:49",
-        bronze: "01:47:49 +",
+        light: "01:50:49",
+        bronze: "01:50:49 +",
       },
     },
     {
@@ -60,7 +63,8 @@ export const convertedMapData = {
         platinum: "01:52:99",
         gold: "01:53:99",
         silver: "01:54:99",
-        bronze: "01:54:99 +",
+        light: "01:57:99",
+        bronze: "01:57:99 +",
       },
     },
     {
@@ -74,7 +78,8 @@ export const convertedMapData = {
         platinum: "01:40:49",
         gold: "01:41:49",
         silver: "01:42:49",
-        bronze: "01:42:49 +",
+        light: "01:45:49",
+        bronze: "01:45:49 +",
       },
     },
     {
@@ -88,7 +93,8 @@ export const convertedMapData = {
         platinum: "01:55:49",
         gold: "01:57:49",
         silver: "01:59:49",
-        bronze: "01:59:49 +",
+        light: "02:02:99",
+        bronze: "02:02:99 +",
       },
     },
     {
@@ -102,10 +108,10 @@ export const convertedMapData = {
         platinum: "01:36:49",
         gold: "01:37:99",
         silver: "01:39:49",
-        bronze: "01:39:49 +",
+        light: "01:42:99",
+        bronze: "01:42:99 +",
       },
     },
-
     // L3 맵 (31개)
     {
       name: "WKC 코리아 서킷",
@@ -118,7 +124,8 @@ export const convertedMapData = {
         platinum: "01:40:99",
         gold: "01:41:99",
         silver: "01:42:99",
-        bronze: "01:42:99 +",
+        light: "01:45:49",
+        bronze: "01:45:49 +",
       },
     },
     {
@@ -132,7 +139,8 @@ export const convertedMapData = {
         platinum: "01:36:99",
         gold: "01:37:99",
         silver: "01:39:99",
-        bronze: "01:39:99 +",
+        light: "01:43:49",
+        bronze: "01:43:49 +",
       },
     },
     {
@@ -146,7 +154,8 @@ export const convertedMapData = {
         platinum: "01:25:99",
         gold: "01:26:99",
         silver: "01:27:99",
-        bronze: "01:27:99 +",
+        light: "01:30:49",
+        bronze: "01:30:49 +",
       },
     },
     {
@@ -160,7 +169,8 @@ export const convertedMapData = {
         platinum: "01:44:49",
         gold: "01:45:99",
         silver: "01:47:49",
-        bronze: "01:47:49 +",
+        light: "01:51:49",
+        bronze: "01:51:49 +",
       },
     },
     {
@@ -174,7 +184,8 @@ export const convertedMapData = {
         platinum: "01:25:49",
         gold: "01:26:99",
         silver: "01:28:49",
-        bronze: "01:28:49 +",
+        light: "01:31:99",
+        bronze: "01:31:99 +",
       },
     },
     {
@@ -188,7 +199,8 @@ export const convertedMapData = {
         platinum: "01:46:49",
         gold: "01:47:99",
         silver: "01:49:49",
-        bronze: "01:49:49 +",
+        light: "01:53:49",
+        bronze: "01:53:49 +",
       },
     },
     {
@@ -202,7 +214,8 @@ export const convertedMapData = {
         platinum: "01:54:49",
         gold: "01:56:49",
         silver: "01:58:49",
-        bronze: "01:58:49 +",
+        light: "02:02:99",
+        bronze: "02:02:99 +",
       },
     },
     {
@@ -216,7 +229,8 @@ export const convertedMapData = {
         platinum: "00:58:49",
         gold: "00:59:49",
         silver: "01:01:49",
-        bronze: "01:01:49 +",
+        light: "01:03:99",
+        bronze: "01:03:99 +",
       },
     },
     {
@@ -230,7 +244,8 @@ export const convertedMapData = {
         platinum: "01:56:99",
         gold: "01:58:49",
         silver: "01:59:99",
-        bronze: "01:59:99 +",
+        light: "02:03:49",
+        bronze: "02:03:49 +",
       },
     },
     {
@@ -244,7 +259,8 @@ export const convertedMapData = {
         platinum: "01:43:99",
         gold: "01:45:49",
         silver: "01:46:99",
-        bronze: "01:46:99 +",
+        light: "01:50:99",
+        bronze: "01:50:99 +",
       },
     },
     {
@@ -258,7 +274,8 @@ export const convertedMapData = {
         platinum: "01:33:99",
         gold: "01:35:49",
         silver: "01:37:49",
-        bronze: "01:37:49 +",
+        light: "01:41:49",
+        bronze: "01:41:49 +",
       },
     },
     {
@@ -272,7 +289,8 @@ export const convertedMapData = {
         platinum: "01:53:99",
         gold: "01:55:49",
         silver: "01:57:49",
-        bronze: "01:57:49 +",
+        light: "02:01:99",
+        bronze: "02:01:99 +",
       },
     },
     {
@@ -286,7 +304,8 @@ export const convertedMapData = {
         platinum: "01:19:49",
         gold: "01:20:49",
         silver: "01:21:49",
-        bronze: "01:21:49 +",
+        light: "01:23:99",
+        bronze: "01:23:99 +",
       },
     },
     {
@@ -300,7 +319,8 @@ export const convertedMapData = {
         platinum: "01:45:49",
         gold: "01:46:99",
         silver: "01:48:49",
-        bronze: "01:48:49 +",
+        light: "01:52:49",
+        bronze: "01:52:49 +",
       },
     },
     {
@@ -314,7 +334,8 @@ export const convertedMapData = {
         platinum: "01:23:49",
         gold: "01:24:49",
         silver: "01:25:99",
-        bronze: "01:25:99 +",
+        light: "01:28:99",
+        bronze: "01:28:99 +",
       },
     },
     {
@@ -328,7 +349,8 @@ export const convertedMapData = {
         platinum: "01:47:49",
         gold: "01:49:49",
         silver: "01:51:49",
-        bronze: "01:51:49 +",
+        light: "01:55:99",
+        bronze: "01:55:99 +",
       },
     },
     {
@@ -342,7 +364,8 @@ export const convertedMapData = {
         platinum: "01:49:99",
         gold: "01:52:49",
         silver: "01:54:99",
-        bronze: "01:54:99 +",
+        light: "01:59:99",
+        bronze: "01:59:99 +",
       },
     },
     {
@@ -356,7 +379,8 @@ export const convertedMapData = {
         platinum: "01:22:49",
         gold: "01:23:49",
         silver: "01:24:49",
-        bronze: "01:24:49 +",
+        light: "01:27:49",
+        bronze: "01:27:49 +",
       },
     },
     {
@@ -370,7 +394,8 @@ export const convertedMapData = {
         platinum: "01:27:49",
         gold: "01:29:49",
         silver: "01:31:49",
-        bronze: "01:31:49 +",
+        light: "01:35:99",
+        bronze: "01:35:99 +",
       },
     },
     {
@@ -384,7 +409,8 @@ export const convertedMapData = {
         platinum: "01:35:49",
         gold: "01:36:99",
         silver: "01:38:49",
-        bronze: "01:38:49 +",
+        light: "01:42:49",
+        bronze: "01:42:49 +",
       },
     },
     {
@@ -398,7 +424,8 @@ export const convertedMapData = {
         platinum: "01:47:49",
         gold: "01:48:99",
         silver: "01:50:99",
-        bronze: "01:50:99 +",
+        light: "01:54:99",
+        bronze: "01:54:99 +",
       },
     },
     {
@@ -412,7 +439,8 @@ export const convertedMapData = {
         platinum: "01:30:49",
         gold: "01:31:99",
         silver: "01:33:49",
-        bronze: "01:33:49 +",
+        light: "01:37:49",
+        bronze: "01:37:49 +",
       },
     },
     {
@@ -426,7 +454,8 @@ export const convertedMapData = {
         platinum: "01:50:99",
         gold: "01:52:99",
         silver: "01:54:99",
-        bronze: "01:54:99 +",
+        light: "01:59:49",
+        bronze: "01:59:49 +",
       },
     },
     {
@@ -440,7 +469,8 @@ export const convertedMapData = {
         platinum: "01:38:99",
         gold: "01:40:49",
         silver: "01:41:99",
-        bronze: "01:41:99 +",
+        light: "01:45:99",
+        bronze: "01:45:99 +",
       },
     },
     {
@@ -454,7 +484,8 @@ export const convertedMapData = {
         platinum: "01:38:49",
         gold: "01:39:99",
         silver: "01:41:49",
-        bronze: "01:41:49 +",
+        light: "01:45:49",
+        bronze: "01:45:49 +",
       },
     },
     {
@@ -468,7 +499,8 @@ export const convertedMapData = {
         platinum: "01:31:49",
         gold: "01:33:49",
         silver: "01:35:49",
-        bronze: "01:35:49 +",
+        light: "01:39:99",
+        bronze: "01:39:99 +",
       },
     },
     {
@@ -482,7 +514,8 @@ export const convertedMapData = {
         platinum: "01:33:99",
         gold: "01:35:49",
         silver: "01:36:99",
-        bronze: "01:36:99 +",
+        light: "01:40:99",
+        bronze: "01:40:99 +",
       },
     },
     {
@@ -496,7 +529,8 @@ export const convertedMapData = {
         platinum: "01:32:99",
         gold: "01:34:49",
         silver: "01:35:99",
-        bronze: "01:35:99 +",
+        light: "01:39:99",
+        bronze: "01:39:99 +",
       },
     },
     {
@@ -510,7 +544,8 @@ export const convertedMapData = {
         platinum: "01:18:99",
         gold: "01:19:99",
         silver: "01:20:99",
-        bronze: "01:20:99 +",
+        light: "01:23:49",
+        bronze: "01:23:49 +",
       },
     },
     {
@@ -524,7 +559,8 @@ export const convertedMapData = {
         platinum: "01:34:99",
         gold: "01:36:49",
         silver: "01:37:99",
-        bronze: "01:37:99 +",
+        light: "01:41:49",
+        bronze: "01:41:49 +",
       },
     },
     {
@@ -538,10 +574,10 @@ export const convertedMapData = {
         platinum: "02:03:49",
         gold: "02:05:49",
         silver: "02:07:49",
-        bronze: "02:07:49 +",
+        light: "02:11:99",
+        bronze: "02:11:99 +",
       },
     },
-
     // L2 맵 (30개)
     {
       name: "차이나 서안 병마용",
@@ -554,7 +590,8 @@ export const convertedMapData = {
         platinum: "01:34:49",
         gold: "01:35:99",
         silver: "01:37:49",
-        bronze: "01:37:49 +",
+        light: "01:41:49",
+        bronze: "01:41:49 +",
       },
     },
     {
@@ -568,7 +605,8 @@ export const convertedMapData = {
         platinum: "01:37:49",
         gold: "01:38:99",
         silver: "01:40:49",
-        bronze: "01:40:49 +",
+        light: "01:44:49",
+        bronze: "01:44:49 +",
       },
     },
     {
@@ -582,7 +620,8 @@ export const convertedMapData = {
         platinum: "01:46:99",
         gold: "01:48:99",
         silver: "01:50:49",
-        bronze: "01:50:49 +",
+        light: "01:54:99",
+        bronze: "01:54:99 +",
       },
     },
     {
@@ -596,7 +635,8 @@ export const convertedMapData = {
         platinum: "02:10:49",
         gold: "02:12:49",
         silver: "02:14:49",
-        bronze: "02:14:49 +",
+        light: "02:19:49",
+        bronze: "02:19:49 +",
       },
     },
     {
@@ -610,7 +650,8 @@ export const convertedMapData = {
         platinum: "02:02:99",
         gold: "02:05:49",
         silver: "02:08:49",
-        bronze: "02:08:49 +",
+        light: "02:14:49",
+        bronze: "02:14:49 +",
       },
     },
     {
@@ -624,7 +665,8 @@ export const convertedMapData = {
         platinum: "01:40:49",
         gold: "01:41:99",
         silver: "01:43:49",
-        bronze: "01:43:49 +",
+        light: "01:47:49",
+        bronze: "01:47:49 +",
       },
     },
     {
@@ -638,7 +680,8 @@ export const convertedMapData = {
         platinum: "01:48:49",
         gold: "01:50:49",
         silver: "01:52:49",
-        bronze: "01:52:49 +",
+        light: "01:56:99",
+        bronze: "01:56:99 +",
       },
     },
     {
@@ -652,7 +695,8 @@ export const convertedMapData = {
         platinum: "01:51:49",
         gold: "01:53:49",
         silver: "01:55:49",
-        bronze: "01:55:49 +",
+        light: "01:59:99",
+        bronze: "01:59:99 +",
       },
     },
     {
@@ -666,7 +710,8 @@ export const convertedMapData = {
         platinum: "01:03:49",
         gold: "01:04:49",
         silver: "01:05:49",
-        bronze: "01:05:49 +",
+        light: "01:07:99",
+        bronze: "01:07:99 +",
       },
     },
     {
@@ -680,7 +725,8 @@ export const convertedMapData = {
         platinum: "01:53:49",
         gold: "01:56:49",
         silver: "01:58:49",
-        bronze: "01:58:49 +",
+        light: "02:03:49",
+        bronze: "02:03:49 +",
       },
     },
     {
@@ -694,7 +740,8 @@ export const convertedMapData = {
         platinum: "01:04:49",
         gold: "01:05:49",
         silver: "01:06:99",
-        bronze: "01:06:99 +",
+        light: "01:09:99",
+        bronze: "01:09:99 +",
       },
     },
     {
@@ -708,7 +755,8 @@ export const convertedMapData = {
         platinum: "01:27:99",
         gold: "01:29:49",
         silver: "01:30:99",
-        bronze: "01:30:99 +",
+        light: "01:34:99",
+        bronze: "01:34:99 +",
       },
     },
     {
@@ -722,7 +770,8 @@ export const convertedMapData = {
         platinum: "01:43:49",
         gold: "01:45:49",
         silver: "01:47:49",
-        bronze: "01:47:49 +",
+        light: "01:51:99",
+        bronze: "01:51:99 +",
       },
     },
     {
@@ -736,7 +785,8 @@ export const convertedMapData = {
         platinum: "01:30:49",
         gold: "01:31:99",
         silver: "01:33:49",
-        bronze: "01:33:49 +",
+        light: "01:37:49",
+        bronze: "01:37:49 +",
       },
     },
     {
@@ -750,7 +800,8 @@ export const convertedMapData = {
         platinum: "01:29:99",
         gold: "01:31:49",
         silver: "01:32:99",
-        bronze: "01:32:99 +",
+        light: "01:36:99",
+        bronze: "01:36:99 +",
       },
     },
     {
@@ -764,7 +815,8 @@ export const convertedMapData = {
         platinum: "01:58:49",
         gold: "01:59:99",
         silver: "02:01:99",
-        bronze: "02:01:99 +",
+        light: "02:05:99",
+        bronze: "02:05:99 +",
       },
     },
     {
@@ -778,7 +830,8 @@ export const convertedMapData = {
         platinum: "01:38:49",
         gold: "01:40:49",
         silver: "01:42:49",
-        bronze: "01:42:49 +",
+        light: "01:46:99",
+        bronze: "01:46:99 +",
       },
     },
     {
@@ -792,7 +845,8 @@ export const convertedMapData = {
         platinum: "01:32:99",
         gold: "01:34:99",
         silver: "01:36:99",
-        bronze: "01:36:99 +",
+        light: "01:41:99",
+        bronze: "01:41:99 +",
       },
     },
     {
@@ -806,7 +860,8 @@ export const convertedMapData = {
         platinum: "01:44:99",
         gold: "01:46:49",
         silver: "01:48:49",
-        bronze: "01:48:49 +",
+        light: "01:52:49",
+        bronze: "01:52:49 +",
       },
     },
     {
@@ -820,7 +875,8 @@ export const convertedMapData = {
         platinum: "02:06:99",
         gold: "02:08:99",
         silver: "02:10:99",
-        bronze: "02:10:99 +",
+        light: "02:15:49",
+        bronze: "02:15:49 +",
       },
     },
     {
@@ -834,7 +890,8 @@ export const convertedMapData = {
         platinum: "01:59:49",
         gold: "02:01:49",
         silver: "02:03:99",
-        bronze: "02:03:99 +",
+        light: "02:08:99",
+        bronze: "02:08:99 +",
       },
     },
     {
@@ -848,7 +905,8 @@ export const convertedMapData = {
         platinum: "01:14:99",
         gold: "01:15:99",
         silver: "01:17:49",
-        bronze: "01:17:49 +",
+        light: "01:20:49",
+        bronze: "01:20:49 +",
       },
     },
     {
@@ -862,7 +920,8 @@ export const convertedMapData = {
         platinum: "01:46:49",
         gold: "01:48:49",
         silver: "01:50:49",
-        bronze: "01:50:49 +",
+        light: "01:54:99",
+        bronze: "01:54:99 +",
       },
     },
     {
@@ -876,7 +935,8 @@ export const convertedMapData = {
         platinum: "01:19:49",
         gold: "01:20:49",
         silver: "01:21:99",
-        bronze: "01:21:99 +",
+        light: "01:24:99",
+        bronze: "01:24:99 +",
       },
     },
     {
@@ -890,7 +950,8 @@ export const convertedMapData = {
         platinum: "01:59:49",
         gold: "02:01:49",
         silver: "02:03:99",
-        bronze: "02:03:99 +",
+        light: "02:09:49",
+        bronze: "02:09:49 +",
       },
     },
     {
@@ -904,7 +965,8 @@ export const convertedMapData = {
         platinum: "01:49:99",
         gold: "01:51:99",
         silver: "01:53:99",
-        bronze: "01:53:99 +",
+        light: "01:58:49",
+        bronze: "01:58:49 +",
       },
     },
     {
@@ -918,7 +980,8 @@ export const convertedMapData = {
         platinum: "01:37:49",
         gold: "01:38:99",
         silver: "01:40:99",
-        bronze: "01:40:99 +",
+        light: "01:44:99",
+        bronze: "01:44:99 +",
       },
     },
     {
@@ -932,7 +995,8 @@ export const convertedMapData = {
         platinum: "01:55:49",
         gold: "01:57:49",
         silver: "01:59:99",
-        bronze: "01:59:99 +",
+        light: "02:04:99",
+        bronze: "02:04:99 +",
       },
     },
     {
@@ -946,7 +1010,8 @@ export const convertedMapData = {
         platinum: "02:04:49",
         gold: "02:06:49",
         silver: "02:08:49",
-        bronze: "02:08:49 +",
+        light: "02:12:99",
+        bronze: "02:12:99 +",
       },
     },
     {
@@ -960,10 +1025,10 @@ export const convertedMapData = {
         platinum: "01:20:99",
         gold: "01:22:49",
         silver: "01:23:99",
-        bronze: "01:23:99 +",
+        light: "01:27:99",
+        bronze: "01:27:99 +",
       },
     },
-
     // L1 맵 (14개)
     {
       name: "동화 이상한 나라의 문",
@@ -976,7 +1041,8 @@ export const convertedMapData = {
         platinum: "01:50:49",
         gold: "01:52:99",
         silver: "01:55:49",
-        bronze: "01:55:49 +",
+        light: "02:00:99",
+        bronze: "02:00:99 +",
       },
     },
     {
@@ -990,7 +1056,8 @@ export const convertedMapData = {
         platinum: "01:46:99",
         gold: "01:49:49",
         silver: "01:51:99",
-        bronze: "01:51:99 +",
+        light: "01:57:49",
+        bronze: "01:57:49 +",
       },
     },
     {
@@ -1004,7 +1071,8 @@ export const convertedMapData = {
         platinum: "01:08:99",
         gold: "01:10:99",
         silver: "01:12:99",
-        bronze: "01:12:99 +",
+        light: "01:17:49",
+        bronze: "01:17:49 +",
       },
     },
     {
@@ -1018,7 +1086,8 @@ export const convertedMapData = {
         platinum: "01:12:49",
         gold: "01:13:99",
         silver: "01:15:49",
-        bronze: "01:15:49 +",
+        light: "01:19:49",
+        bronze: "01:19:49 +",
       },
     },
     {
@@ -1032,7 +1101,8 @@ export const convertedMapData = {
         platinum: "01:40:99",
         gold: "01:42:99",
         silver: "01:45:49",
-        bronze: "01:45:49 +",
+        light: "01:49:49",
+        bronze: "01:49:49 +",
       },
     },
     {
@@ -1046,7 +1116,8 @@ export const convertedMapData = {
         platinum: "02:05:99",
         gold: "02:08:49",
         silver: "02:10:99",
-        bronze: "02:10:99 +",
+        light: "02:16:49",
+        bronze: "02:16:49 +",
       },
     },
     {
@@ -1060,7 +1131,8 @@ export const convertedMapData = {
         platinum: "02:00:99",
         gold: "02:02:99",
         silver: "02:04:99",
-        bronze: "02:04:99 +",
+        light: "02:09:99",
+        bronze: "02:09:99 +",
       },
     },
     {
@@ -1074,7 +1146,8 @@ export const convertedMapData = {
         platinum: "01:49:49",
         gold: "01:51:99",
         silver: "01:53:99",
-        bronze: "01:53:99 +",
+        light: "01:59:49",
+        bronze: "01:59:49 +",
       },
     },
     {
@@ -1088,7 +1161,8 @@ export const convertedMapData = {
         platinum: "02:04:99",
         gold: "02:07:99",
         silver: "02:10:49",
-        bronze: "02:10:49 +",
+        light: "02:16:49",
+        bronze: "02:16:49 +",
       },
     },
     {
@@ -1102,7 +1176,8 @@ export const convertedMapData = {
         platinum: "02:45:49",
         gold: "02:48:49",
         silver: "02:51:99",
-        bronze: "02:51:99 +",
+        light: "02:58:99",
+        bronze: "02:58:99 +",
       },
     },
     {
@@ -1116,7 +1191,8 @@ export const convertedMapData = {
         platinum: "03:09:49",
         gold: "03:13:49",
         silver: "03:17:49",
-        bronze: "03:17:49 +",
+        light: "03:26:49",
+        bronze: "03:26:49 +",
       },
     },
     {
@@ -1130,7 +1206,8 @@ export const convertedMapData = {
         platinum: "01:41:99",
         gold: "01:43:99",
         silver: "01:45:99",
-        bronze: "01:45:99 +",
+        light: "01:50:49",
+        bronze: "01:50:49 +",
       },
     },
     {
@@ -1144,7 +1221,8 @@ export const convertedMapData = {
         platinum: "03:18:99",
         gold: "03:22:49",
         silver: "03:26:49",
-        bronze: "03:26:49 +",
+        light: "03:34:99",
+        bronze: "03:34:99 +",
       },
     },
     {
@@ -1158,7 +1236,8 @@ export const convertedMapData = {
         platinum: "02:54:49",
         gold: "02:58:49",
         silver: "03:02:99",
-        bronze: "03:02:99 +",
+        light: "03:12:49",
+        bronze: "03:12:49 +",
       },
     },
   ],

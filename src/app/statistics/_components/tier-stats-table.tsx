@@ -32,8 +32,9 @@ export function TierStatsTable({
 
         {(Object.keys(TIERS) as TierType[]).map((tierId, index) => {
           const tier = TIERS[tierId];
-          const count = stats[tierId];
-          const percentage = Math.round((count / totalCount) * 100);
+          const count = stats[tierId] ?? 0;
+          const percentage =
+            totalCount > 0 ? Math.round((count / totalCount) * 100) : 0;
           const tierColorHex = getTierColorHex(tierId);
 
           return (

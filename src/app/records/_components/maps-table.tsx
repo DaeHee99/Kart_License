@@ -113,16 +113,21 @@ export function MapsTable({ filteredMaps, selectedTier }: MapsTableProps) {
                         {(selectedTier === "all"
                           ? Object.keys(TIERS)
                           : [selectedTier]
-                        ).map((tier) => (
-                          <td key={tier} className="p-4 text-center">
-                            <Badge
-                              variant="outline"
-                              className="font-mono text-sm"
-                            >
-                              {map.tierRecords[tier as TierType]}
-                            </Badge>
-                          </td>
-                        ))}
+                        ).map((tier) => {
+                          const record = map.tierRecords[tier as TierType];
+                          const hasRecord =
+                            typeof record === "string" && record.length > 0;
+                          return (
+                            <td key={tier} className="p-4 text-center">
+                              <Badge
+                                variant="outline"
+                                className="font-mono text-sm"
+                              >
+                                {hasRecord ? record : "—"}
+                              </Badge>
+                            </td>
+                          );
+                        })}
                       </motion.tr>
                     );
                   })}

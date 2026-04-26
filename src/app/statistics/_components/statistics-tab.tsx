@@ -29,25 +29,27 @@ export function StatisticsTab() {
   // 총 기록 개수 계산
   const totalCount = recordData.reduce((sum, count) => sum + count, 0);
 
-  // 데이터를 객체 형태로 변환 (recordData는 배열: [강주력, 주력, 1군, 2군, 3군, 4군, 일반])
+  // 데이터를 객체 형태로 변환 (recordData는 배열: [강주력, 주력, 1군, 2군, 3군, 4군, 라이트, 일반])
   const cumulativeStats = {
-    elite: recordData[0],
-    master: recordData[1],
-    diamond: recordData[2],
-    platinum: recordData[3],
-    gold: recordData[4],
-    silver: recordData[5],
-    bronze: recordData[6],
+    elite: recordData[0] ?? 0,
+    master: recordData[1] ?? 0,
+    diamond: recordData[2] ?? 0,
+    platinum: recordData[3] ?? 0,
+    gold: recordData[4] ?? 0,
+    silver: recordData[5] ?? 0,
+    light: recordData[6] ?? 0,
+    bronze: recordData[7] ?? 0,
   };
 
   const userDistributionStats = {
-    elite: licenseData[0],
-    master: licenseData[1],
-    diamond: licenseData[2],
-    platinum: licenseData[3],
-    gold: licenseData[4],
-    silver: licenseData[5],
-    bronze: licenseData[6],
+    elite: licenseData[0] ?? 0,
+    master: licenseData[1] ?? 0,
+    diamond: licenseData[2] ?? 0,
+    platinum: licenseData[3] ?? 0,
+    gold: licenseData[4] ?? 0,
+    silver: licenseData[5] ?? 0,
+    light: licenseData[6] ?? 0,
+    bronze: licenseData[7] ?? 0,
   };
 
   // Helper function to get tier color hex
@@ -59,6 +61,7 @@ export function StatisticsTab() {
       platinum: "#06b6d4",
       gold: "#eab308",
       silver: "#94a3b8",
+      light: "#10b981",
       bronze: "#d97706",
     };
     return colorMap[tier];

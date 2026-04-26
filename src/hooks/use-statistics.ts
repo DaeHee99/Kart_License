@@ -47,7 +47,7 @@ export function useRecordStatistics() {
   });
 
   return {
-    recordData: data?.data?.recordData ?? [0, 0, 0, 0, 0, 0, 0],
+    recordData: data?.data?.recordData ?? [0, 0, 0, 0, 0, 0, 0, 0],
     recordSum: data?.data?.recordSum ?? 0,
     isLoading,
     error,
@@ -67,7 +67,7 @@ export function useUserLicenseStatistics() {
   });
 
   return {
-    licenseData: data?.data?.licenseData ?? [0, 0, 0, 0, 0, 0, 0],
+    licenseData: data?.data?.licenseData ?? [0, 0, 0, 0, 0, 0, 0, 0],
     isLoading,
     error,
     refetch,

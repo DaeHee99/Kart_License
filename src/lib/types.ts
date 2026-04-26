@@ -6,6 +6,7 @@ export type TierType =
   | "platinum"
   | "gold"
   | "silver"
+  | "light"
   | "bronze";
 
 export interface Tier {
@@ -65,6 +66,14 @@ export const TIERS: Record<TierType, Tier> = {
     color: "tier-silver",
     minScore: 40,
     description: "평균 수준의 실력",
+  },
+  light: {
+    id: "light",
+    name: "Light",
+    nameKo: "라이트",
+    color: "tier-light",
+    minScore: 20,
+    description: "가볍게 즐기는 실력",
   },
   bronze: {
     id: "bronze",

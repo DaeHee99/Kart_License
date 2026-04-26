@@ -1,7 +1,16 @@
 "use client";
 
 import { TIERS, TierType } from "@/lib/types";
-import { Trophy, Award, Diamond, Gem, Crown, Shield, Star } from "lucide-react";
+import {
+  Trophy,
+  Award,
+  Diamond,
+  Gem,
+  Crown,
+  Shield,
+  Star,
+  Sparkles,
+} from "lucide-react";
 import { motion } from "motion/react";
 import { LucideIcon } from "lucide-react";
 
@@ -43,6 +52,7 @@ export function TierBadge({
     platinum: Gem,
     gold: Award,
     silver: Shield,
+    light: Sparkles,
     bronze: Star,
   };
 

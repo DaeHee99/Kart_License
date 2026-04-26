@@ -21,12 +21,12 @@ export interface SaveRecordResult {
 }
 
 export interface RecordStatistics {
-  recordData: number[]; // [강주력, 주력, 1군, 2군, 3군, 4군, 일반]
+  recordData: number[]; // [강주력, 주력, 1군, 2군, 3군, 4군, 라이트, 일반]
   recordSum: number;
 }
 
 export interface UserLicenseStatistics {
-  licenseData: number[]; // [강주력, 주력, 1군, 2군, 3군, 4군, 일반]
+  licenseData: number[]; // [강주력, 주력, 1군, 2군, 3군, 4군, 라이트, 일반]
 }
 
 export interface RecordListItem {
@@ -134,17 +134,19 @@ export class RecordService {
       .lean();
 
     // tierDistribution을 recordCount로 변환
+    // [elite, master, diamond, platinum, gold, silver, light, bronze]
     return records.map((record: any) => ({
       _id: record._id.toString(),
       season: record.season,
       recordCount: [
-        record.tierDistribution.elite,
-        record.tierDistribution.master,
-        record.tierDistribution.diamond,
-        record.tierDistribution.platinum,
-        record.tierDistribution.gold,
-        record.tierDistribution.silver,
-        record.tierDistribution.bronze,
+        record.tierDistribution.elite ?? 0,
+        record.tierDistribution.master ?? 0,
+        record.tierDistribution.diamond ?? 0,
+        record.tierDistribution.platinum ?? 0,
+        record.tierDistribution.gold ?? 0,
+        record.tierDistribution.silver ?? 0,
+        record.tierDistribution.light ?? 0,
+        record.tierDistribution.bronze ?? 0,
       ],
       license: record.finalTier,
       createdAt: record.createdAt,
@@ -165,10 +167,11 @@ export class RecordService {
         else if (finalTier === "2군") acc[3]++;
         else if (finalTier === "3군") acc[4]++;
         else if (finalTier === "4군") acc[5]++;
-        else acc[6]++;
+        else if (finalTier === "라이트") acc[6]++;
+        else acc[7]++;
         return acc;
       },
-      [0, 0, 0, 0, 0, 0, 0]
+      [0, 0, 0, 0, 0, 0, 0, 0]
     );
 
     const recordSum = recordData.reduce((acc, val) => acc + val, 0);
@@ -190,10 +193,11 @@ export class RecordService {
         else if (license === "2군") acc[3]++;
         else if (license === "3군") acc[4]++;
         else if (license === "4군") acc[5]++;
-        else acc[6]++;
+        else if (license === "라이트") acc[6]++;
+        else acc[7]++;
         return acc;
       },
-      [0, 0, 0, 0, 0, 0, 0]
+      [0, 0, 0, 0, 0, 0, 0, 0]
     );
 
     return { licenseData };
@@ -213,13 +217,14 @@ export class RecordService {
       _id: record._id.toString(),
       license: record.finalTier,
       recordCount: [
-        record.tierDistribution.elite,
-        record.tierDistribution.master,
-        record.tierDistribution.diamond,
-        record.tierDistribution.platinum,
-        record.tierDistribution.gold,
-        record.tierDistribution.silver,
-        record.tierDistribution.bronze,
+        record.tierDistribution.elite ?? 0,
+        record.tierDistribution.master ?? 0,
+        record.tierDistribution.diamond ?? 0,
+        record.tierDistribution.platinum ?? 0,
+        record.tierDistribution.gold ?? 0,
+        record.tierDistribution.silver ?? 0,
+        record.tierDistribution.light ?? 0,
+        record.tierDistribution.bronze ?? 0,
       ],
       user: record.user ? {
         _id: record.user._id.toString(),
@@ -252,13 +257,14 @@ export class RecordService {
       _id: record._id.toString(),
       license: record.finalTier,
       recordCount: [
-        record.tierDistribution.elite,
-        record.tierDistribution.master,
-        record.tierDistribution.diamond,
-        record.tierDistribution.platinum,
-        record.tierDistribution.gold,
-        record.tierDistribution.silver,
-        record.tierDistribution.bronze,
+        record.tierDistribution.elite ?? 0,
+        record.tierDistribution.master ?? 0,
+        record.tierDistribution.diamond ?? 0,
+        record.tierDistribution.platinum ?? 0,
+        record.tierDistribution.gold ?? 0,
+        record.tierDistribution.silver ?? 0,
+        record.tierDistribution.light ?? 0,
+        record.tierDistribution.bronze ?? 0,
       ],
       user: record.user ? {
         _id: record.user._id.toString(),

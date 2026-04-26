@@ -104,14 +104,16 @@ export default function ResultDetailPage() {
   }
 
   // tierDistribution을 Record<TierType, number> 타입으로 변환
+  // 라이트 등급은 신규 추가 필드이므로 구버전 데이터에서는 undefined일 수 있음
   const tierDistribution: Record<TierType, number> = {
-    elite: recordData.tierDistribution.elite,
-    master: recordData.tierDistribution.master,
-    diamond: recordData.tierDistribution.diamond,
-    platinum: recordData.tierDistribution.platinum,
-    gold: recordData.tierDistribution.gold,
-    silver: recordData.tierDistribution.silver,
-    bronze: recordData.tierDistribution.bronze,
+    elite: recordData.tierDistribution.elite ?? 0,
+    master: recordData.tierDistribution.master ?? 0,
+    diamond: recordData.tierDistribution.diamond ?? 0,
+    platinum: recordData.tierDistribution.platinum ?? 0,
+    gold: recordData.tierDistribution.gold ?? 0,
+    silver: recordData.tierDistribution.silver ?? 0,
+    light: recordData.tierDistribution.light ?? 0,
+    bronze: recordData.tierDistribution.bronze ?? 0,
   };
 
   // 한국어 티어를 영어 TierType으로 변환

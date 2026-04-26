@@ -75,6 +75,7 @@
   --tier-platinum: oklch(0.7 0.1 200);
   --tier-gold: oklch(0.75 0.15 85);
   --tier-silver: oklch(0.65 0.02 252);
+  --tier-light: oklch(0.7 0.13 150);
   --tier-bronze: oklch(0.55 0.1 45);
   --sidebar: oklch(0.955 0.004 252);
   --sidebar-foreground: oklch(0.45 0.011 252);
@@ -117,6 +118,7 @@
   --tier-platinum: oklch(0.75 0.12 200);
   --tier-gold: oklch(0.8 0.18 85);
   --tier-silver: oklch(0.7 0.03 252);
+  --tier-light: oklch(0.78 0.15 150);
   --tier-bronze: oklch(0.65 0.12 45);
   --sidebar: oklch(0.12 0.011 252);
   --sidebar-foreground: oklch(0.62 0.05 241);
@@ -252,6 +254,14 @@ body {
   );
 }
 
+.tier-light {
+  background: linear-gradient(
+    135deg,
+    oklch(0.78 0.15 150) 0%,
+    oklch(0.72 0.13 145) 100%
+  );
+}
+
 .tier-bronze {
   background: linear-gradient(
     135deg,
@@ -276,6 +286,7 @@ body {
 .dark .tier-platinum,
 .dark .tier-gold,
 .dark .tier-silver,
+.dark .tier-light,
 .dark .tier-bronze {
   background-size: 200% 200%;
 }

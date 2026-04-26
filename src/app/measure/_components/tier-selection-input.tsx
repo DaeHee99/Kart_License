@@ -52,6 +52,7 @@ export function TierSelectionInput({
           const tier = TIERS[tierId];
           const record = map.tierRecords[tierId];
           const isPreviousTier = tierId === previousTier;
+          const hasRecord = typeof record === "string" && record.length > 0;
 
           return (
             <motion.div
@@ -75,7 +76,8 @@ export function TierSelectionInput({
 
               <Button
                 variant="outline"
-                onClick={() => onTierSelect(tierId)}
+                onClick={() => hasRecord && onTierSelect(tierId)}
+                disabled={!hasRecord}
                 className={`relative h-auto w-full justify-between py-4 transition-all duration-200 ${
                   isPreviousTier
                     ? "border-blue-500/50 bg-blue-500/10"
@@ -92,7 +94,7 @@ export function TierSelectionInput({
                   )}
                 </div>
                 <span className="text-muted-foreground font-mono text-sm">
-                  {record}
+                  {hasRecord ? record : "—"}
                 </span>
               </Button>
             </motion.div>

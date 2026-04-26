@@ -6,12 +6,13 @@ export function calculateTier(
 ): TierType {
   // Weighted scoring system
   const weights: Record<TierType, number> = {
-    elite: 7,
-    master: 6,
-    diamond: 5,
-    platinum: 4,
-    gold: 3,
-    silver: 2,
+    elite: 8,
+    master: 7,
+    diamond: 6,
+    platinum: 5,
+    gold: 4,
+    silver: 3,
+    light: 2,
     bronze: 1,
   };
 
@@ -28,12 +29,13 @@ export function calculateTier(
   const averageScore = totalScore / totalMaps;
 
   // Determine tier based on average score
-  if (averageScore >= 6.5) return "elite";
-  if (averageScore >= 5.5) return "master";
-  if (averageScore >= 4.5) return "diamond";
-  if (averageScore >= 3.5) return "platinum";
-  if (averageScore >= 2.5) return "gold";
-  if (averageScore >= 1.5) return "silver";
+  if (averageScore >= 7.5) return "elite";
+  if (averageScore >= 6.5) return "master";
+  if (averageScore >= 5.5) return "diamond";
+  if (averageScore >= 4.5) return "platinum";
+  if (averageScore >= 3.5) return "gold";
+  if (averageScore >= 2.5) return "silver";
+  if (averageScore >= 1.5) return "light";
   return "bronze";
 }
 
@@ -62,17 +64,22 @@ export function parseTime(timeStr: string): number | null {
 }
 
 // Convert time string to comparable number (MM:SS:mm -> MMSSmmm)
-export function timeToNumber(timeStr: string): number {
-  const cleaned = timeStr.replace(/:/g, "");
-  return parseInt(cleaned, 10);
+// 잘못된 입력(undefined/빈 문자열 등)에는 NaN 반환하여 비교 시 항상 false가 되도록 함
+export function timeToNumber(timeStr: string | undefined | null): number {
+  if (typeof timeStr !== "string" || timeStr.length === 0) return NaN;
+  const cleaned = timeStr.replace(/:/g, "").replace(/\s\+$/, "");
+  const parsed = parseInt(cleaned, 10);
+  return Number.isFinite(parsed) ? parsed : NaN;
 }
 
 // Find matching tier based on user's record
+// 라이트 등급 도입 전에 저장된 시즌 데이터(예: tierRecords.light 부재)도 안전하게 처리
 export function findMatchingTier(
   userRecord: string,
-  tierRecords: Record<TierType, string>,
+  tierRecords: Partial<Record<TierType, string>>,
 ): TierType | null {
   const userTime = timeToNumber(userRecord);
+  if (!Number.isFinite(userTime)) return null;
 
   // Define tier order from best to worst
   const tierOrder: TierType[] = [
@@ -82,12 +89,16 @@ export function findMatchingTier(
     "platinum",
     "gold",
     "silver",
+    "light",
     "bronze",
   ];
 
   // Find the first tier where the standard is slower (larger number) than user's record
   for (const tier of tierOrder) {
-    const tierTime = timeToNumber(tierRecords[tier]);
+    const standard = tierRecords[tier];
+    if (!standard) continue; // 해당 tier 기준이 누락된 경우 건너뜀
+    const tierTime = timeToNumber(standard);
+    if (!Number.isFinite(tierTime)) continue;
 
     // If user's time is better than or equal to this tier's standard, they get this tier
     if (userTime <= tierTime) {
@@ -135,6 +146,7 @@ export function getTierGradient(tier: TierType): string {
     platinum: "from-cyan-300 via-teal-400 to-cyan-300",
     gold: "from-yellow-500 via-amber-600 to-yellow-500",
     silver: "from-gray-300 via-gray-400 to-gray-300",
+    light: "from-emerald-400 via-green-500 to-emerald-400",
     bronze: "from-orange-700 via-amber-800 to-orange-700",
   };
   return gradients[tier];
@@ -153,6 +165,7 @@ export function calculateCompletionPercentage(
 export function getNextTier(currentTier: TierType): TierType | null {
   const tierOrder: TierType[] = [
     "bronze",
+    "light",
     "silver",
     "gold",
     "platinum",
@@ -199,6 +212,7 @@ export function convertKoreanTierToEnglish(koreanTier: string): TierType {
     "2군": "platinum",
     "3군": "gold",
     "4군": "silver",
+    라이트: "light",
     일반: "bronze",
   };
 
@@ -214,6 +228,7 @@ export function getTierRingClass(tier: TierType): string {
     platinum: "ring-[var(--tier-platinum)]",
     gold: "ring-[var(--tier-gold)]",
     silver: "ring-[var(--tier-silver)]",
+    light: "ring-[var(--tier-light)]",
     bronze: "ring-[var(--tier-bronze)]",
   };
 

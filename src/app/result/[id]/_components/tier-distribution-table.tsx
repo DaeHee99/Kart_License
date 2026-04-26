@@ -29,6 +29,7 @@ export function TierDistributionTable({
       platinum: "#06b6d4",
       gold: "#eab308",
       silver: "#94a3b8",
+      light: "#10b981",
       bronze: "#d97706",
     };
     return colorMap[tier];
@@ -87,7 +88,7 @@ export function TierDistributionTable({
             {/* Data Rows */}
             {(Object.keys(TIERS) as TierType[]).map((tierId, index) => {
               const tier = TIERS[tierId];
-              const count = tierDistribution[tierId];
+              const count = tierDistribution[tierId] ?? 0;
               const percentage =
                 totalMaps > 0 ? Math.round((count / totalMaps) * 100) : 0;
               const tierColorHex = getTierColorHex(tierId);

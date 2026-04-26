@@ -41,12 +41,12 @@ export const TIER_DETAILS: Record<
   },
   diamond: {
     skillLevel: "숙련자",
-    percentage: "상위 15%",
+    percentage: "상위 10%",
     characteristics: [
       "대부분의 맵에서 준수한 기록",
       "안정적인 드리프트 능력",
-      "기본 라인과 지름길 활용",
-      "아이템 활용도가 높음",
+      "기본 라인과 주행 빌드 활용",
+      "익시드 활용도가 높음",
     ],
     tips: [
       "드리프트 타이밍을 더욱 정교하게 조절하세요",
@@ -56,12 +56,12 @@ export const TIER_DETAILS: Record<
   },
   platinum: {
     skillLevel: "중급자",
-    percentage: "상위 30%",
+    percentage: "상위 20%",
     characteristics: [
       "주요 맵에서 안정적인 주행",
       "기본 드리프트 숙달",
-      "일반적인 지름길 활용 가능",
-      "아이템 기본 운용 이해",
+      "일반적인 주행 빌드 활용 가능",
+      "익시드 활용도가 높음",
     ],
     tips: [
       "드리프트 연습을 꾸준히 하세요",
@@ -71,27 +71,27 @@ export const TIER_DETAILS: Record<
   },
   gold: {
     skillLevel: "초중급자",
-    percentage: "상위 50%",
+    percentage: "상위 30%",
     characteristics: [
       "기본적인 주행 능력 보유",
       "드리프트 개념 이해 및 연습 중",
       "일부 맵에 대한 이해도",
-      "아이템 사용법 학습 중",
+      "익시드 타이밍 학습 중",
     ],
     tips: [
       "기본 드리프트부터 차근차근 익히세요",
       "자주 플레이하는 맵부터 마스터하세요",
-      "튜토리얼과 연습 모드를 적극 활용하세요",
+      "타임어택을 적극 활용하세요",
     ],
   },
   silver: {
     skillLevel: "초급자",
-    percentage: "상위 75%",
+    percentage: "상위 40%",
     characteristics: [
       "게임 기본 조작 이해",
       "드리프트 학습 초기 단계",
       "맵 구조 파악 중",
-      "아이템 효과 학습 중",
+      "익시드 타이밍 학습 중",
     ],
     tips: [
       "조작에 익숙해질 때까지 연습하세요",
@@ -99,9 +99,24 @@ export const TIER_DETAILS: Record<
       "기본 테크닉 영상을 시청하세요",
     ],
   },
+  light: {
+    skillLevel: "라이트 유저",
+    percentage: "상위 50%",
+    characteristics: [
+      "가볍게 즐기는 캐주얼 플레이어",
+      "기본 조작은 익숙해진 상태",
+      "드리프트 입문 단계",
+      "주요 맵 구조 학습 중",
+    ],
+    tips: [
+      "기본 드리프트 연습으로 한 단계 도약해보세요",
+      "익숙한 맵부터 기록 단축에 도전하세요",
+      "재미있게 즐기며 점차 실력을 올려보세요",
+    ],
+  },
   bronze: {
     skillLevel: "입문자",
-    percentage: "하위 25%",
+    percentage: "하위 50%",
     characteristics: [
       "게임 입문 단계",
       "기본 조작 학습 중",

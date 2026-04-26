@@ -10,7 +10,15 @@ export interface GuestMeasurementData {
     mapName: string;
     difficulty: "루키" | "L3" | "L2" | "L1";
     record: string;
-    tier: "elite" | "master" | "diamond" | "platinum" | "gold" | "silver" | "bronze";
+    tier:
+      | "elite"
+      | "master"
+      | "diamond"
+      | "platinum"
+      | "gold"
+      | "silver"
+      | "light"
+      | "bronze";
   }>;
   savedAt: string; // ISO date string
 }

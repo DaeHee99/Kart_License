@@ -78,6 +78,7 @@ export interface MapRecord {
     platinum: string;
     gold: string;
     silver: string;
+    light: string;
     bronze: string;
   };
 }
@@ -97,7 +98,15 @@ export interface UserMapRecord {
   mapName: string;
   difficulty: "루키" | "L3" | "L2" | "L1";
   record: string; // MM:SS:mm 형식
-  tier: "elite" | "master" | "diamond" | "platinum" | "gold" | "silver" | "bronze";
+  tier:
+    | "elite"
+    | "master"
+    | "diamond"
+    | "platinum"
+    | "gold"
+    | "silver"
+    | "light"
+    | "bronze";
 }
 
 export interface SaveRecordRequest {
@@ -118,6 +127,7 @@ export interface SaveRecordResponse {
       platinum: number;
       gold: number;
       silver: number;
+      light: number;
       bronze: number;
     };
   };
@@ -137,6 +147,7 @@ export interface UserRecord {
     platinum: number;
     gold: number;
     silver: number;
+    light: number;
     bronze: number;
   };
   finalTier: string;
@@ -178,6 +189,7 @@ export interface RecordDetailResponse {
       platinum: number;
       gold: number;
       silver: number;
+      light: number;
       bronze: number;
     };
     finalTier: string;
@@ -206,6 +218,7 @@ export interface RecentRecord {
     platinum: number;
     gold: number;
     silver: number;
+    light: number;
     bronze: number;
   };
   finalTier: string;

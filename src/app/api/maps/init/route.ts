@@ -20,6 +20,7 @@ import { authenticateUser } from "@/lib/middleware/auth";
  *       platinum: string,
  *       gold: string,
  *       silver: string,
+ *       light: string,
  *       bronze: string
  *     }
  *   }>
