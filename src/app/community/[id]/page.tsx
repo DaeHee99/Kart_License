@@ -9,7 +9,7 @@ import { CommentsSection } from "./_components/comments-section";
 import { BackButton } from "./_components/back-button";
 import { ShareDialogWrapper } from "./_components/share-dialog-wrapper";
 import { DeleteAlerts } from "./_components/delete-alerts";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { useAuth } from "@/hooks/use-auth";
 import {
   usePost,
@@ -29,25 +29,19 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-} from "@/components/ui/drawer";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { NewPostForm } from "../_components/new-post-form";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Loader2, FileQuestion, Trash2 } from "lucide-react";
 import { APIError } from "@/lib/api/client";
 
+const COMPACT_LAYOUT_QUERY = "(max-width: 1023px)";
+
 export default function CommunityDetailPage() {
   const router = useRouter();
   const params = useParams();
   const postId = params.id as string;
-  const isMobile = useIsMobile();
+  const isCompactLayout = useMediaQuery(COMPACT_LAYOUT_QUERY);
   const { user, isAuthenticated } = useAuth();
 
   // Queries
@@ -205,6 +199,14 @@ export default function CommunityDetailPage() {
   };
 
   const onEditPost = () => {
+    if (
+      isCompactLayout ||
+      window.matchMedia(COMPACT_LAYOUT_QUERY).matches
+    ) {
+      router.push(`/community/${postId}/edit`);
+      return;
+    }
+
     setEditTitle(currentPost.title);
     setEditContent(currentPost.content);
     setEditImages([]);
@@ -357,82 +359,39 @@ export default function CommunityDetailPage() {
           onCancelDeletePost={() => setDeletingPost(false)}
         />
 
-        {/* Edit Dialog/Drawer */}
-        {!isMobile ? (
-          <Dialog open={showEditDialog} onOpenChange={handleEditDialogChange}>
-            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
-              <DialogHeader>
-                <DialogTitle>글 수정</DialogTitle>
-                <DialogDescription>게시글을 수정하세요.</DialogDescription>
-              </DialogHeader>
-              <NewPostForm
-                title={editTitle}
-                content={editContent}
-                images={editImages}
-                existingImages={editExistingImages}
-                onTitleChange={setEditTitle}
-                onContentChange={setEditContent}
-                onImagesChange={setEditImages}
-                onExistingImagesChange={setEditExistingImages}
-              />
-              <Button
-                onClick={handleEditComplete}
-                className="w-full"
-                disabled={
-                  isUpdating || !editTitle.trim() || !editContent.trim()
-                }
-              >
-                {isUpdating ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    수정 중...
-                  </>
-                ) : (
-                  "수정하기"
-                )}
-              </Button>
-            </DialogContent>
-          </Dialog>
-        ) : (
-          <Drawer open={showEditDialog} onOpenChange={handleEditDialogChange}>
-            <DrawerContent className="max-h-[95vh]">
-              <DrawerHeader>
-                <DrawerTitle>글 수정</DrawerTitle>
-                <DrawerDescription>게시글을 수정하세요.</DrawerDescription>
-              </DrawerHeader>
-              <ScrollArea className="max-h-[95vh] overflow-y-auto px-1">
-                <div className="px-4 pb-6">
-                  <NewPostForm
-                    title={editTitle}
-                    content={editContent}
-                    images={editImages}
-                    existingImages={editExistingImages}
-                    onTitleChange={setEditTitle}
-                    onContentChange={setEditContent}
-                    onImagesChange={setEditImages}
-                    onExistingImagesChange={setEditExistingImages}
-                  />
-                  <Button
-                    onClick={handleEditComplete}
-                    className="mt-4 w-full"
-                    disabled={
-                      isUpdating || !editTitle.trim() || !editContent.trim()
-                    }
-                  >
-                    {isUpdating ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        수정 중...
-                      </>
-                    ) : (
-                      "수정하기"
-                    )}
-                  </Button>
-                </div>
-              </ScrollArea>
-            </DrawerContent>
-          </Drawer>
-        )}
+        {/* 데스크톱 글 수정 다이얼로그 */}
+        <Dialog open={showEditDialog} onOpenChange={handleEditDialogChange}>
+          <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>글 수정</DialogTitle>
+              <DialogDescription>게시글을 수정하세요.</DialogDescription>
+            </DialogHeader>
+            <NewPostForm
+              title={editTitle}
+              content={editContent}
+              images={editImages}
+              existingImages={editExistingImages}
+              onTitleChange={setEditTitle}
+              onContentChange={setEditContent}
+              onImagesChange={setEditImages}
+              onExistingImagesChange={setEditExistingImages}
+            />
+            <Button
+              onClick={handleEditComplete}
+              className="w-full"
+              disabled={isUpdating || !editTitle.trim() || !editContent.trim()}
+            >
+              {isUpdating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  수정 중...
+                </>
+              ) : (
+                "수정하기"
+              )}
+            </Button>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

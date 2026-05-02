@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -23,11 +24,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { LikeButton } from "../../_components/like-button";
+import { ScrollSafeDropdownTrigger } from "./scroll-safe-dropdown-trigger";
 
 interface PostContentProps {
   post: Post;
@@ -75,6 +76,7 @@ export function PostContent({
   isLiking,
 }: PostContentProps) {
   const router = useRouter();
+  const [actionMenuOpen, setActionMenuOpen] = useState(false);
 
   // 티어 변환 (한국어 -> 영어)
   const tierEnglish = post.userTier
@@ -185,16 +187,20 @@ export function PostContent({
             공유
           </Button>
           {isPostAuthor && !post.deletedAt && (
-            <DropdownMenu modal={false}>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="text-muted-foreground hover:text-foreground h-9 w-9"
-                >
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
+            <DropdownMenu
+              modal={false}
+              open={actionMenuOpen}
+              onOpenChange={setActionMenuOpen}
+            >
+              <ScrollSafeDropdownTrigger
+                setOpen={setActionMenuOpen}
+                variant="outline"
+                size="icon"
+                className="text-muted-foreground hover:text-foreground h-9 w-9 touch-pan-y"
+                aria-label="게시글 수정 및 삭제 메뉴"
+              >
+                <MoreVertical className="h-4 w-4" />
+              </ScrollSafeDropdownTrigger>
               <DropdownMenuContent align="end" className="min-w-[120px]">
                 <DropdownMenuItem
                   className="cursor-pointer"

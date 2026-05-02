@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { TierType } from "@/lib/types";
 import { getTierInsights, convertKoreanTierToEnglish } from "@/lib/utils-calc";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import { AnimatedBackground } from "./_components/animated-background";
 import { UserInfoCard } from "./_components/user-info-card";
 import { TierRevealCard } from "./_components/tier-reveal-card";
@@ -18,9 +19,13 @@ import { useUserFeedback } from "@/hooks/use-feedback";
 import { useLatestMaps } from "@/hooks/use-records";
 import type { RecordDetailResponse } from "@/lib/api/types";
 
+const COMPACT_LAYOUT_QUERY = "(max-width: 1023px)";
+const FEEDBACK_DISMISSED_QUERY = "feedbackDismissed";
+
 export default function ResultDetailPage() {
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
   const recordId = params.id as string;
 
   const [recordData, setRecordData] = useState<
@@ -28,19 +33,35 @@ export default function ResultDetailPage() {
   >(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
+  const [feedbackPromptDismissed, setFeedbackPromptDismissed] = useState(false);
+  const [isRedirectingToFeedback, setIsRedirectingToFeedback] = useState(false);
+  const [isCompactViewport, setIsCompactViewport] = useState<boolean | null>(
+    null,
+  );
+  const hasFeedbackDismissedQuery =
+    searchParams.get(FEEDBACK_DISMISSED_QUERY) === "1";
 
   // 유저 인증 정보
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
 
   // 현재 시즌 정보 가져오기
-  const { season: currentSeason } = useLatestMaps();
+  const { season: currentSeason, isLoading: mapsLoading } = useLatestMaps();
 
   // 유저의 피드백 제출 여부 확인
   const { feedback, isLoading: feedbackLoading } = useUserFeedback(
     user?._id,
     recordData?.season,
   );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(COMPACT_LAYOUT_QUERY);
+    const handleChange = () => setIsCompactViewport(mediaQuery.matches);
+
+    handleChange();
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   useEffect(() => {
     const fetchRecord = async () => {
@@ -68,39 +89,85 @@ export default function ResultDetailPage() {
     }
   }, [recordId, router]);
 
-  // 피드백 다이얼로그 자동 표시 로직
   useEffect(() => {
-    if (
+    if (!hasFeedbackDismissedQuery) return;
+
+    setFeedbackPromptDismissed(true);
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `/result/${recordId}`,
+    );
+  }, [hasFeedbackDismissedQuery, recordId]);
+
+  const isFeedbackDecisionPending =
+    !isLoading &&
+    !!recordData &&
+    (authLoading ||
+      (isAuthenticated &&
+        (feedbackLoading || mapsLoading || isCompactViewport === null)));
+
+  const shouldPromptForFeedback = Boolean(
+    !isLoading &&
+      recordData &&
+      !isFeedbackDecisionPending &&
       isAuthenticated &&
       user &&
-      recordData &&
-      !feedbackLoading &&
       !feedback &&
+      !feedbackPromptDismissed &&
+      !hasFeedbackDismissedQuery &&
       recordData.season > 0 &&
-      currentSeason > 0
-    ) {
-      // 조건:
-      // 1. 유저가 로그인되어 있어야 함
-      // 2. 기록이 로드되었어야 함
-      // 3. 피드백 로딩이 완료되어야 함
-      // 4. 현재 시즌에 대한 피드백을 아직 제출하지 않았어야 함
-      // 5. 해당 기록이 현재 로그인한 유저의 것이어야 함
-      // 6. 해당 기록의 시즌이 현재 시즌과 일치해야 함
-      const isOwnRecord = recordData.user?._id === user._id;
-      const isCurrentSeasonRecord = recordData.season === currentSeason;
+      currentSeason > 0 &&
+      recordData.user?._id === user._id &&
+      recordData.season === currentSeason,
+  );
 
-      if (isOwnRecord && isCurrentSeasonRecord) {
-        setShowFeedbackDialog(true);
-      }
+  const shouldRedirectToFeedbackPage =
+    shouldPromptForFeedback && isCompactViewport === true;
+  const shouldShowFeedbackDialog =
+    shouldPromptForFeedback && isCompactViewport === false;
+
+  useEffect(() => {
+    if (!shouldRedirectToFeedbackPage) return;
+
+    setIsRedirectingToFeedback(true);
+    setFeedbackPromptDismissed(true);
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `/result/${recordId}?${FEEDBACK_DISMISSED_QUERY}=1`,
+    );
+    router.push(`/result/${recordId}/feedback`);
+  }, [recordId, router, shouldRedirectToFeedbackPage]);
+
+  const handleFeedbackDialogChange = (open: boolean) => {
+    if (!open) {
+      setFeedbackPromptDismissed(true);
     }
-  }, [isAuthenticated, user, recordData, feedbackLoading, feedback, currentSeason]);
+  };
 
   if (isLoading || !recordData) {
-    return null; // Loading state
+    return (
+      <div className="flex min-h-[calc(100vh-7rem)] items-center justify-center">
+        <Loader2 className="text-primary h-8 w-8 animate-spin" />
+      </div>
+    );
   }
 
   if (error) {
     return null; // Error state (will redirect)
+  }
+
+  if (
+    isFeedbackDecisionPending ||
+    shouldRedirectToFeedbackPage ||
+    isRedirectingToFeedback
+  ) {
+    return (
+      <div className="flex min-h-[calc(100vh-7rem)] items-center justify-center">
+        <Loader2 className="text-primary h-8 w-8 animate-spin" />
+      </div>
+    );
   }
 
   // tierDistribution을 Record<TierType, number> 타입으로 변환
@@ -162,8 +229,8 @@ export default function ResultDetailPage() {
       {/* 피드백 다이얼로그 */}
       {isAuthenticated && user && recordData && (
         <FeedbackDialog
-          open={showFeedbackDialog}
-          onOpenChange={setShowFeedbackDialog}
+          open={shouldShowFeedbackDialog}
+          onOpenChange={handleFeedbackDialogChange}
           season={recordData.season}
           recordId={recordId}
           userId={user._id}

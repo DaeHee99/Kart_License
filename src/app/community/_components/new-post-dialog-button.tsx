@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   Dialog,
   DialogContent,
@@ -12,6 +14,7 @@ import {
 import {
   Drawer,
   DrawerContent,
+  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerDescription,
@@ -29,16 +32,21 @@ interface NewPostDialogButtonProps {
   isMobile: boolean;
 }
 
+const COMPACT_LAYOUT_QUERY = "(max-width: 1023px)";
+
 export function NewPostDialogButton({
   editingPost = null,
   onEditComplete,
   onPostCreate,
   isMobile,
 }: NewPostDialogButtonProps) {
+  const router = useRouter();
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
   const [newPostImages, setNewPostImages] = useState<File[]>([]);
   const [showNewPost, setShowNewPost] = useState(false);
+  const isTabletOrMobile = useMediaQuery(COMPACT_LAYOUT_QUERY);
+  const shouldUseWritePage = (isMobile || isTabletOrMobile) && !editingPost;
 
   // Open edit modal when editingPost is provided
   useEffect(() => {
@@ -104,6 +112,18 @@ export function NewPostDialogButton({
     setShowNewPost(open);
   };
 
+  if (shouldUseWritePage) {
+    return (
+      <Button
+        className="shrink-0 shadow-lg"
+        onClick={() => router.push("/community/write")}
+      >
+        <Plus className="mr-2 h-4 w-4" />
+        글쓰기
+      </Button>
+    );
+  }
+
   return (
     <>
       {/* Desktop Dialog */}
@@ -140,15 +160,15 @@ export function NewPostDialogButton({
           </DialogContent>
         </Dialog>
       ) : (
-        <Drawer open={showNewPost} onOpenChange={handleDialogChange}>
+        <Drawer fixed open={showNewPost} onOpenChange={handleDialogChange}>
           <DrawerTrigger asChild>
             <Button className="shrink-0 shadow-lg">
               <Plus className="mr-2 h-4 w-4" />
               글쓰기
             </Button>
           </DrawerTrigger>
-          <DrawerContent className="max-h-[95vh]">
-            <DrawerHeader>
+          <DrawerContent className="h-[95dvh] max-h-[95dvh] overflow-hidden">
+            <DrawerHeader className="shrink-0">
               <DrawerTitle>
                 {editingPost ? "글 수정" : "새 글 작성"}
               </DrawerTitle>
@@ -159,8 +179,8 @@ export function NewPostDialogButton({
               </DrawerDescription>
             </DrawerHeader>
 
-            <ScrollArea className="max-h-[95vh] overflow-y-auto px-1">
-              <div className="px-4 pb-6">
+            <ScrollArea className="min-h-0 flex-1 px-1">
+              <div className="px-4 pb-4">
                 <NewPostForm
                   title={newPostTitle}
                   content={newPostContent}
@@ -169,11 +189,13 @@ export function NewPostDialogButton({
                   onContentChange={setNewPostContent}
                   onImagesChange={setNewPostImages}
                 />
-                <Button onClick={handleCreatePost} className="mt-4 w-full">
-                  {editingPost ? "수정하기" : "작성하기"}
-                </Button>
               </div>
             </ScrollArea>
+            <DrawerFooter className="border-border/60 bg-background/95 shrink-0 border-t pb-[calc(1rem+env(safe-area-inset-bottom))]">
+              <Button onClick={handleCreatePost} className="w-full">
+                {editingPost ? "수정하기" : "작성하기"}
+              </Button>
+            </DrawerFooter>
           </DrawerContent>
         </Drawer>
       )}

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -40,11 +39,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LoginRequiredDialog } from "../../_components/login-required-dialog";
 import { LikeButton } from "../../_components/like-button";
 import { useRouter } from "next/navigation";
+import { ScrollSafeDropdownTrigger } from "./scroll-safe-dropdown-trigger";
 
 interface CommentsSectionProps {
   comments: Comment[];
@@ -72,6 +71,9 @@ export function CommentsSection({
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingCommentContent, setEditingCommentContent] = useState("");
   const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [openActionCommentId, setOpenActionCommentId] = useState<string | null>(
+    null,
+  );
 
   // 유저 프로필 페이지로 이동
   const handleUserClick = (userId: string) => {
@@ -261,16 +263,24 @@ export function CommentsSection({
                   {canModifyComment &&
                     !comment.deletedAt &&
                     editingCommentId !== comment.id && (
-                      <DropdownMenu modal={false}>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-muted-foreground hover:text-foreground h-8 w-8 touch-manipulation"
-                          >
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
+                      <DropdownMenu
+                        modal={false}
+                        open={openActionCommentId === comment.id}
+                        onOpenChange={(open) =>
+                          setOpenActionCommentId(open ? comment.id : null)
+                        }
+                      >
+                        <ScrollSafeDropdownTrigger
+                          setOpen={(open) =>
+                            setOpenActionCommentId(open ? comment.id : null)
+                          }
+                          variant="ghost"
+                          size="icon"
+                          className="text-muted-foreground hover:text-foreground h-8 w-8 touch-pan-y"
+                          aria-label="댓글 수정 및 삭제 메뉴"
+                        >
+                          <MoreVertical className="h-4 w-4" />
+                        </ScrollSafeDropdownTrigger>
                         <DropdownMenuContent
                           align="end"
                           className="min-w-[120px]"
@@ -308,15 +318,25 @@ export function CommentsSection({
         {/* Comment Input */}
         <div className="border-border border-t pt-4">
           {isAuthenticated ? (
-            <div className="flex gap-2">
-              <Input
+            <div className="flex items-end gap-2">
+              <Textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="댓글을 입력하세요..."
-                onKeyPress={(e) => e.key === "Enter" && handleAddComment()}
-                className="flex-1"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                    e.preventDefault();
+                    handleAddComment();
+                  }
+                }}
+                className="min-h-20 flex-1 resize-y"
               />
-              <Button onClick={handleAddComment} size="icon">
+              <Button
+                onClick={handleAddComment}
+                size="icon"
+                disabled={!newComment.trim()}
+                aria-label="댓글 작성"
+              >
                 <Send className="h-4 w-4" />
               </Button>
             </div>

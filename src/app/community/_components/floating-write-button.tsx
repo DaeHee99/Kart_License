@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { useAuth } from "@/hooks/use-auth";
 import { useCreatePost } from "@/hooks/use-posts";
 import { Button } from "@/components/ui/button";
@@ -14,18 +14,12 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-} from "@/components/ui/drawer";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { NewPostForm } from "./new-post-form";
 import { motion } from "motion/react";
 import { LoginRequiredDialog } from "./login-required-dialog";
 import { PostCategory } from "@/lib/types";
+
+const COMPACT_LAYOUT_QUERY = "(max-width: 1023px)";
 
 export function FloatingWriteButton() {
   const router = useRouter();
@@ -35,7 +29,7 @@ export function FloatingWriteButton() {
   const [content, setContent] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [category, setCategory] = useState<PostCategory>("general");
-  const isMobile = useIsMobile();
+  const isCompactLayout = useMediaQuery(COMPACT_LAYOUT_QUERY);
   const { isAuthenticated, user } = useAuth();
   const { mutate: createPost, isPending } = useCreatePost();
 
@@ -78,7 +72,7 @@ export function FloatingWriteButton() {
               router.push(`/community/${response.data._id}`);
             }
           },
-        }
+        },
       );
     } catch (error) {
       console.error("Failed to create post:", error);
@@ -102,7 +96,7 @@ export function FloatingWriteButton() {
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-        className="fixed bottom-20 right-6 z-40"
+        className="fixed right-6 bottom-20 z-40"
       >
         <Button
           size="lg"
@@ -110,6 +104,11 @@ export function FloatingWriteButton() {
           onClick={() => {
             if (!isAuthenticated) {
               setShowLoginDialog(true);
+            } else if (
+              isCompactLayout ||
+              window.matchMedia(COMPACT_LAYOUT_QUERY).matches
+            ) {
+              router.push("/community/write");
             } else {
               setShowDialog(true);
             }
@@ -126,84 +125,42 @@ export function FloatingWriteButton() {
         message="게시글을 작성하려면 로그인이 필요합니다."
       />
 
-      {/* 글쓰기 다이얼로그/드로어 */}
-      {!isMobile ? (
-        <Dialog open={showDialog} onOpenChange={handleDialogChange}>
-          <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
-            <DialogHeader>
-              <DialogTitle>새 글 작성</DialogTitle>
-              <DialogDescription>
-                커뮤니티에 새로운 글을 작성하세요.
-              </DialogDescription>
-            </DialogHeader>
-            <NewPostForm
-              title={title}
-              content={content}
-              images={images}
-              category={category}
-              isAdmin={user?.isAdmin || false}
-              onTitleChange={setTitle}
-              onContentChange={setContent}
-              onImagesChange={setImages}
-              onCategoryChange={(cat) => setCategory(cat as PostCategory)}
-            />
-            <Button
-              onClick={handleCreatePost}
-              className="w-full"
-              disabled={isPending || !title.trim() || !content.trim()}
-            >
-              {isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  작성 중...
-                </>
-              ) : (
-                "작성하기"
-              )}
-            </Button>
-          </DialogContent>
-        </Dialog>
-      ) : (
-        <Drawer open={showDialog} onOpenChange={handleDialogChange}>
-          <DrawerContent className="max-h-[95vh]">
-            <DrawerHeader>
-              <DrawerTitle>새 글 작성</DrawerTitle>
-              <DrawerDescription>
-                커뮤니티에 새로운 글을 작성하세요.
-              </DrawerDescription>
-            </DrawerHeader>
-            <ScrollArea className="max-h-[95vh] overflow-y-auto px-1">
-              <div className="px-4 pb-6">
-                <NewPostForm
-                  title={title}
-                  content={content}
-                  images={images}
-                  category={category}
-                  isAdmin={user?.isAdmin || false}
-                  onTitleChange={setTitle}
-                  onContentChange={setContent}
-                  onImagesChange={setImages}
-                  onCategoryChange={(cat) => setCategory(cat as PostCategory)}
-                />
-                <Button
-                  onClick={handleCreatePost}
-                  className="mt-4 w-full"
-                  disabled={isPending || !title.trim() || !content.trim()}
-                >
-                  {isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      작성 중...
-                    </>
-                  ) : (
-                    "작성하기"
-                  )}
-                </Button>
-              </div>
-            </ScrollArea>
-          </DrawerContent>
-        </Drawer>
-      )}
+      {/* 데스크톱 글쓰기 다이얼로그 */}
+      <Dialog open={showDialog} onOpenChange={handleDialogChange}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>새 글 작성</DialogTitle>
+            <DialogDescription>
+              커뮤니티에 새로운 글을 작성하세요.
+            </DialogDescription>
+          </DialogHeader>
+          <NewPostForm
+            title={title}
+            content={content}
+            images={images}
+            category={category}
+            isAdmin={user?.isAdmin || false}
+            onTitleChange={setTitle}
+            onContentChange={setContent}
+            onImagesChange={setImages}
+            onCategoryChange={(cat) => setCategory(cat as PostCategory)}
+          />
+          <Button
+            onClick={handleCreatePost}
+            className="w-full"
+            disabled={isPending || !title.trim() || !content.trim()}
+          >
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                작성 중...
+              </>
+            ) : (
+              "작성하기"
+            )}
+          </Button>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
