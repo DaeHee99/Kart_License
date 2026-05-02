@@ -578,7 +578,7 @@ export const convertedMapData = {
         bronze: "02:11:99 +",
       },
     },
-    // L2 맵 (30개)
+    // L2 맵 (31개)
     {
       name: "차이나 서안 병마용",
       difficulty: "L2" as const,
@@ -1027,6 +1027,21 @@ export const convertedMapData = {
         silver: "01:23:99",
         light: "01:27:99",
         bronze: "01:27:99 +",
+      },
+    },
+    {
+      name: "대저택 골드 러쉬",
+      difficulty: "L2" as const,
+      imageUrl: "/maps/l2/031.webp",
+      tierRecords: {
+        elite: "01:52:49",
+        master: "01:53:99",
+        diamond: "01:55:99",
+        platinum: "01:58:49",
+        gold: "02:01:49",
+        silver: "02:04:49",
+        light: "02:10:49",
+        bronze: "02:10:49 +",
       },
     },
     // L1 맵 (14개)
