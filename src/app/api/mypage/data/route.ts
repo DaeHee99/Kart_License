@@ -19,6 +19,8 @@ export async function GET(request: NextRequest) {
 
     const searchParams = request.nextUrl.searchParams;
     const userId = searchParams.get("userId");
+    const hideDeletedHistory =
+      searchParams.get("hideDeletedHistory") === "true";
 
     if (!userId || !Types.ObjectId.isValid(userId)) {
       return NextResponse.json(
@@ -26,11 +28,13 @@ export async function GET(request: NextRequest) {
           success: false,
           message: "유효하지 않은 유저 ID입니다.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // 유저의 모든 기록 조회 (최신순)
+    // deletedAt은 마이페이지의 측정 기록 탭 노출 여부에만 사용한다.
+    // 군 변화/시즌별 최고 기록/latestRecord 및 유저페이지는 전체 기록 기준이다.
     const records = await Record.find({
       user: new Types.ObjectId(userId),
       season: { $gt: 0 },
@@ -50,7 +54,7 @@ export async function GET(request: NextRequest) {
             measurementHistory: [],
           },
         },
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -104,12 +108,16 @@ export async function GET(request: NextRequest) {
           date: formattedDate,
           tier: record.finalTier,
           value: tierToValue(record.finalTier),
+          createdAt: record.createdAt,
         };
       });
 
     // 3. 시즌별 최고 기록
     // 시즌별로 그룹화하여 가장 높은 티어를 찾음
-    const seasonMap = new Map<number, { tier: string; value: number; recordId: string; createdAt: Date }>();
+    const seasonMap = new Map<
+      number,
+      { tier: string; value: number; recordId: string; createdAt: Date }
+    >();
 
     records.forEach((record) => {
       const currentValue = tierToValue(record.finalTier);
@@ -142,13 +150,18 @@ export async function GET(request: NextRequest) {
       });
 
     // 4. 측정 기록 목록 (최신순)
-    const measurementHistory = records.map((record) => ({
+    const measurementHistoryRecords = hideDeletedHistory
+      ? records.filter((record) => !record.deletedAt)
+      : records;
+
+    const measurementHistory = measurementHistoryRecords.map((record) => ({
       id: record._id.toString(),
       season: `S${record.season}`,
       tier: record.finalTier,
       tierEn: tierKoToEn(record.finalTier),
       maps: record.records.length,
       createdAt: record.createdAt,
+      deletedAt: record.deletedAt ?? null,
     }));
 
     return NextResponse.json(
@@ -161,7 +174,7 @@ export async function GET(request: NextRequest) {
           measurementHistory,
         },
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Mypage data fetch error:", error);
@@ -170,7 +183,7 @@ export async function GET(request: NextRequest) {
         success: false,
         error: "마이페이지 데이터 조회 중 오류가 발생했습니다.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

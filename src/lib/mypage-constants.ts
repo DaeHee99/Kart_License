@@ -4,6 +4,7 @@ export interface TierHistoryItem {
   date: string;
   tier: string;
   value: number;
+  createdAt?: Date | string;
 }
 
 export interface MeasurementHistoryItem {

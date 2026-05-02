@@ -14,20 +14,22 @@ import { SeasonRecordsTab } from "./season-records-tab";
 import { TrendingUp, Crown, FileChartColumnIncreasing } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { useMypageData } from "@/hooks/use-mypage";
+import { useDeleteMeasurementRecord, useMypageData } from "@/hooks/use-mypage";
 import { TierType } from "@/lib/types";
 
 export default function MypageTabs() {
   const [activeTab, setActiveTab] = useState("progress");
   const { user } = useAuth();
   const { tierHistory, seasonRecords, measurementHistory, isLoading } =
-    useMypageData(user?._id);
+    useMypageData(user?._id, { hideDeletedHistory: true });
+  const deleteMeasurementMutation = useDeleteMeasurementRecord(user?._id);
 
   // 데이터 변환 함수
   const transformedTierHistory = tierHistory.map((item) => ({
     date: item.date,
     tier: item.tier,
     value: item.value,
+    createdAt: item.createdAt,
   }));
 
   const transformedSeasonRecords = seasonRecords.map((item) => ({
@@ -44,19 +46,22 @@ export default function MypageTabs() {
     }),
   }));
 
-  const transformedMeasurements = measurementHistory.map((item) => ({
-    id: item.id,
-    date: new Date(item.createdAt).toLocaleString("ko-KR", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-    tier: item.tierEn as TierType,
-    maps: item.maps,
-    season: item.season,
-  }));
+  const transformedMeasurements = measurementHistory
+    .filter((item) => !item.deletedAt)
+    .map((item) => ({
+      id: item.id,
+      date: new Date(item.createdAt).toLocaleString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      tier: item.tierEn as TierType,
+      maps: item.maps,
+      season: item.season,
+      deletedAt: item.deletedAt,
+    }));
 
   return (
     <motion.div
@@ -103,6 +108,15 @@ export default function MypageTabs() {
               key={activeTab === "history" ? "history" : ""}
               measurements={transformedMeasurements}
               isLoading={isLoading}
+              allowDelete
+              deletingId={
+                deleteMeasurementMutation.isPending
+                  ? deleteMeasurementMutation.variables
+                  : null
+              }
+              onDelete={(recordId) =>
+                deleteMeasurementMutation.mutate(recordId)
+              }
             />
           </TabsContent>
         </TabsContents>

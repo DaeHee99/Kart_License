@@ -58,6 +58,7 @@ export default function UserTabs({ userId }: UserTabsProps) {
     tier: item.tierEn as TierType,
     maps: item.maps,
     season: item.season,
+    deletedAt: item.deletedAt,
   }));
 
   return (

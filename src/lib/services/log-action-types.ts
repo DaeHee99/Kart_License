@@ -14,6 +14,7 @@ export enum LogActionType {
 
   // Measurement
   MEASUREMENT_COMPLETE = "MEASUREMENT_COMPLETE",
+  MEASUREMENT_DELETE = "MEASUREMENT_DELETE",
 
   // Community Posts
   POST_CREATE = "POST_CREATE",

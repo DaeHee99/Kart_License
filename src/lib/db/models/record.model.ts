@@ -37,6 +37,7 @@ export interface IRecord {
     bronze: number;
   }; // 티어별 분포
   finalTier: string; // 최종 군 (강주력, 주력, 1군, 2군, 3군, 4군, 라이트, 일반)
+  deletedAt?: Date | null; // 마이페이지 측정 기록 탭 노출 제외용 soft delete 시각
   createdAt: Date;
   updatedAt: Date;
 }
@@ -124,6 +125,10 @@ const recordSchema = new Schema<IRecord, IRecordModel>(
       enum: ["강주력", "주력", "1군", "2군", "3군", "4군", "라이트", "일반"],
       default: "일반",
     },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true },
 );
@@ -131,6 +136,7 @@ const recordSchema = new Schema<IRecord, IRecordModel>(
 // 인덱스 설정: 유저별 최신 기록 조회 최적화
 recordSchema.index({ user: 1, createdAt: -1 });
 recordSchema.index({ user: 1, season: 1, createdAt: -1 });
+recordSchema.index({ user: 1, deletedAt: 1, createdAt: -1 });
 
 // 저장 전 최종 티어 계산
 recordSchema.pre("save", function (next) {

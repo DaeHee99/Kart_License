@@ -20,32 +20,86 @@ interface TierProgressTabProps {
   isLoading?: boolean;
 }
 
+function itemTime(date: Date) {
+  return date.getTime();
+}
+
+function formatTierChange(
+  from: { tier: string; value: number },
+  to: { tier: string; value: number },
+) {
+  const tierDiff = to.value - from.value;
+
+  if (tierDiff > 0) {
+    return `${from.tier}에서 ${to.tier}으로 ${tierDiff}단계 상승했습니다! 🎉`;
+  }
+
+  if (tierDiff < 0) {
+    return `${from.tier}에서 ${to.tier}으로 ${Math.abs(tierDiff)}단계 하락했습니다. 💪 화이팅!`;
+  }
+
+  return `${to.tier}을 유지하고 있습니다. 꾸준히 이어가고 있어요! 💪`;
+}
+
 export function TierProgressTab({
   tierHistory,
   isLoading,
 }: TierProgressTabProps) {
-  // 최근 1개월 동안 티어 변화 계산
+  // 현재 시점 기준 최근 30일의 측정 흐름을 계산한다.
   const tierChangeMessage = useMemo(() => {
-    if (tierHistory.length < 2) {
+    const now = new Date();
+    const validHistory = tierHistory
+      .map((item) => ({
+        ...item,
+        measuredAt: item.createdAt ? new Date(item.createdAt) : null,
+      }))
+      .filter(
+        (item): item is typeof item & { measuredAt: Date } =>
+          item.measuredAt !== null && !Number.isNaN(item.measuredAt.getTime()),
+      )
+      .filter((item) => item.measuredAt <= now)
+      .sort((a, b) => itemTime(a.measuredAt) - itemTime(b.measuredAt));
+
+    if (validHistory.length === 0) {
       return null;
     }
 
-    // 최근 1개월 데이터 필터링 (약 30일)
-    const oneMonthAgo = new Date();
+    const latest = validHistory[validHistory.length - 1];
+    const oneMonthAgo = new Date(now);
     oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
 
-    // 최근 데이터와 1개월 전 데이터 비교
-    const latestValue = tierHistory[tierHistory.length - 1].value;
-    const earliestValue = tierHistory[0].value;
-    const tierDiff = latestValue - earliestValue;
+    const recentHistory = validHistory.filter(
+      (item) => item.measuredAt >= oneMonthAgo,
+    );
 
-    if (tierDiff > 0) {
-      return `최근 1개월 동안 ${tierDiff}단계 상승했습니다! 🎉`;
-    } else if (tierDiff < 0) {
-      return `최근 1개월 동안 ${Math.abs(tierDiff)}단계 하락했습니다. 💪 화이팅!`;
-    } else {
-      return "최근 1개월 동안 티어 변화가 없습니다. 꾸준히 노력하고 있어요! 💪";
+    if (recentHistory.length >= 2) {
+      const firstRecent = recentHistory[0];
+      return `최근 1개월 내 첫 측정 대비 ${formatTierChange(firstRecent, latest)}`;
     }
+
+    const previousBeforeRecent = [...validHistory]
+      .reverse()
+      .find((item) => item.measuredAt < oneMonthAgo);
+
+    if (recentHistory.length === 1) {
+      if (previousBeforeRecent) {
+        return `최근 측정은 직전 측정 대비 ${formatTierChange(previousBeforeRecent, latest)}`;
+      }
+
+      return "최근 1개월 내 비교할 추가 기록이 쌓이면 변화 추세를 보여드릴게요.";
+    }
+
+    const daysSinceLatest = Math.max(
+      1,
+      Math.floor((itemTime(now) - itemTime(latest.measuredAt)) / 86400000),
+    );
+
+    if (validHistory.length >= 2) {
+      const previous = validHistory[validHistory.length - 2];
+      return `최근 1개월 동안 새 측정 기록이 없습니다. 마지막 측정은 ${daysSinceLatest}일 전이며, 직전 측정 대비 ${formatTierChange(previous, latest)}`;
+    }
+
+    return `최근 1개월 동안 새 측정 기록이 없습니다. 마지막 측정은 ${daysSinceLatest}일 전입니다.`;
   }, [tierHistory]);
 
   if (isLoading) {

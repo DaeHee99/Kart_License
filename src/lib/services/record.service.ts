@@ -54,6 +54,13 @@ export interface UserRecordItem {
   createdAt: Date;
 }
 
+export interface DeleteUserRecordResult {
+  recordId: string;
+  season: number;
+  finalTier: string;
+  deletedAt: Date;
+}
+
 /**
  * 기록 서비스 클래스
  */
@@ -113,7 +120,7 @@ export class RecordService {
    */
   async getUserRecords(
     userId: string,
-    season?: number
+    season?: number,
   ): Promise<UserRecordItem[]> {
     if (!Types.ObjectId.isValid(userId)) {
       return [];
@@ -154,6 +161,60 @@ export class RecordService {
   }
 
   /**
+   * 마이페이지 측정 기록 탭에서 기록 숨김 처리
+   *
+   * 실제 기록 데이터는 유지하고 deletedAt만 설정한다. 이 플래그는
+   * 마이페이지 측정 기록 목록 노출에만 사용하고, 군 변화/시즌 최고 기록
+   * 그래프나 결과 페이지 조회에는 영향을 주지 않는다.
+   */
+  async deleteUserRecordForMypage(
+    recordId: string,
+    userId: string,
+  ): Promise<DeleteUserRecordResult | null> {
+    if (!Types.ObjectId.isValid(recordId) || !Types.ObjectId.isValid(userId)) {
+      return null;
+    }
+
+    const record = await Record.findById(recordId).select(
+      "user season finalTier deletedAt",
+    );
+
+    if (!record || record.deletedAt) {
+      return null;
+    }
+
+    if (!record.user || record.user.toString() !== userId) {
+      throw new Error("기록 삭제 권한이 없습니다.");
+    }
+
+    const deletedAt = new Date();
+    const updatedRecord = await Record.findOneAndUpdate(
+      {
+        _id: new Types.ObjectId(recordId),
+        user: new Types.ObjectId(userId),
+        $or: [{ deletedAt: null }, { deletedAt: { $exists: false } }],
+      },
+      { $set: { deletedAt } },
+      {
+        new: true,
+        strict: false,
+        runValidators: false,
+      },
+    ).select("deletedAt");
+
+    if (!updatedRecord?.deletedAt) {
+      return null;
+    }
+
+    return {
+      recordId,
+      season: record.season,
+      finalTier: record.finalTier,
+      deletedAt,
+    };
+  }
+
+  /**
    * 모든 기록 통계 조회 (통계 페이지용)
    */
   async getAllRecordsStatistics(): Promise<RecordStatistics> {
@@ -171,7 +232,7 @@ export class RecordService {
         else acc[7]++;
         return acc;
       },
-      [0, 0, 0, 0, 0, 0, 0, 0]
+      [0, 0, 0, 0, 0, 0, 0, 0],
     );
 
     const recordSum = recordData.reduce((acc, val) => acc + val, 0);
@@ -197,7 +258,7 @@ export class RecordService {
         else acc[7]++;
         return acc;
       },
-      [0, 0, 0, 0, 0, 0, 0, 0]
+      [0, 0, 0, 0, 0, 0, 0, 0],
     );
 
     return { licenseData };
@@ -226,11 +287,13 @@ export class RecordService {
         record.tierDistribution.light ?? 0,
         record.tierDistribution.bronze ?? 0,
       ],
-      user: record.user ? {
-        _id: record.user._id.toString(),
-        name: record.user.name,
-        image: record.user.image,
-      } : undefined,
+      user: record.user
+        ? {
+            _id: record.user._id.toString(),
+            name: record.user.name,
+            image: record.user.image,
+          }
+        : undefined,
       createdAt: record.createdAt,
     }));
   }
@@ -266,11 +329,13 @@ export class RecordService {
         record.tierDistribution.light ?? 0,
         record.tierDistribution.bronze ?? 0,
       ],
-      user: record.user ? {
-        _id: record.user._id.toString(),
-        name: record.user.name,
-        image: record.user.image,
-      } : undefined,
+      user: record.user
+        ? {
+            _id: record.user._id.toString(),
+            name: record.user.name,
+            image: record.user.image,
+          }
+        : undefined,
       createdAt: record.createdAt,
     }));
 

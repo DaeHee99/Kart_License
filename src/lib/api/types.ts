@@ -245,6 +245,7 @@ export interface MypageTierHistoryItem {
   date: string;
   tier: string;
   value: number;
+  createdAt: Date;
 }
 
 export interface MypageSeasonRecord {
@@ -263,6 +264,7 @@ export interface MypageMeasurementHistoryItem {
   tierEn: string;
   maps: number;
   createdAt: Date;
+  deletedAt?: Date | string | null;
 }
 
 export interface MypageDataResponse {
@@ -272,6 +274,16 @@ export interface MypageDataResponse {
     tierHistory: MypageTierHistoryItem[];
     seasonRecords: MypageSeasonRecord[];
     measurementHistory: MypageMeasurementHistoryItem[];
+  };
+  message?: string;
+  error?: string;
+}
+
+export interface DeleteMeasurementRecordResponse {
+  success: boolean;
+  data?: {
+    recordId: string;
+    deletedAt: Date;
   };
   message?: string;
   error?: string;
