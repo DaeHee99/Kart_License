@@ -8,14 +8,19 @@ const staffPaths = ["/feedback"]; // 운영진 이상 접근 가능한 경로 (r
 // 로그인된 상태에서는 접근 불가한 경로들 (auth 페이지)
 const authOnlyPaths = ["/auth"];
 
+function getInternalOrigin(): string {
+  return (
+    process.env.INTERNAL_APP_URL ||
+    `http://127.0.0.1:${process.env.PORT || "3000"}`
+  );
+}
+
 // 헬퍼 함수: 토큰 검증 API 호출
 async function verifyTokenWithAPI(
-  request: NextRequest,
   token: string,
 ): Promise<{ isAuth: boolean; role?: number } | null> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || request.url;
-    const authUrl = new URL("/api/user/auth", baseUrl);
+    const authUrl = new URL("/api/user/auth", getInternalOrigin());
     const authResponse = await fetch(authUrl.toString(), {
       headers: {
         cookie: `token=${token}`,
@@ -51,8 +56,9 @@ function redirectToAuth(pathname: string, requestUrl: string): NextResponse {
   return NextResponse.redirect(redirectUrl);
 }
 
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+export async function proxy(request: NextRequest) {
+  const { pathname, search } = request.nextUrl;
+  const redirectPath = `${pathname}${search}`;
   const token = request.cookies.get("token")?.value;
   const authenticated = !!token;
 
@@ -77,10 +83,10 @@ export async function middleware(request: NextRequest) {
   const isAdminPath = adminPaths.some((path) => pathname.startsWith(path));
   if (isAdminPath) {
     if (!authenticated) {
-      return redirectToAuth(pathname, request.url);
+      return redirectToAuth(redirectPath, request.url);
     }
 
-    const authData = await verifyTokenWithAPI(request, token);
+    const authData = await verifyTokenWithAPI(token);
 
     if (!authData) {
       // 인증 실패 시 쿠키 삭제하고 404로 리다이렉트
@@ -97,10 +103,10 @@ export async function middleware(request: NextRequest) {
   const isStaffPath = staffPaths.some((path) => pathname.startsWith(path));
   if (isStaffPath) {
     if (!authenticated) {
-      return redirectToAuth(pathname, request.url);
+      return redirectToAuth(redirectPath, request.url);
     }
 
-    const authData = await verifyTokenWithAPI(request, token);
+    const authData = await verifyTokenWithAPI(token);
 
     if (!authData) {
       // 인증 실패 시 쿠키 삭제하고 404로 리다이렉트
@@ -120,15 +126,15 @@ export async function middleware(request: NextRequest) {
 
   if (isProtectedPath) {
     if (!authenticated) {
-      return redirectToAuth(pathname, request.url);
+      return redirectToAuth(redirectPath, request.url);
     }
 
-    const authData = await verifyTokenWithAPI(request, token);
+    const authData = await verifyTokenWithAPI(token);
 
     if (!authData) {
       // 인증 실패 시 쿠키 삭제하고 로그인 페이지로 리다이렉트
       const redirectUrl = new URL("/auth", request.url);
-      redirectUrl.searchParams.set("redirect", pathname);
+      redirectUrl.searchParams.set("redirect", redirectPath);
       const response = NextResponse.redirect(redirectUrl);
       response.cookies.delete("token");
       return response;

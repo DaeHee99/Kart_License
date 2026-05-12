@@ -28,29 +28,27 @@ import { authenticateUser } from "@/lib/middleware/auth";
  */
 export async function POST(request: NextRequest) {
   try {
-    // TODO: 임시로 관리자 체크 비활성화 (테스트용)
-    // const authResult = await authenticateUser();
+    const authResult = await authenticateUser();
 
-    // if (!authResult.isAuth || !authResult.user) {
-    //   return NextResponse.json(
-    //     {
-    //       success: false,
-    //       message: "인증이 필요합니다.",
-    //     },
-    //     { status: 401 }
-    //   );
-    // }
+    if (!authResult.isAuth || !authResult.user) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "인증이 필요합니다.",
+        },
+        { status: 401 },
+      );
+    }
 
-    // // 관리자 권한 확인 (role === 1)
-    // if (authResult.user.role !== 1) {
-    //   return NextResponse.json(
-    //     {
-    //       success: false,
-    //       message: "관리자 권한이 필요합니다.",
-    //     },
-    //     { status: 403 }
-    //   );
-    // }
+    if (authResult.user.role !== 1) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "관리자 권한이 필요합니다.",
+        },
+        { status: 403 },
+      );
+    }
 
     await connectDB();
 
@@ -63,7 +61,7 @@ export async function POST(request: NextRequest) {
           success: false,
           error: "필수 데이터가 누락되었습니다.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -85,7 +83,7 @@ export async function POST(request: NextRequest) {
         },
         message: "맵 데이터가 성공적으로 저장되었습니다.",
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Map data initialization error:", error);
@@ -94,7 +92,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: "맵 데이터 초기화 중 오류가 발생했습니다.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

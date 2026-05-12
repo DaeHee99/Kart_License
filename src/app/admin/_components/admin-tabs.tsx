@@ -1,7 +1,7 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
-import { useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState, Suspense } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { UsersTab } from "./users-tab";
 import { MeasurementsTab } from "./measurements-tab";
@@ -18,35 +18,81 @@ const VALID_TABS = [
 ] as const;
 type TabValue = (typeof VALID_TABS)[number];
 
+function parseTab(value: string | null): TabValue {
+  return VALID_TABS.includes(value as TabValue) ? (value as TabValue) : "users";
+}
+
+function parsePage(value: string | null): number {
+  return Math.max(1, parseInt(value || "1", 10));
+}
+
+function getAdminUrl(tab: TabValue, page: number): string {
+  const params = new URLSearchParams();
+  if (tab !== "users") params.set("tab", tab);
+  if (page > 1) params.set("page", String(page));
+  const qs = params.toString();
+  return `/admin${qs ? `?${qs}` : ""}`;
+}
+
 function AdminTabsContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
+  const search = searchParams.toString();
 
-  const rawTab = searchParams.get("tab");
-  const tab: TabValue = VALID_TABS.includes(rawTab as TabValue)
-    ? (rawTab as TabValue)
-    : "users";
-  const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
+  const urlState = useMemo(
+    () => {
+      const params = new URLSearchParams(search);
+      return {
+        tab: parseTab(params.get("tab")),
+        page: parsePage(params.get("page")),
+      };
+    },
+    [search],
+  );
+
+  const [tab, setTab] = useState<TabValue>(urlState.tab);
+  const [page, setPage] = useState(urlState.page);
+
+  useEffect(() => {
+    setTab(urlState.tab);
+    setPage(urlState.page);
+  }, [urlState]);
+
+  useEffect(() => {
+    const syncFromHistory = () => {
+      const params = new URLSearchParams(window.location.search);
+      setTab(parseTab(params.get("tab")));
+      setPage(parsePage(params.get("page")));
+    };
+
+    window.addEventListener("popstate", syncFromHistory);
+    return () => window.removeEventListener("popstate", syncFromHistory);
+  }, []);
+
+  const pushUrlState = useCallback((nextTab: TabValue, nextPage: number) => {
+    const nextUrl = getAdminUrl(nextTab, nextPage);
+    const currentUrl = `${window.location.pathname}${window.location.search}`;
+    if (currentUrl !== nextUrl) {
+      window.history.pushState(null, "", nextUrl);
+    }
+  }, []);
 
   const handleTabChange = useCallback(
     (newTab: string) => {
-      const params = new URLSearchParams();
-      if (newTab !== "users") params.set("tab", newTab);
-      const qs = params.toString();
-      router.push(`/admin${qs ? `?${qs}` : ""}`);
+      const nextTab = parseTab(newTab);
+      setTab(nextTab);
+      setPage(1);
+      pushUrlState(nextTab, 1);
     },
-    [router],
+    [pushUrlState],
   );
 
   const handlePageChange = useCallback(
     (newPage: number) => {
-      const params = new URLSearchParams();
-      if (tab !== "users") params.set("tab", tab);
-      if (newPage > 1) params.set("page", String(newPage));
-      const qs = params.toString();
-      router.push(`/admin${qs ? `?${qs}` : ""}`);
+      const nextPage = Math.max(1, newPage);
+      setPage(nextPage);
+      pushUrlState(tab, nextPage);
     },
-    [router, tab],
+    [pushUrlState, tab],
   );
 
   return (

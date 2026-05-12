@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongodb";
 import Announcement from "@/lib/db/models/announcement.model";
-import { authenticateUser, checkRole } from "@/lib/middleware/auth";
+import { authenticateUser } from "@/lib/middleware/auth";
 
 /**
  * 공지사항 조회 API
@@ -10,7 +10,7 @@ import { authenticateUser, checkRole } from "@/lib/middleware/auth";
  * 반환 데이터:
  * - show:true인 공지사항 목록 (최신순)
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     await connectDB();
 
@@ -64,16 +64,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 관리자 권한 확인 (role >= 2)
-    // if (!checkRole(authResult.user, 2)) {
-    //   return NextResponse.json(
-    //     {
-    //       success: false,
-    //       error: "관리자 권한이 필요합니다.",
-    //     },
-    //     { status: 403 },
-    //   );
-    // }
+    if (authResult.user.role !== 1) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "관리자 권한이 필요합니다.",
+        },
+        { status: 403 },
+      );
+    }
 
     const body = await request.json();
     const { title, content, show = true } = body;

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongodb";
 import { recordService } from "@/lib/services/record.service";
 import Record from "@/lib/db/models/record.model";
+import { authenticateUser } from "@/lib/middleware/auth";
 
 /**
  * 최근 기록 조회 API
@@ -19,6 +20,15 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "10");
 
     if (page) {
+      const authResult = await authenticateUser();
+
+      if (!authResult.isAuth || authResult.user?.role !== 1) {
+        return NextResponse.json(
+          { success: false, error: "관리자 권한이 필요합니다." },
+          { status: 403 },
+        );
+      }
+
       const pageNum = parseInt(page);
       const skip = (pageNum - 1) * limit;
 

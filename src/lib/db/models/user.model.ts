@@ -19,7 +19,7 @@ export interface IUser {
   plainPassword: string;
   image?: string;
   license: string;
-  role: number; // 0: 일반, 1: 운영진, 2: 관리자
+  role: number; // 0: 일반, 1: 관리자, 2: 운영진
   token?: string;
   tokenExp?: number;
   authCount: number;
@@ -38,7 +38,9 @@ export interface IUserMethods {
 }
 
 // User 모델 인터페이스
-interface IUserModel extends Model<IUser, {}, IUserMethods> {
+type UserQueryHelpers = Record<string, never>;
+
+interface IUserModel extends Model<IUser, UserQueryHelpers, IUserMethods> {
   findByToken(
     token: string,
   ): Promise<HydratedDocument<IUser, IUserMethods> | null>;
@@ -107,13 +109,11 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
 
 // 비밀번호 암호화 미들웨어
 userSchema.pre("save", async function (next) {
-  const user = this;
-
-  if (user.isModified("password")) {
+  if (this.isModified("password")) {
     try {
       const salt = await bcrypt.genSalt(SALT_ROUNDS);
-      const hash = await bcrypt.hash(user.password, salt);
-      user.password = hash;
+      const hash = await bcrypt.hash(this.password, salt);
+      this.password = hash;
       next();
     } catch (err) {
       next(err as Error);
@@ -148,7 +148,7 @@ userSchema.statics.findByToken = async function (token: string) {
     const decoded = jwt.verify(token, JWT_SECRET) as string;
     const user = await this.findOne({ _id: decoded, token: token });
     return user;
-  } catch (err) {
+  } catch {
     // 잘못된 토큰이거나 만료된 경우 null 반환 (에러를 던지지 않음)
     return null;
   }

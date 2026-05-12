@@ -1,5 +1,4 @@
 const { createServer } = require("http");
-const { parse } = require("url");
 const next = require("next");
 
 const port = parseInt(process.env.PORT || "3000", 10);
@@ -8,8 +7,12 @@ const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
   createServer((req, res) => {
-    const parsedUrl = parse(req.url || "/", true);
-    const { pathname } = parsedUrl;
+    let pathname = "/";
+    try {
+      pathname = new URL(req.url || "/", "http://localhost").pathname;
+    } catch {
+      pathname = req.url || "/";
+    }
 
     // API 요청만 로깅 (상태 코드 + 응답 시간)
     if (pathname?.startsWith("/api")) {
@@ -28,7 +31,7 @@ app.prepare().then(() => {
       });
     }
 
-    handle(req, res, parsedUrl);
+    handle(req, res);
   }).listen(port, () => {
     console.log(`> Ready on http://localhost:${port}`);
   });

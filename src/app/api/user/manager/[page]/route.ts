@@ -15,7 +15,14 @@ export async function GET(
     if (!authResult.isAuth || !authResult.user) {
       return NextResponse.json(
         { success: false, message: "인증이 필요합니다." },
-        { status: 401 }
+        { status: 401 },
+      );
+    }
+
+    if (authResult.user.role !== 1) {
+      return NextResponse.json(
+        { success: false, message: "관리자 권한이 필요합니다." },
+        { status: 403 },
       );
     }
 
@@ -25,7 +32,7 @@ export async function GET(
     if (isNaN(pageNumber) || pageNumber < 1) {
       return NextResponse.json(
         { success: false, message: "유효하지 않은 페이지 번호입니다." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -34,10 +41,13 @@ export async function GET(
 
     return NextResponse.json(
       { success: true, count: result.count, userList: result.userList },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Manager page API error:", error);
-    return NextResponse.json({ success: false, error: "서버 오류가 발생했습니다." }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "서버 오류가 발생했습니다." },
+      { status: 500 },
+    );
   }
 }
