@@ -5,22 +5,24 @@ import { Button } from "./ui/button";
 import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useSyncExternalStore } from "react";
 
 interface HeaderProps {
   showMenu?: boolean;
   onMenuClick?: () => void;
 }
 
+// hydration mismatch 방지: 서버에서는 false, 클라이언트 마운트 후에는 true
+const emptySubscribe = () => () => {};
+
 export function Header({ showMenu, onMenuClick }: HeaderProps) {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
-
-  // hydration mismatch 방지를 위해 클라이언트에서만 테마 확인
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 
   const isDark = mounted && theme === "dark";
 
@@ -34,7 +36,7 @@ export function Header({ showMenu, onMenuClick }: HeaderProps) {
 
   return (
     <header className="bg-card/80 border-border fixed top-0 right-0 left-0 z-50 h-14 border-b backdrop-blur-md">
-      <div className="mx-auto flex h-full max-w-screen-xl items-center justify-between px-4">
+      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4">
         <div className="flex items-center gap-2">
           {showMenu && onMenuClick && (
             <Button

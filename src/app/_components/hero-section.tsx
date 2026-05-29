@@ -11,7 +11,17 @@ import {
   Trophy,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useRef, ReactNode } from "react";
+import { ReactNode } from "react";
+import { convertedMapData } from "@/lib/converted-map-data";
+
+// 인덱스로만 계산되는 결정적 값이라 렌더링마다 동일하므로 모듈 스코프 상수로 한 번만 계산
+const particlePositions = Array.from({ length: 15 }, (_, i) => ({
+  left: (i * 7 + 10) % 100,
+  top: (i * 11 + 5) % 100,
+  duration: 3 + (i % 3),
+  delay: (i * 0.3) % 2,
+  x: (i % 5) * 4 - 10,
+}));
 
 interface HeroSectionProps {
   userProfileSlot?: ReactNode;
@@ -19,17 +29,6 @@ interface HeroSectionProps {
 
 export function HeroSection({ userProfileSlot }: HeroSectionProps) {
   const router = useRouter();
-
-  // Generate stable random values for particles
-  const particlePositions = useRef(
-    Array.from({ length: 15 }, (_, i) => ({
-      left: (i * 7 + 10) % 100,
-      top: (i * 11 + 5) % 100,
-      duration: 3 + (i % 3),
-      delay: (i * 0.3) % 2,
-      x: (i % 5) * 4 - 10,
-    })),
-  ).current;
 
   return (
     <section className="relative overflow-hidden px-4 py-12 md:py-20">
@@ -263,8 +262,8 @@ export function HeroSection({ userProfileSlot }: HeroSectionProps) {
                   onClick={() => router.push("/records")}
                   className="h-16 border-2 px-8 text-lg"
                 >
-                  <Sparkles className="mr-2 h-5 w-5" />
-                  S38 기록표 보기
+                  <Sparkles className="mr-2 h-5 w-5" />S
+                  {convertedMapData.season} 기록표 보기
                 </Button>
               </motion.div>
             </motion.div>

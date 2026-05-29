@@ -9,6 +9,7 @@ import { toPng } from "html-to-image";
 import { toast } from "sonner";
 import Image from "next/image";
 import { createLog, LogActionType } from "@/lib/api/logs";
+import { convertedMapData } from "@/lib/converted-map-data";
 
 export function ImageTab() {
   const recordTableRef = useRef<HTMLDivElement>(null);
@@ -25,7 +26,7 @@ export function ImageTab() {
 
       const link = document.createElement("a");
       link.href = dataUrl;
-      link.download = `카러플_S38_기록표.png`;
+      link.download = `카러플_S${convertedMapData.season}_기록표.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -35,9 +36,9 @@ export function ImageTab() {
       // 기록표 이미지 다운로드 로그 생성
       createLog({
         actionType: LogActionType.IMAGE_DOWNLOAD,
-        content: "기록표 이미지 다운로드 - S38",
+        content: `기록표 이미지 다운로드 - S${convertedMapData.season}`,
         metadata: {
-          season: 38,
+          season: convertedMapData.season,
         },
       });
     } catch (err) {
@@ -77,11 +78,12 @@ export function ImageTab() {
             {/* Full Records Table */}
             <div className="overflow-x-auto">
               <Image
-                src="/S38_table.png"
-                alt="S38 기록표"
+                src="/S39_table_260529.png"
+                alt="S39 기록표"
                 width={1000}
                 height={1000}
                 className="h-auto w-full"
+                priority
               />
             </div>
 

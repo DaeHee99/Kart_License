@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { Card } from "@/components/ui/card";
 import { Trophy, Sparkles } from "lucide-react";
+import { convertedMapData } from "@/lib/converted-map-data";
 
 export function RecordsHeader() {
   return (
@@ -31,7 +32,7 @@ export function RecordsHeader() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
             >
-              S38 기록표
+              S{convertedMapData.season} 기록표
             </motion.h1>
             <motion.p
               className="text-muted-foreground text-sm"
