@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -45,6 +45,27 @@ import { LikeButton } from "../../_components/like-button";
 import { useRouter } from "next/navigation";
 import { ScrollSafeDropdownTrigger } from "./scroll-safe-dropdown-trigger";
 
+function resizeTextareaToContent(textarea: HTMLTextAreaElement) {
+  const style = window.getComputedStyle(textarea);
+  const fontSize = parseFloat(style.fontSize) || 16;
+  const lineHeight = parseFloat(style.lineHeight) || fontSize * 1.5;
+  const verticalPadding =
+    (parseFloat(style.paddingTop) || 0) +
+    (parseFloat(style.paddingBottom) || 0);
+  const verticalBorder =
+    (parseFloat(style.borderTopWidth) || 0) +
+    (parseFloat(style.borderBottomWidth) || 0);
+  const minHeight = Math.ceil(lineHeight + verticalPadding + verticalBorder);
+  const maxHeight = Math.ceil(
+    lineHeight * 4 + verticalPadding + verticalBorder,
+  );
+
+  textarea.style.height = `${minHeight}px`;
+  textarea.style.overflowY =
+    textarea.scrollHeight > maxHeight ? "auto" : "hidden";
+  textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
+}
+
 interface CommentsSectionProps {
   comments: Comment[];
   currentUserId?: string | null;
@@ -67,6 +88,7 @@ export function CommentsSection({
   onToggleCommentLike,
 }: CommentsSectionProps) {
   const router = useRouter();
+  const newCommentTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [newComment, setNewComment] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingCommentContent, setEditingCommentContent] = useState("");
@@ -87,6 +109,11 @@ export function CommentsSection({
     onAddComment(newComment);
     setNewComment("");
   };
+
+  useEffect(() => {
+    if (!newCommentTextareaRef.current) return;
+    resizeTextareaToContent(newCommentTextareaRef.current);
+  }, [newComment]);
 
   const handleStartEdit = (commentId: string, content: string) => {
     setEditingCommentId(commentId);
@@ -271,6 +298,7 @@ export function CommentsSection({
                         }
                       >
                         <ScrollSafeDropdownTrigger
+                          isOpen={openActionCommentId === comment.id}
                           setOpen={(open) =>
                             setOpenActionCommentId(open ? comment.id : null)
                           }
@@ -320,8 +348,12 @@ export function CommentsSection({
           {isAuthenticated ? (
             <div className="flex items-end gap-2">
               <Textarea
+                ref={newCommentTextareaRef}
                 value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
+                onChange={(e) => {
+                  setNewComment(e.target.value);
+                  resizeTextareaToContent(e.target);
+                }}
                 placeholder="댓글을 입력하세요..."
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
@@ -329,7 +361,8 @@ export function CommentsSection({
                     handleAddComment();
                   }
                 }}
-                className="min-h-20 flex-1 resize-y"
+                rows={1}
+                className="[field-sizing:fixed] max-h-none min-h-0 flex-1 resize-none overflow-hidden py-2 leading-6 [&::-webkit-scrollbar]:w-1.5"
               />
               <Button
                 onClick={handleAddComment}

@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 type ScrollSafeDropdownTriggerProps = React.ComponentProps<typeof Button> & {
+  isOpen: boolean;
   setOpen: (open: boolean) => void;
   moveThreshold?: number;
 };
 
 export function ScrollSafeDropdownTrigger({
+  isOpen,
   setOpen,
   moveThreshold = 10,
   onPointerDownCapture,
@@ -87,7 +89,7 @@ export function ScrollSafeDropdownTrigger({
           suppressNextClick();
 
           if (!touchState.moved) {
-            setOpen(true);
+            setOpen(!isOpen);
           }
 
           touchStateRef.current = null;

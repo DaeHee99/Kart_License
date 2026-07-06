@@ -193,6 +193,7 @@ export function PostContent({
               onOpenChange={setActionMenuOpen}
             >
               <ScrollSafeDropdownTrigger
+                isOpen={actionMenuOpen}
                 setOpen={setActionMenuOpen}
                 variant="outline"
                 size="icon"
