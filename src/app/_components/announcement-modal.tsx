@@ -15,15 +15,28 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import { Sparkles, ChevronLeft, ChevronRight, EyeOff } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useAnnouncements } from "@/hooks/use-announcements";
+import { toast } from "sonner";
 
 const DISMISSED_ANNOUNCEMENTS_KEY = "dismissed-announcement-ids";
+
+const getStoredDismissedAnnouncementIds = () => {
+  if (typeof window === "undefined") return new Set<string>();
+
+  try {
+    const stored = localStorage.getItem(DISMISSED_ANNOUNCEMENTS_KEY);
+    if (!stored) return new Set<string>();
+
+    const parsed = JSON.parse(stored);
+    return new Set<string>(Array.isArray(parsed) ? parsed : []);
+  } catch {
+    return new Set<string>();
+  }
+};
 
 export function AnnouncementModal() {
   const isMobile = useIsMobile();
@@ -31,25 +44,11 @@ export function AnnouncementModal() {
 
   const [showAnnouncement, setShowAnnouncement] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  // 각 공지사항의 "다시 보지 않기" 상태를 Map으로 관리
-  const [dontShowAgainMap, setDontShowAgainMap] = useState<
-    Map<string, boolean>
-  >(new Map());
   // 로컬스토리지에 저장된 숨긴 공지사항 ID들
-  const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
-
-  // 로컬스토리지에서 숨긴 공지사항 ID들 가져오기
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(DISMISSED_ANNOUNCEMENTS_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setDismissedIds(new Set(Array.isArray(parsed) ? parsed : []));
-      }
-    } catch {
-      setDismissedIds(new Set());
-    }
-  }, []);
+  const [dismissedIds, setDismissedIds] = useState<Set<string>>(
+    getStoredDismissedAnnouncementIds,
+  );
+  const primaryActionRef = useRef<HTMLButtonElement>(null);
 
   // 숨긴 공지사항 ID 저장하기
   const addDismissedAnnouncementId = (id: string) => {
@@ -64,8 +63,10 @@ export function AnnouncementModal() {
 
       // 상태 즉시 업데이트
       setDismissedIds(newDismissed);
+      return true;
     } catch (error) {
       console.error("Failed to save dismissed announcement:", error);
+      return false;
     }
   };
 
@@ -79,59 +80,62 @@ export function AnnouncementModal() {
   const currentAnnouncement = visibleAnnouncements[currentIndex] || null;
   const hasMultiple = visibleAnnouncements.length > 1;
 
-  // 현재 공지사항의 "다시 보지 않기" 체크 상태
-  const currentDontShowAgain = currentAnnouncement
-    ? dontShowAgainMap.get(currentAnnouncement._id) || false
-    : false;
-
   useEffect(() => {
     // 공지사항이 있고, 아직 표시되지 않았으면 500ms 후에 표시
     if (visibleAnnouncements.length > 0 && !isLoading) {
-      setTimeout(() => {
+      const timerId = setTimeout(() => {
         setShowAnnouncement(true);
       }, 500);
-    } else if (visibleAnnouncements.length === 0) {
-      // 보여줄 공지사항이 없으면 모달 닫기
-      setShowAnnouncement(false);
+
+      return () => clearTimeout(timerId);
     }
   }, [visibleAnnouncements.length, isLoading]);
 
-  // 현재 공지사항의 "다시 보지 않기" 체크 상태 토글
-  const handleDontShowAgainChange = (checked: boolean) => {
+  useEffect(() => {
+    if (!showAnnouncement || !currentAnnouncement) return;
+
+    const animationFrameId = requestAnimationFrame(() => {
+      primaryActionRef.current?.focus();
+    });
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [currentAnnouncement, showAnnouncement]);
+
+  const closeAnnouncementModal = () => {
+    setShowAnnouncement(false);
+    setCurrentIndex(0);
+  };
+
+  const dismissCurrentAnnouncementAndContinue = () => {
     if (!currentAnnouncement) return;
 
-    const newMap = new Map(dontShowAgainMap);
-    newMap.set(currentAnnouncement._id, checked);
-    setDontShowAgainMap(newMap);
+    const isCurrentLast = currentIndex >= visibleAnnouncements.length - 1;
+    const saved = addDismissedAnnouncementId(currentAnnouncement._id);
+
+    if (!saved) {
+      toast.error("공지사항 숨김 저장에 실패했습니다.");
+      return;
+    }
+
+    toast.success("공지사항을 다시 표시하지 않도록 저장했습니다.");
+
+    if (isCurrentLast) {
+      closeAnnouncementModal();
+    }
   };
 
   const handleCloseAnnouncement = () => {
     if (!currentAnnouncement) return;
 
-    // 현재 공지사항을 "다시 보지 않기" 체크했으면 로컬스토리지에 저장
-    if (currentDontShowAgain) {
-      addDismissedAnnouncementId(currentAnnouncement._id);
-    }
-
     // 확인 버튼을 눌렀으므로 모달 닫기
-    setShowAnnouncement(false);
-    setCurrentIndex(0);
-    setDontShowAgainMap(new Map());
+    closeAnnouncementModal();
   };
 
   const handleNext = () => {
     if (!currentAnnouncement) return;
 
-    // 다음으로 넘어가기 전에 현재 공지사항의 "다시 보지 않기" 체크 상태 저장
-    if (currentDontShowAgain) {
-      addDismissedAnnouncementId(currentAnnouncement._id);
-      // 저장 후 visibleAnnouncements가 업데이트되므로 currentIndex는 유지
-      // (현재 항목이 제거되면 다음 항목이 같은 인덱스로 옴)
-    } else {
-      // 체크하지 않았으면 다음 항목으로 이동
-      if (currentIndex < visibleAnnouncements.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-      }
+    if (currentIndex < visibleAnnouncements.length - 1) {
+      setCurrentIndex(currentIndex + 1);
     }
   };
 
@@ -141,19 +145,10 @@ export function AnnouncementModal() {
     }
   };
 
-  const handleSkipAll = () => {
-    // 모든 남은 공지사항을 건너뛰기
-    setShowAnnouncement(false);
-    setCurrentIndex(0);
-    setDontShowAgainMap(new Map());
-  };
-
   // 모달이 닫힐 때 초기화
   const handleModalClose = (open: boolean) => {
     if (!open) {
-      setShowAnnouncement(false);
-      setCurrentIndex(0);
-      setDontShowAgainMap(new Map());
+      closeAnnouncementModal();
     }
   };
 
@@ -198,20 +193,15 @@ export function AnnouncementModal() {
         </div>
       </div>
 
-      {/* 다시 보지 않기 체크박스 */}
-      <div className="flex items-center gap-2 px-1">
-        <Checkbox
-          id={`dont-show-again-${currentAnnouncement._id}`}
-          checked={currentDontShowAgain}
-          onCheckedChange={handleDontShowAgainChange}
-        />
-        <Label
-          htmlFor={`dont-show-again-${currentAnnouncement._id}`}
-          className="text-muted-foreground cursor-pointer text-sm"
-        >
-          이 공지사항 다시 보지 않기
-        </Label>
-      </div>
+      <Button
+        onClick={dismissCurrentAnnouncementAndContinue}
+        variant="ghost"
+        size="sm"
+        className="text-muted-foreground hover:text-foreground w-full"
+      >
+        <EyeOff className="mr-1 h-4 w-4" />
+        이 공지 다시 보지 않기
+      </Button>
 
       {/* 버튼들 */}
       <div className="flex gap-2">
@@ -226,18 +216,9 @@ export function AnnouncementModal() {
             이전
           </Button>
         )}
-        {hasMultiple && (
-          <Button
-            onClick={handleSkipAll}
-            variant="ghost"
-            size="sm"
-            className="flex-1"
-          >
-            모두 건너뛰기
-          </Button>
-        )}
         {isLastAnnouncement ? (
           <Button
+            ref={primaryActionRef}
             onClick={handleCloseAnnouncement}
             size="sm"
             className="flex-1"
@@ -245,7 +226,12 @@ export function AnnouncementModal() {
             확인
           </Button>
         ) : (
-          <Button onClick={handleNext} size="sm" className="flex-1">
+          <Button
+            ref={primaryActionRef}
+            onClick={handleNext}
+            size="sm"
+            className="flex-1"
+          >
             다음
             <ChevronRight className="ml-1 h-4 w-4" />
           </Button>
@@ -257,7 +243,12 @@ export function AnnouncementModal() {
   if (isMobile) {
     return (
       <Drawer open={showAnnouncement} onOpenChange={handleModalClose}>
-        <DrawerContent>
+        <DrawerContent
+          onOpenAutoFocus={(event) => {
+            event.preventDefault();
+            primaryActionRef.current?.focus();
+          }}
+        >
           <DrawerHeader>
             <DrawerTitle>공지사항</DrawerTitle>
             <DrawerDescription>새로운 소식을 확인하세요</DrawerDescription>
@@ -270,7 +261,13 @@ export function AnnouncementModal() {
 
   return (
     <Dialog open={showAnnouncement} onOpenChange={handleModalClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        onOpenAutoFocus={(event) => {
+          event.preventDefault();
+          primaryActionRef.current?.focus();
+        }}
+      >
         <DialogHeader>
           <DialogTitle>공지사항</DialogTitle>
           <DialogDescription>새로운 소식을 확인하세요</DialogDescription>
