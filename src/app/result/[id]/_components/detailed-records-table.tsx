@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy } from "lucide-react";
-import { UserMapRecord, TIERS, TierType } from "@/lib/types";
+import { TIERS, TierType } from "@/lib/types";
 
 interface RecordWithMapName {
   mapId?: string;
@@ -17,6 +17,8 @@ interface RecordWithMapName {
 interface DetailedRecordsTableProps {
   records: RecordWithMapName[];
   totalMaps?: number;
+  selectedTier?: TierType | null;
+  onSelectTier?: (tier: TierType | null) => void;
 }
 
 // Difficulty 뱃지 색상 매핑
@@ -30,9 +32,21 @@ const DIFFICULTY_COLORS = {
 export function DetailedRecordsTable({
   records,
   totalMaps,
+  selectedTier = null,
+  onSelectTier,
 }: DetailedRecordsTableProps) {
+  const filteredRecords = selectedTier
+    ? records.filter((record) => record.tier === selectedTier)
+    : records;
+
+  const handleTierClick = (tier?: TierType) => {
+    if (!tier || !onSelectTier) return;
+    onSelectTier(selectedTier === tier ? null : tier);
+  };
+
   return (
     <motion.div
+      id="detailed-records"
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.5, duration: 0.2 }}
@@ -56,9 +70,20 @@ export function DetailedRecordsTable({
               <Trophy className="text-secondary h-5 w-5" />
               상세 기록
             </h3>
-            <Badge variant="secondary" className="font-mono">
-              {records.length}/{totalMaps || records.length}
-            </Badge>
+            <div className="flex items-center gap-2">
+              {selectedTier && (
+                <button
+                  type="button"
+                  onClick={() => onSelectTier?.(null)}
+                  className="text-muted-foreground hover:text-foreground text-xs underline-offset-2 hover:underline"
+                >
+                  {TIERS[selectedTier].nameKo}만 표시 · 전체 보기
+                </button>
+              )}
+              <Badge variant="secondary" className="font-mono">
+                {filteredRecords.length}/{totalMaps || records.length}
+              </Badge>
+            </div>
           </div>
 
           <div className="border-border/50 space-y-0 overflow-hidden rounded-lg border">
@@ -76,24 +101,29 @@ export function DetailedRecordsTable({
             </div>
 
             {/* Data Rows */}
-            {records.map((record, index) => {
-              const tier = record.tier;
-              const mapName = record.mapName || "알 수 없는 맵";
-              const difficulty = record.difficulty;
+            {filteredRecords.length === 0 ? (
+              <div className="text-muted-foreground px-4 py-8 text-center text-sm">
+                해당 군의 트랙이 없습니다.
+              </div>
+            ) : (
+              filteredRecords.map((record, index) => {
+                const tier = record.tier;
+                const mapName = record.mapName || "알 수 없는 맵";
+                const difficulty = record.difficulty;
 
-              return (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{
-                    delay: 0.55 + index * 0.02,
-                    duration: 0.1,
-                  }}
-                  className={`border-border/50 hover:bg-primary/5 relative grid grid-cols-[minmax(0,1fr)_100px_80px] border-b transition-colors last:border-b-0 ${
-                    tier ? `bg-linear-to-r from-transparent to-${tier}/5` : ""
-                  }`}
-                >
+                return (
+                  <motion.div
+                    key={`${record.mapName}-${record.record}-${index}`}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      delay: Math.min(index * 0.02, 0.2),
+                      duration: 0.1,
+                    }}
+                    className={`border-border/50 hover:bg-primary/5 relative grid grid-cols-[minmax(0,1fr)_100px_80px] border-b transition-colors last:border-b-0 ${
+                      tier ? `bg-linear-to-r from-transparent to-${tier}/5` : ""
+                    }`}
+                  >
                   {/* Colored left border */}
                   {tier && (
                     <div
@@ -114,15 +144,27 @@ export function DetailedRecordsTable({
                   </div>
                   <div className="flex items-center justify-center px-4 py-3">
                     {tier && (
-                      <Badge
-                        variant="outline"
-                        className={`shrink-0 gap-1.5 border-gray-300 text-xs`}
+                      <button
+                        type="button"
+                        onClick={() => handleTierClick(tier)}
+                        aria-pressed={selectedTier === tier}
+                        aria-label={`${TIERS[tier].nameKo} 트랙만 보기`}
+                        className="cursor-pointer"
                       >
-                        <div
-                          className={`h-2 w-2 rounded-full ${TIERS[tier].color}`}
-                        />
-                        {TIERS[tier].nameKo}
-                      </Badge>
+                        <Badge
+                          variant="outline"
+                          className={`shrink-0 gap-1.5 border-gray-300 text-xs transition-colors ${
+                            selectedTier === tier
+                              ? "border-primary bg-primary/10"
+                              : "hover:bg-muted"
+                          }`}
+                        >
+                          <div
+                            className={`h-2 w-2 rounded-full ${TIERS[tier].color}`}
+                          />
+                          {TIERS[tier].nameKo}
+                        </Badge>
+                      </button>
                     )}
                   </div>
                   <div className="flex items-center justify-end py-3 pr-2">
@@ -132,7 +174,8 @@ export function DetailedRecordsTable({
                   </div>
                 </motion.div>
               );
-            })}
+              })
+            )}
           </div>
         </div>
       </Card>

@@ -38,6 +38,7 @@ export default function ResultDetailPage() {
   const [isCompactViewport, setIsCompactViewport] = useState<boolean | null>(
     null,
   );
+  const [selectedTier, setSelectedTier] = useState<TierType | null>(null);
   const hasFeedbackDismissedQuery =
     searchParams.get(FEEDBACK_DISMISSED_QUERY) === "1";
 
@@ -187,6 +188,10 @@ export default function ResultDetailPage() {
   const finalTier = convertKoreanTierToEnglish(recordData.finalTier);
   const insights = getTierInsights(finalTier, tierDistribution);
 
+  const handleSelectTier = (tier: TierType | null) => {
+    setSelectedTier(tier);
+  };
+
   // API 데이터를 컴포넌트가 기대하는 형식으로 변환
   const transformedRecords = recordData.records.map((record) => ({
     mapName: record.mapName,
@@ -217,10 +222,14 @@ export default function ResultDetailPage() {
             tierDistribution={tierDistribution}
             finalTier={finalTier}
             totalMaps={recordData.records.length}
+            selectedTier={selectedTier}
+            onSelectTier={handleSelectTier}
           />
           <DetailedRecordsTable
             records={transformedRecords}
             totalMaps={recordData.records.length}
+            selectedTier={selectedTier}
+            onSelectTier={handleSelectTier}
           />
           <BottomActionButtons />
         </div>

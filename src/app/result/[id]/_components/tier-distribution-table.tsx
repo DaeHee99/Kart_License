@@ -11,12 +11,16 @@ interface TierDistributionTableProps {
   tierDistribution: Record<TierType, number>;
   finalTier: TierType;
   totalMaps: number;
+  selectedTier?: TierType | null;
+  onSelectTier?: (tier: TierType | null) => void;
 }
 
 export function TierDistributionTable({
   tierDistribution,
   finalTier,
   totalMaps,
+  selectedTier = null,
+  onSelectTier,
 }: TierDistributionTableProps) {
   const isMobile = useIsMobile();
 
@@ -56,10 +60,15 @@ export function TierDistributionTable({
 
         <div className="relative">
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="flex items-center gap-2 text-lg font-bold">
-              <Zap className="text-primary h-5 w-5" />
-              선택한 군별 분포
-            </h3>
+            <div>
+              <h3 className="flex items-center gap-2 text-lg font-bold">
+                <Zap className="text-primary h-5 w-5" />
+                선택한 군별 분포
+              </h3>
+              <p className="text-muted-foreground mt-1 text-xs">
+                군을 누르면 아래 상세 기록에서 해당 트랙만 볼 수 있습니다
+              </p>
+            </div>
             <Badge variant="secondary" className="font-mono">
               {totalMaps}개 맵
             </Badge>
@@ -93,18 +102,53 @@ export function TierDistributionTable({
                 totalMaps > 0 ? Math.round((count / totalMaps) * 100) : 0;
               const tierColorHex = getTierColorHex(tierId);
 
+              const isSelected = selectedTier === tierId;
+
               return (
                 <motion.div
                   key={tierId}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={isSelected}
+                  aria-label={`${tier.nameKo} 트랙만 보기`}
+                  onClick={() => {
+                    const nextTier = isSelected ? null : tierId;
+                    onSelectTier?.(nextTier);
+                    if (nextTier) {
+                      document
+                        .getElementById("detailed-records")
+                        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      const nextTier = isSelected ? null : tierId;
+                      onSelectTier?.(nextTier);
+                      if (nextTier) {
+                        document
+                          .getElementById("detailed-records")
+                          ?.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                          });
+                      }
+                    }
+                  }}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{
                     delay: 0.45 + index * 0.03,
                     duration: 0.15,
                   }}
-                  className={`border-border/50 hover:bg-primary/5 relative grid border-b transition-colors last:border-b-0 ${isMobile ? "grid-cols-2" : "grid-cols-3"}`}
+                  className={`border-border/50 hover:bg-primary/5 relative grid cursor-pointer border-b transition-colors last:border-b-0 ${isMobile ? "grid-cols-2" : "grid-cols-3"}`}
                   style={{
-                    backgroundColor: `${tierColorHex}10`,
+                    backgroundColor: isSelected
+                      ? `${tierColorHex}28`
+                      : `${tierColorHex}10`,
+                    boxShadow: isSelected
+                      ? `inset 0 0 0 2px ${tierColorHex}`
+                      : undefined,
                   }}
                 >
                   {/* Progress bar background */}
