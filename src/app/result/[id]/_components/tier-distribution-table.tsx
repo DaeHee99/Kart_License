@@ -117,7 +117,10 @@ export function TierDistributionTable({
                     if (nextTier) {
                       document
                         .getElementById("detailed-records")
-                        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                        ?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
                     }
                   }}
                   onKeyDown={(event) => {
@@ -141,7 +144,7 @@ export function TierDistributionTable({
                     delay: 0.45 + index * 0.03,
                     duration: 0.15,
                   }}
-                  className={`border-border/50 hover:bg-primary/5 relative grid cursor-pointer border-b transition-colors last:border-b-0 ${isMobile ? "grid-cols-2" : "grid-cols-3"}`}
+                  className={`border-border/50 hover:bg-primary/5 relative grid cursor-pointer border-b transition-colors last:border-b-0 ${isMobile ? "grid-cols-2" : "grid-cols-3"} ${tierId === "bronze" ? "rounded-b-lg" : "rounded-b-none"}`}
                   style={{
                     backgroundColor: isSelected
                       ? `${tierColorHex}28`

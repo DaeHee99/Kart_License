@@ -88,7 +88,7 @@ export function DetailedRecordsTable({
 
           <div className="border-border/50 space-y-0 overflow-hidden rounded-lg border">
             {/* Header Row */}
-            <div className="bg-muted/50 border-border/50 grid grid-cols-[minmax(0,1fr)_100px_80px] border-b">
+            <div className="bg-muted/50 border-border/50 hidden grid-cols-[minmax(0,1fr)_100px_80px] border-b md:grid">
               <div className="text-muted-foreground px-4 py-2 text-xs font-medium">
                 맵 이름
               </div>
@@ -120,60 +120,63 @@ export function DetailedRecordsTable({
                       delay: Math.min(index * 0.02, 0.2),
                       duration: 0.1,
                     }}
-                    className={`border-border/50 hover:bg-primary/5 relative grid grid-cols-[minmax(0,1fr)_100px_80px] border-b transition-colors last:border-b-0 ${
+                    className={`border-border/50 hover:bg-primary/5 relative grid grid-cols-1 gap-1.5 border-b px-4 py-3 transition-colors last:border-b-0 md:grid-cols-[minmax(0,1fr)_100px_80px] md:gap-0 md:px-0 md:py-0 ${
                       tier ? `bg-linear-to-r from-transparent to-${tier}/5` : ""
                     }`}
                   >
-                  {/* Colored left border */}
-                  {tier && (
-                    <div
-                      className={`absolute top-0 bottom-0 left-0 w-1 ${TIERS[tier].color}`}
-                    />
-                  )}
-
-                  <div className="flex min-w-0 items-center gap-2 px-4 py-3">
-                    {difficulty && (
-                      <Badge
-                        variant="outline"
-                        className={`shrink-0 text-xs font-semibold ${DIFFICULTY_COLORS[difficulty]}`}
-                      >
-                        {difficulty}
-                      </Badge>
-                    )}
-                    <span className="truncate text-sm">{mapName}</span>
-                  </div>
-                  <div className="flex items-center justify-center px-4 py-3">
                     {tier && (
-                      <button
-                        type="button"
-                        onClick={() => handleTierClick(tier)}
-                        aria-pressed={selectedTier === tier}
-                        aria-label={`${TIERS[tier].nameKo} 트랙만 보기`}
-                        className="cursor-pointer"
-                      >
-                        <Badge
-                          variant="outline"
-                          className={`shrink-0 gap-1.5 border-gray-300 text-xs transition-colors ${
-                            selectedTier === tier
-                              ? "border-primary bg-primary/10"
-                              : "hover:bg-muted"
-                          }`}
-                        >
-                          <div
-                            className={`h-2 w-2 rounded-full ${TIERS[tier].color}`}
-                          />
-                          {TIERS[tier].nameKo}
-                        </Badge>
-                      </button>
+                      <div
+                        className={`absolute top-0 bottom-0 left-0 w-1 ${TIERS[tier].color}`}
+                      />
                     )}
-                  </div>
-                  <div className="flex items-center justify-end py-3 pr-2">
-                    <span className="text-muted-foreground font-mono text-sm">
-                      {record.record || "-"}
-                    </span>
-                  </div>
-                </motion.div>
-              );
+
+                    <div className="flex min-w-0 items-center justify-between gap-2 md:contents">
+                      <div className="flex min-w-0 items-center gap-2 md:px-4 md:py-3">
+                        {difficulty && (
+                          <Badge
+                            variant="outline"
+                            className={`shrink-0 text-xs font-semibold ${DIFFICULTY_COLORS[difficulty]}`}
+                          >
+                            {difficulty}
+                          </Badge>
+                        )}
+                        <span className="min-w-0 text-sm break-keep">
+                          {mapName}
+                        </span>
+                      </div>
+                      <div className="flex shrink-0 items-center md:justify-center md:px-4 md:py-3">
+                        {tier && (
+                          <button
+                            type="button"
+                            onClick={() => handleTierClick(tier)}
+                            aria-pressed={selectedTier === tier}
+                            aria-label={`${TIERS[tier].nameKo} 트랙만 보기`}
+                            className="cursor-pointer"
+                          >
+                            <Badge
+                              variant="outline"
+                              className={`shrink-0 gap-1.5 border-gray-300 text-xs transition-colors ${
+                                selectedTier === tier
+                                  ? "border-primary bg-primary/10"
+                                  : "hover:bg-muted"
+                              }`}
+                            >
+                              <div
+                                className={`h-2 w-2 rounded-full ${TIERS[tier].color}`}
+                              />
+                              {TIERS[tier].nameKo}
+                            </Badge>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-end md:py-3 md:pr-2">
+                      <span className="text-muted-foreground font-mono text-sm">
+                        {record.record || "-"}
+                      </span>
+                    </div>
+                  </motion.div>
+                );
               })
             )}
           </div>
