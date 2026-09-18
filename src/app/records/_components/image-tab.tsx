@@ -78,8 +78,8 @@ export function ImageTab() {
             {/* Full Records Table */}
             <div className="overflow-x-auto">
               <Image
-                src="/S40_table_260724.png"
-                alt="S40 기록표"
+                src="/S41_table_260918.png"
+                alt={`S${convertedMapData.season} 기록표`}
                 width={1000}
                 height={1000}
                 className="h-auto w-full"
